@@ -48,7 +48,8 @@ class _HealthCheckPageState extends State<HealthCheckPage> {
 
       setState(() {
         _success = response.statusCode == 200 && data['status'] == 'ok';
-        _message = 'Status : ${data['status']}\n'
+        _message =
+            'Status : ${data['status']}\n'
             'Base de données : ${data['database']}\n'
             'WebSocket : ${data['websocket']}';
       });
@@ -92,10 +93,10 @@ class _HealthCheckPageState extends State<HealthCheckPage> {
                 onPressed: _loading ? null : _checkBackend,
                 icon: _loading
                     ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
                     : const Icon(Icons.wifi_tethering),
                 label: const Text('Tester la connexion'),
               ),
