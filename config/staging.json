@@ -1,0 +1,6 @@
+{
+  "FLAVOR": "staging",
+  "APP_NAME": "AfriMarket Staging",
+  "API_BASE_URL": "https://api-staging.example.com",
+  "ENABLE_NETWORK_LOGS": false
+}
