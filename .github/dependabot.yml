@@ -8,9 +8,6 @@ updates:
       interval: "weekly"
       day: "monday"
     open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "dart"
 
   # Actions utilisées dans les workflows GitHub
   - package-ecosystem: "github-actions"
@@ -19,6 +16,3 @@ updates:
       interval: "weekly"
       day: "monday"
     open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "github-actions"
