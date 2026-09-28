@@ -11,7 +11,7 @@ const String apiBaseUrl = 'http://10.0.2.2:3000';
 void main() => runApp(const AfriMarketApp());
 
 class AfriMarketApp extends StatelessWidget {
-  const AfriMarketApp({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class AfriMarketApp extends StatelessWidget {
 }
 
 class HealthCheckPage extends StatefulWidget {
-  const HealthCheckPage({super.key});
+  const new({super.key});
 
   @override
   State<HealthCheckPage> createState() => _HealthCheckPageState();
