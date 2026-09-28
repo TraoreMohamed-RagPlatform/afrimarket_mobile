@@ -70,7 +70,7 @@ jobs:
         run: flutter test --coverage
 
       - name: Sauvegarder le rapport de couverture
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: coverage/lcov.info
@@ -218,7 +218,7 @@ jobs:
         run: flutter build apk --release
 
       - name: Sauvegarder l'APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: afrimarket-apk
           path: build/app/outputs/flutter-apk/app-release.apk
