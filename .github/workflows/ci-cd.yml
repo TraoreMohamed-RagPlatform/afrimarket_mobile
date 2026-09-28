@@ -85,7 +85,9 @@ jobs:
     continue-on-error: true
     permissions:
       contents: read
+      actions: read
       security-events: write
+
     steps:
       - uses: actions/checkout@v4
 
