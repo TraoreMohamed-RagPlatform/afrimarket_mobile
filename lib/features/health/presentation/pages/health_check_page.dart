@@ -1,51 +1,38 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-// TEMPORAIRE (Phase F0) : sera déplacé dans une config d'environnement en F1.
-// 10.0.2.2 = le "localhost" de ton PC vu depuis l'émulateur Android.
-const String apiBaseUrl = 'http://10.0.2.2:3000';
-
-void main() => runApp(const AfriMarketApp());
-
-class AfriMarketApp extends StatelessWidget {
+/// Page de diagnostic : vérifie la connexion au backend.
+///
+/// TEMPORAIRE (F1.3) : l'appel API est fait directement depuis l'écran.
+/// Il sera migré en F1.9 vers les couches data/domain, avec Dio.
+class HealthCheckPage extends ConsumerStatefulWidget {
   const new({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'AfriMarket',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorSchemeSeed: Colors.green, useMaterial3: true),
-      home: const HealthCheckPage(),
-    );
-  }
+  ConsumerState<HealthCheckPage> createState() => _HealthCheckPageState();
 }
 
-class HealthCheckPage extends StatefulWidget {
-  const new({super.key});
-
-  @override
-  State<HealthCheckPage> createState() => _HealthCheckPageState();
-}
-
-class _HealthCheckPageState extends State<HealthCheckPage> {
+class _HealthCheckPageState extends ConsumerState<HealthCheckPage> {
   bool _loading = false;
   bool? _success;
   String _message = 'Appuie sur le bouton pour tester le backend';
 
   Future<void> _checkBackend() async {
+    final config = ref.read(appConfigProvider);
     setState(() => _loading = true);
 
     try {
       final response = await http
-          .get(Uri.parse('$apiBaseUrl/api/health'))
+          .get(config.apiBaseUrl.resolve('/api/health'))
           .timeout(const Duration(seconds: 5));
-
       final data = jsonDecode(response.body) as Map<String, dynamic>;
 
+      if (!mounted) return;
       setState(() {
         _success = response.statusCode == 200 && data['status'] == 'ok';
         _message =
@@ -54,37 +41,47 @@ class _HealthCheckPageState extends State<HealthCheckPage> {
             'WebSocket : ${data['websocket']}';
       });
     } on TimeoutException {
+      if (!mounted) return;
       setState(() {
         _success = false;
         _message = 'Délai dépassé : le backend est-il démarré ?';
       });
-    } catch (e) {
+    } on Exception catch (e) {
+      if (!mounted) return;
       setState(() {
         _success = false;
         _message = 'Erreur de connexion :\n$e';
       });
     } finally {
-      setState(() => _loading = false);
+      if (mounted) setState(() => _loading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final icon = _success == null
+    final config = ref.watch(appConfigProvider);
+    final success = _success;
+
+    final icon = success == null
         ? Icons.cloud_outlined
-        : (_success! ? Icons.check_circle : Icons.error);
-    final color = _success == null
+        : (success ? Icons.check_circle : Icons.error);
+    final color = success == null
         ? Colors.grey
-        : (_success! ? Colors.green : Colors.red);
+        : (success ? Colors.green : Colors.red);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('AfriMarket – Test backend')),
+      appBar: AppBar(title: Text('${config.appName} – Test backend')),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              Text(
+                'Environnement : ${config.flavor.name}\n${config.apiBaseUrl}',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
               Icon(icon, size: 80, color: color),
               const SizedBox(height: 24),
               Text(_message, textAlign: TextAlign.center),
