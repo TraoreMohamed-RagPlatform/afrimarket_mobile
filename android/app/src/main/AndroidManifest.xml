@@ -1,7 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Nécessaire en production pour appeler l'API AfriMarket -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- SÉCURITÉ :
+         - allowBackup="false" : empêche la sauvegarde des données (tokens JWT)
+           hors de l'appareil (cloud Google, ADB)
+         - usesCleartextTraffic="false" : interdit le HTTP non chiffré en production
+           (en debug, network_security_config.xml autorise seulement le backend local) -->
     <application
         android:label="afrimarket_mobile"
         android:name="${applicationName}"
+        android:allowBackup="false"
+        android:usesCleartextTraffic="false"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
@@ -17,9 +27,9 @@
                  while the Flutter UI initializes. After that, this theme continues
                  to determine the Window background behind the Flutter UI. -->
             <meta-data
-              android:name="io.flutter.embedding.android.NormalTheme"
-              android:resource="@style/NormalTheme"
-              />
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"
+                />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
