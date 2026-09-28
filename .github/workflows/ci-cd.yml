@@ -161,7 +161,7 @@ jobs:
 
       - name: Analyse SonarCloud
         if: env.SONAR_TOKEN != ''
-        uses: SonarSource/sonarqube-scan-action@v6
+        uses: SonarSource/sonarqube-scan-action@v8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
