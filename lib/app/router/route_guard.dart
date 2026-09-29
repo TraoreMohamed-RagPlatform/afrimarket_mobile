@@ -1,4 +1,4 @@
-import 'package:afrimarket_mobile/app/router/app_routes.dart';
+import 'package:afrimarket_mobile/core/navigation/app_routes.dart';
 import 'package:afrimarket_mobile/core/session/session_provider.dart';
 
 /// Paramètre qui mémorise la page demandée avant une redirection.
