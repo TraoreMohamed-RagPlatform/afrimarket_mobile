@@ -46,3 +46,6 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Generated localizations (source of truth: lib/core/l10n/arb/*.arb)
+lib/core/l10n/generated/

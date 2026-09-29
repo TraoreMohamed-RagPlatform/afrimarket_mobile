@@ -1,0 +1,104 @@
+{
+  "@@locale": "fr",
+
+  "splashLoading": "Chargement",
+  "@splashLoading": {
+    "description": "Libellé d'accessibilité de l'indicateur de chargement au démarrage."
+  },
+
+  "loginTitle": "Connexion",
+  "@loginTitle": {
+    "description": "Titre de l'écran de connexion."
+  },
+
+  "loginComingSoon": "L'écran de connexion arrive bientôt.",
+  "@loginComingSoon": {
+    "description": "Texte provisoire affiché tant que le formulaire de connexion n'existe pas."
+  },
+
+  "homeComingSoon": "Le fil d'annonces arrive bientôt.",
+  "@homeComingSoon": {
+    "description": "Texte provisoire de la page d'accueil."
+  },
+
+  "logoutTooltip": "Se déconnecter",
+  "@logoutTooltip": {
+    "description": "Info-bulle et libellé d'accessibilité du bouton de déconnexion."
+  },
+
+  "devDiagnosticsButton": "Diagnostic (dev)",
+  "@devDiagnosticsButton": {
+    "description": "Bouton visible uniquement en développement, qui ouvre la page de diagnostic."
+  },
+
+  "notFoundMessage": "Page introuvable",
+  "@notFoundMessage": {
+    "description": "Message affiché pour une adresse inconnue."
+  },
+
+  "backToHome": "Retour à l'accueil",
+  "@backToHome": {
+    "description": "Bouton qui ramène à la page d'accueil."
+  },
+
+  "diagnosticsTitle": "{appName} – Test du serveur",
+  "@diagnosticsTitle": {
+    "description": "Titre de la page de diagnostic (développement uniquement).",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "AfriMarket Dev"
+      }
+    }
+  },
+
+  "diagnosticsEnvironment": "Environnement : {flavor}",
+  "@diagnosticsEnvironment": {
+    "description": "Environnement courant affiché sur la page de diagnostic.",
+    "placeholders": {
+      "flavor": {
+        "type": "String",
+        "example": "dev"
+      }
+    }
+  },
+
+  "diagnosticsIntro": "Appuyez sur le bouton pour tester le serveur.",
+  "@diagnosticsIntro": {
+    "description": "Consigne initiale de la page de diagnostic."
+  },
+
+  "diagnosticsTestButton": "Tester la connexion",
+  "@diagnosticsTestButton": {
+    "description": "Bouton qui lance le test du serveur."
+  },
+
+  "diagnosticsResult": "Statut : {status}\nBase de données : {database}\nWebSocket : {websocket}",
+  "@diagnosticsResult": {
+    "description": "Résultat du test du serveur.",
+    "placeholders": {
+      "status": {
+        "type": "String",
+        "example": "ok"
+      },
+      "database": {
+        "type": "String",
+        "example": "connected"
+      },
+      "websocket": {
+        "type": "String",
+        "example": "active"
+      }
+    }
+  },
+
+  "diagnosticsTimeout": "Délai dépassé : le serveur est-il démarré ?",
+  "@diagnosticsTimeout": {
+    "description": "Le serveur n'a pas répondu à temps."
+  },
+
+  "diagnosticsError": "Impossible de joindre le serveur.",
+  "@diagnosticsError": {
+    "description": "Échec du test. Volontairement générique : aucun détail technique n'est affiché."
+  }
+}

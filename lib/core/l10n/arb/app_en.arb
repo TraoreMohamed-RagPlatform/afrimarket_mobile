@@ -1,0 +1,18 @@
+{
+  "@@locale": "en",
+  "splashLoading": "Loading",
+  "loginTitle": "Sign in",
+  "loginComingSoon": "The sign-in screen is coming soon.",
+  "homeComingSoon": "The listings feed is coming soon.",
+  "logoutTooltip": "Sign out",
+  "devDiagnosticsButton": "Diagnostics (dev)",
+  "notFoundMessage": "Page not found",
+  "backToHome": "Back to home",
+  "diagnosticsTitle": "{appName} – Server test",
+  "diagnosticsEnvironment": "Environment: {flavor}",
+  "diagnosticsIntro": "Tap the button to test the server.",
+  "diagnosticsTestButton": "Test connection",
+  "diagnosticsResult": "Status: {status}\nDatabase: {database}\nWebSocket: {websocket}",
+  "diagnosticsTimeout": "Timed out: is the server running?",
+  "diagnosticsError": "Unable to reach the server."
+}

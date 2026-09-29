@@ -1,0 +1,18 @@
+{
+  "@@locale": "ar",
+  "splashLoading": "جارٍ التحميل",
+  "loginTitle": "تسجيل الدخول",
+  "loginComingSoon": "شاشة تسجيل الدخول قادمة قريبًا.",
+  "homeComingSoon": "قائمة الإعلانات قادمة قريبًا.",
+  "logoutTooltip": "تسجيل الخروج",
+  "devDiagnosticsButton": "التشخيص (للمطورين)",
+  "notFoundMessage": "الصفحة غير موجودة",
+  "backToHome": "العودة إلى الصفحة الرئيسية",
+  "diagnosticsTitle": "{appName} – اختبار الخادم",
+  "diagnosticsEnvironment": "البيئة: {flavor}",
+  "diagnosticsIntro": "اضغط على الزر لاختبار الخادم.",
+  "diagnosticsTestButton": "اختبار الاتصال",
+  "diagnosticsResult": "الحالة: {status}\nقاعدة البيانات: {database}\nWebSocket: {websocket}",
+  "diagnosticsTimeout": "انتهت المهلة: هل الخادم قيد التشغيل؟",
+  "diagnosticsError": "تعذّر الاتصال بالخادم."
+}
