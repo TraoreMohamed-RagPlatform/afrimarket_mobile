@@ -1,78 +1,47 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
+import 'package:afrimarket_mobile/core/l10n/failure_messages.dart';
+import 'package:afrimarket_mobile/features/health/presentation/controllers/health_controller.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 
-/// Page de diagnostic : vérifie la connexion au backend (dev uniquement).
+/// Page de diagnostic : vérifie la connexion au serveur (dev uniquement).
 ///
-/// TEMPORAIRE : l'appel API est fait directement depuis l'écran.
-/// Il sera migré en F1.9 vers les couches data/domain, avec Dio.
-class HealthCheckPage extends ConsumerStatefulWidget {
+/// La page n'appelle jamais l'API : elle affiche l'état du contrôleur.
+class HealthCheckPage extends ConsumerWidget {
   const new({super.key});
 
   @override
-  ConsumerState<HealthCheckPage> createState() => _HealthCheckPageState();
-}
-
-class _HealthCheckPageState extends ConsumerState<HealthCheckPage> {
-  bool _loading = false;
-  bool? _success;
-  String? _message;
-
-  Future<void> _checkBackend() async {
-    final config = ref.read(appConfigProvider);
-    final l10n = context.l10n;
-    setState(() => _loading = true);
-
-    try {
-      final response = await http
-          .get(config.apiBaseUrl.resolve('/api/health'))
-          .timeout(const Duration(seconds: 5));
-      final data = jsonDecode(response.body) as Map<String, dynamic>;
-
-      if (!mounted) return;
-      setState(() {
-        _success = response.statusCode == 200 && data['status'] == 'ok';
-        _message = l10n.diagnosticsResult(
-          '${data['status']}',
-          '${data['database']}',
-          '${data['websocket']}',
-        );
-      });
-    } on TimeoutException {
-      if (!mounted) return;
-      setState(() {
-        _success = false;
-        _message = l10n.diagnosticsTimeout;
-      });
-    } on Exception {
-      // Aucun détail technique n'est affiché (sécurité).
-      if (!mounted) return;
-      setState(() {
-        _success = false;
-        _message = l10n.diagnosticsError;
-      });
-    } finally {
-      if (mounted) setState(() => _loading = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(appConfigProvider);
+    final state = ref.watch(healthControllerProvider);
     final l10n = context.l10n;
-    final success = _success;
 
-    final icon = success == null
-        ? Icons.cloud_outlined
-        : (success ? Icons.check_circle : Icons.error);
-    final color = success == null
-        ? Colors.grey
-        : (success ? Colors.green : Colors.red);
+    // TEMPORAIRE : couleurs remplacées par le design system en F2.
+    final (icon, color, message) = switch (state) {
+      HealthIdle() || HealthLoading() => (
+        Icons.cloud_outlined,
+        Colors.grey,
+        l10n.diagnosticsIntro,
+      ),
+      HealthLoaded(:final status) => (
+        status.isHealthy ? Icons.check_circle : Icons.error,
+        status.isHealthy ? Colors.green : Colors.red,
+        l10n.diagnosticsResult(
+          status.status,
+          status.database,
+          status.websocket,
+        ),
+      ),
+      HealthFailed(:final failure) => (
+        Icons.error,
+        Colors.red,
+        failure.message(l10n),
+      ),
+    };
+    final loading = state is HealthLoading;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.diagnosticsTitle(config.appName))),
@@ -90,14 +59,15 @@ class _HealthCheckPageState extends ConsumerState<HealthCheckPage> {
               const SizedBox(height: 24),
               Icon(icon, size: 80, color: color),
               const SizedBox(height: 24),
-              Text(
-                _message ?? l10n.diagnosticsIntro,
-                textAlign: TextAlign.center,
-              ),
+              Text(message, textAlign: TextAlign.center),
               const SizedBox(height: 32),
               ElevatedButton.icon(
-                onPressed: _loading ? null : _checkBackend,
-                icon: _loading
+                onPressed: loading
+                    ? null
+                    : () => unawaited(
+                        ref.read(healthControllerProvider.notifier).check(),
+                      ),
+                icon: loading
                     ? const SizedBox(
                         width: 18,
                         height: 18,

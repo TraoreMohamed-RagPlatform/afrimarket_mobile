@@ -92,16 +92,6 @@
     }
   },
 
-  "diagnosticsTimeout": "Délai dépassé : le serveur est-il démarré ?",
-  "@diagnosticsTimeout": {
-    "description": "Le serveur n'a pas répondu à temps."
-  },
-
-  "diagnosticsError": "Impossible de joindre le serveur.",
-  "@diagnosticsError": {
-    "description": "Échec du test. Volontairement générique : aucun détail technique n'est affiché."
-  },
-
   "errorNetwork": "Pas de connexion Internet. Vérifiez votre réseau.",
   "@errorNetwork": {
     "description": "Erreur : pas de réseau ou serveur injoignable."

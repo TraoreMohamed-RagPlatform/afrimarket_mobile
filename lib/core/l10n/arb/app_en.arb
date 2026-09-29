@@ -13,8 +13,6 @@
   "diagnosticsIntro": "Tap the button to test the server.",
   "diagnosticsTestButton": "Test connection",
   "diagnosticsResult": "Status: {status}\nDatabase: {database}\nWebSocket: {websocket}",
-  "diagnosticsTimeout": "Timed out: is the server running?",
-  "diagnosticsError": "Unable to reach the server.",
   "errorNetwork": "No internet connection. Please check your network.",
   "errorTimeout": "The server is taking too long to respond. Please try again.",
   "errorUnauthorized": "Your session has expired. Please sign in again.",
