@@ -19,12 +19,16 @@ doit les respecter. Les décisions et leurs justifications sont dans
 ```
 lib/
 ├── main_dev.dart / main_staging.dart / main_prod.dart
-├── app/                  # MaterialApp, bootstrap, navigation
+├── app/                  # Racine de l'app, bootstrap, routeur et gardes
+│   ├── pages/            #   Pages transverses (splash, page introuvable)
+│   └── router/           #   GoRouter + resolveRedirect
 ├── core/                 # Socle technique (aucune logique métier)
 │   ├── config/           #   Environnements, flavors
 │   ├── network/          #   Dio, intercepteurs, endpoints
-│   ├── error/            #   Result, Failures, exceptions
-│   ├── storage/          #   Stockage sécurisé
+│   ├── error/            #   Result, Failures
+│   ├── storage/          #   Stockage sécurisé, tokens
+│   ├── navigation/       #   Noms des routes (AppRoutes)
+│   ├── session/          #   État de session (connecté / déconnecté)
 │   ├── security/         #   Pinning, intégrité de l'appareil
 │   ├── logging/          #   Logger
 │   ├── l10n/             #   Traductions FR / EN / AR
@@ -44,6 +48,7 @@ lib/
         ├── widgets/
         └── controllers/  #   État Riverpod
 test/                     # Même arborescence que lib/
+config/                   # dev.json, staging.json, prod.json (valeurs PUBLIQUES)
 ```
 
 ## 3. Règles de dépendance (obligatoires)
@@ -57,12 +62,18 @@ presentation  ──►  domain  ◄──  data
 | `domain` | Dart pur, `core/error` | Flutter, Dio, `data/`, `presentation/` |
 | `data` | `domain`, `core/` | `presentation/` |
 | `presentation` | `domain`, `core/`, `shared/` | `data/` (sauf les providers d'injection) |
-| `core` | Packages externes | `features/` |
-| `shared` | `core/` | `features/` |
+| `core` | Packages externes | `features/`, `app/` |
+| `shared` | `core/` | `features/`, `app/` |
+| `app` | `features/`, `core/`, `shared/` | — (rien n'importe `app/`, sauf les points d'entrée `main_*.dart`) |
 
 **Entre fonctionnalités :** une feature n'importe **jamais** le dossier `data/`
 d'une autre feature. Si deux features partagent un besoin, il est remonté dans
 `core/` ou `shared/`.
+
+**Navigation :** les noms de routes sont dans `core/navigation/` (accessibles à
+toutes les features). Le routeur lui-même et ses gardes sont dans `app/router/`.
+La protection des pages est centralisée dans `resolveRedirect` : une nouvelle
+page protégée ne nécessite aucun code de sécurité supplémentaire.
 
 ## 4. Conventions de nommage
 
@@ -83,12 +94,15 @@ Fichiers et dossiers en `snake_case`, classes en `PascalCase`, variables en
 
 ## 5. Gestion des erreurs
 
-- La couche `data` transforme toute exception technique (réseau, JSON, HTTP)
-  en `Failure` métier.
-- Les repositories retournent un `Result<T>` : succès **ou** échec, jamais
-  d'exception non gérée vers l'interface.
-- Les messages d'erreur affichés sont traduits et **ne révèlent jamais**
-  de détails techniques (pile d'appels, URL internes).
+- Chaque appel API est enveloppé dans `guardApiCall()`, qui renvoie un
+  `Result<T>` (`Ok` ou `Err`) : jamais d'exception non gérée vers l'interface.
+- Toute erreur technique (réseau, HTTP, JSON) devient une `Failure` typée
+  (`mapDioException`).
+- `Failure` est une classe scellée : un `switch` doit traiter tous les cas,
+  sinon le code ne compile pas.
+- Le texte des erreurs du serveur n'est **jamais** repris (sauf les messages de
+  validation par champ). Les messages affichés sont traduits et ne révèlent
+  aucun détail technique.
 
 ## 6. Environnements
 
@@ -98,8 +112,11 @@ Fichiers et dossiers en `snake_case`, classes en `PascalCase`, variables en
 | `staging` | `com.afrimarket.afrimarket_mobile.staging` | Serveur de test (HTTPS) | Recette |
 | `prod` | `com.afrimarket.afrimarket_mobile` | Serveur de production (HTTPS) | Utilisateurs |
 
-Aucune URL, clé ou secret n'est écrit en dur dans le code : la configuration
-est injectée au build (`--dart-define`).
+La configuration est injectée au build avec
+`--dart-define-from-file=config/<env>.json` et **validée au démarrage**
+(`AppConfig`) : l'app refuse de démarrer si HTTPS n'est pas utilisé en staging
+ou en production. Les fichiers `config/*.json` ne contiennent **que des valeurs
+publiques** : jamais de clé, mot de passe ou secret.
 
 ## 7. Internationalisation
 
@@ -113,17 +130,18 @@ est injectée au build (`--dart-define`).
 
 | Catégorie | Règle |
 |---|---|
-| **STORAGE** | Tokens et secrets uniquement dans `flutter_secure_storage`. Sauvegarde Android désactivée (`allowBackup="false"`). |
-| **NETWORK** | HTTPS obligatoire en staging / prod. HTTP autorisé uniquement en debug vers le backend local (`network_security_config.xml`). |
-| **AUTH** | Refresh automatique du token, un seul refresh simultané, déconnexion si le refresh échoue. |
+| **STORAGE** | Tokens et secrets uniquement via `SecureStorage` (Keystore / Keychain). Sauvegarde Android désactivée (`allowBackup="false"`). Le refresh token n'est jamais gardé en mémoire. |
+| **NETWORK** | HTTPS obligatoire en staging / prod (vérifié au démarrage). HTTP autorisé uniquement en debug vers le backend local. Redirections HTTP désactivées. Le token n'est envoyé **qu'à notre API** (même protocole, serveur et port). |
+| **AUTH** | Refresh automatique : un seul refresh simultané, pas de boucle, session effacée seulement si le serveur refuse. Session « fermée par défaut » en cas d'erreur. Session expirée : retour automatique à la connexion. Paramètre `from` limité aux chemins internes (CWE-601). |
 | **CODE** | Lints stricts, pipeline DevSecOps (OSV-Scanner, TruffleHog, SonarCloud, CodeQL), aucun secret commité. |
 | **RESILIENCE** | Obfuscation et détection root / émulateur avant la mise en production. |
-| **PRIVACY** | Aucune donnée personnelle ni token dans les logs. Permissions Android minimales. |
+| **PRIVACY** | Logs réseau uniquement en dev, avec masquage des clés sensibles. Aucun en-tête ni formulaire multipart journalisé. Permissions Android minimales. Page de diagnostic déclarée uniquement en dev. |
 
 ## 9. Tests
 
 - Chaque cas d'usage, repository et contrôleur a des tests unitaires.
 - Les dépendances sont simulées avec `mocktail`.
+- Les appels réseau sont testés avec un faux serveur (`HttpClientAdapter`).
 - Le dossier `test/` reproduit exactement l'arborescence de `lib/`.
 
 ## 10. Workflow Git
@@ -132,11 +150,14 @@ est injectée au build (`--dart-define`).
 2. Commits au format **Conventional Commits** :
    `feat(auth): add login page`
 3. Avant chaque push :
+
 ```
+   dart fix --apply
    dart format lib test
    flutter analyze
    flutter test
 ```
+
 4. Ouvrir une **Pull Request** vers `main` : le pipeline doit être vert
    avant la fusion.
 
@@ -146,11 +167,11 @@ est injectée au build (`--dart-define`).
 - [ ] `domain/repositories/` : le contrat
 - [ ] `domain/usecases/` : les actions métier
 - [ ] `data/models/` : le DTO (freezed + json_serializable)
-- [ ] `data/datasources/` : les appels API
+- [ ] `data/datasources/` : les appels API, via `guardApiCall()`
 - [ ] `data/repositories/` : l'implémentation du contrat
 - [ ] `presentation/controllers/` : l'état Riverpod
 - [ ] `presentation/pages/` et `widgets/` : l'interface
 - [ ] Textes ajoutés dans les 3 fichiers ARB (FR / EN / AR)
-- [ ] Route ajoutée dans `app/router/`
+- [ ] Nom de route dans `core/navigation/app_routes.dart`, route déclarée dans `app/router/app_router.dart`
 - [ ] Tests dans `test/features/<nom>/`
 - [ ] Vérification des règles de sécurité (section 8)
