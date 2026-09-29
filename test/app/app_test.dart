@@ -12,6 +12,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/l10n.dart';
+
 class _MockTokenStorage extends Mock implements TokenStorage;
 
 AppConfig _config(Flavor flavor) {
@@ -39,6 +41,7 @@ void main() {
     required bool hasSession,
     Flavor flavor = Flavor.dev,
   }) async {
+    useFrenchDevice(tester);
     when(() => tokens.hasTokens())
         .thenAnswer((_) async => Ok<bool>(hasSession));
 
@@ -64,19 +67,13 @@ void main() {
     testWidgets('sans session : page de connexion', (tester) async {
       await startApp(tester, hasSession: false);
 
-      expect(
-        find.text('Écran de connexion : disponible en F3'),
-        findsOneWidget,
-      );
+      expect(find.text(fr.loginComingSoon), findsOneWidget);
     });
 
     testWidgets('avec session : page d’accueil', (tester) async {
       await startApp(tester, hasSession: true);
 
-      expect(
-        find.text('Accueil : le fil d’annonces arrive en F4'),
-        findsOneWidget,
-      );
+      expect(find.text(fr.homeComingSoon), findsOneWidget);
     });
 
     testWidgets('session expirée : retour à la connexion', (tester) async {
@@ -85,10 +82,7 @@ void main() {
       container.read(sessionExpiryProvider.notifier).notify();
       await tester.pumpAndSettle();
 
-      expect(
-        find.text('Écran de connexion : disponible en F3'),
-        findsOneWidget,
-      );
+      expect(find.text(fr.loginComingSoon), findsOneWidget);
     });
 
     testWidgets('dev : la page de diagnostic existe', (tester) async {
@@ -97,7 +91,7 @@ void main() {
       container.read(appRouterProvider).go(AppRoutes.diagnostics);
       await tester.pumpAndSettle();
 
-      expect(find.text('Tester la connexion'), findsOneWidget);
+      expect(find.text(fr.diagnosticsTestButton), findsOneWidget);
     });
 
     testWidgets('prod : la page de diagnostic n’existe pas', (tester) async {
@@ -110,8 +104,8 @@ void main() {
       container.read(appRouterProvider).go(AppRoutes.diagnostics);
       await tester.pumpAndSettle();
 
-      expect(find.text('Tester la connexion'), findsNothing);
-      expect(find.text('Page introuvable'), findsOneWidget);
+      expect(find.text(fr.diagnosticsTestButton), findsNothing);
+      expect(find.text(fr.notFoundMessage), findsOneWidget);
     });
   });
 }

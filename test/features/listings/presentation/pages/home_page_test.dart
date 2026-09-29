@@ -6,10 +6,11 @@ import 'package:afrimarket_mobile/core/session/session_provider.dart';
 import 'package:afrimarket_mobile/core/storage/storage_providers.dart';
 import 'package:afrimarket_mobile/core/storage/token_storage.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/pages/home_page.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+import '../../../../helpers/l10n.dart';
 
 class _MockTokenStorage extends Mock implements TokenStorage;
 
@@ -47,7 +48,7 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: const MaterialApp(home: HomePage()),
+        child: localizedApp(const HomePage()),
       ),
     );
     return container;
@@ -56,19 +57,19 @@ void main() {
   testWidgets('le bouton Diagnostic est visible en dev', (tester) async {
     await pump(tester, Flavor.dev);
 
-    expect(find.text('Diagnostic (dev)'), findsOneWidget);
+    expect(find.text(fr.devDiagnosticsButton), findsOneWidget);
   });
 
   testWidgets('le bouton Diagnostic est absent en prod', (tester) async {
     await pump(tester, Flavor.prod);
 
-    expect(find.text('Diagnostic (dev)'), findsNothing);
+    expect(find.text(fr.devDiagnosticsButton), findsNothing);
   });
 
   testWidgets('Se déconnecter termine la session', (tester) async {
     final container = await pump(tester, Flavor.prod);
 
-    await tester.tap(find.byTooltip('Se déconnecter'));
+    await tester.tap(find.byTooltip(fr.logoutTooltip));
     await tester.pump();
 
     expect(container.read(sessionProvider), SessionStatus.unauthenticated);

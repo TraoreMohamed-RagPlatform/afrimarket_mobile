@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
+import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-/// Page de diagnostic : vérifie la connexion au backend.
+/// Page de diagnostic : vérifie la connexion au backend (dev uniquement).
 ///
-/// TEMPORAIRE (F1.3) : l'appel API est fait directement depuis l'écran.
+/// TEMPORAIRE : l'appel API est fait directement depuis l'écran.
 /// Il sera migré en F1.9 vers les couches data/domain, avec Dio.
 class HealthCheckPage extends ConsumerStatefulWidget {
   const new({super.key});
@@ -20,10 +21,11 @@ class HealthCheckPage extends ConsumerStatefulWidget {
 class _HealthCheckPageState extends ConsumerState<HealthCheckPage> {
   bool _loading = false;
   bool? _success;
-  String _message = 'Appuie sur le bouton pour tester le backend';
+  String? _message;
 
   Future<void> _checkBackend() async {
     final config = ref.read(appConfigProvider);
+    final l10n = context.l10n;
     setState(() => _loading = true);
 
     try {
@@ -35,22 +37,24 @@ class _HealthCheckPageState extends ConsumerState<HealthCheckPage> {
       if (!mounted) return;
       setState(() {
         _success = response.statusCode == 200 && data['status'] == 'ok';
-        _message =
-            'Status : ${data['status']}\n'
-            'Base de données : ${data['database']}\n'
-            'WebSocket : ${data['websocket']}';
+        _message = l10n.diagnosticsResult(
+          '${data['status']}',
+          '${data['database']}',
+          '${data['websocket']}',
+        );
       });
     } on TimeoutException {
       if (!mounted) return;
       setState(() {
         _success = false;
-        _message = 'Délai dépassé : le backend est-il démarré ?';
+        _message = l10n.diagnosticsTimeout;
       });
-    } on Exception catch (e) {
+    } on Exception {
+      // Aucun détail technique n'est affiché (sécurité).
       if (!mounted) return;
       setState(() {
         _success = false;
-        _message = 'Erreur de connexion :\n$e';
+        _message = l10n.diagnosticsError;
       });
     } finally {
       if (mounted) setState(() => _loading = false);
@@ -60,6 +64,7 @@ class _HealthCheckPageState extends ConsumerState<HealthCheckPage> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watch(appConfigProvider);
+    final l10n = context.l10n;
     final success = _success;
 
     final icon = success == null
@@ -70,7 +75,7 @@ class _HealthCheckPageState extends ConsumerState<HealthCheckPage> {
         : (success ? Colors.green : Colors.red);
 
     return Scaffold(
-      appBar: AppBar(title: Text('${config.appName} – Test backend')),
+      appBar: AppBar(title: Text(l10n.diagnosticsTitle(config.appName))),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -78,13 +83,17 @@ class _HealthCheckPageState extends ConsumerState<HealthCheckPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Environnement : ${config.flavor.name}\n${config.apiBaseUrl}',
+                '${l10n.diagnosticsEnvironment(config.flavor.name)}\n'
+                '${config.apiBaseUrl}',
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
               Icon(icon, size: 80, color: color),
               const SizedBox(height: 24),
-              Text(_message, textAlign: TextAlign.center),
+              Text(
+                _message ?? l10n.diagnosticsIntro,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 32),
               ElevatedButton.icon(
                 onPressed: _loading ? null : _checkBackend,
@@ -95,7 +104,7 @@ class _HealthCheckPageState extends ConsumerState<HealthCheckPage> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.wifi_tethering),
-                label: const Text('Tester la connexion'),
+                label: Text(l10n.diagnosticsTestButton),
               ),
             ],
           ),
