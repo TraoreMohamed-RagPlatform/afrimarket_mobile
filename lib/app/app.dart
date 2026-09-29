@@ -1,5 +1,5 @@
+import 'package:afrimarket_mobile/app/router/app_router.dart';
 import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
-import 'package:afrimarket_mobile/features/health/presentation/pages/health_check_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,13 +10,14 @@ class AfriMarketApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(appConfigProvider);
+    final router = ref.watch(appRouterProvider);
 
-    return MaterialApp(
+    return MaterialApp.router(
       title: config.appName,
       debugShowCheckedModeBanner: false,
+      // TEMPORAIRE : remplacé par le design system en F2
       theme: ThemeData(colorSchemeSeed: Colors.green, useMaterial3: true),
-      // TEMPORAIRE : remplacé par go_router en F1.7
-      home: const HealthCheckPage(),
+      routerConfig: router,
     );
   }
 }
