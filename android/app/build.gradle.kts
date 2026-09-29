@@ -14,25 +14,50 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    // Nécessaire pour générer le nom de l'app (resValue) par environnement
+    buildFeatures {
+        resValues = true
+    }
+
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.afrimarket.afrimarket_mobile"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
-        // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
-        // You can force using the value of versionCode by specifying the `-P force-version-code-ignoring-abi=true`
-        // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
+    // ------------------------------------------------------------
+    // Environnements : dev / staging / prod
+    // Chaque flavor s'installe séparément sur le téléphone.
+    // La config Dart correspondante est dans config/<flavor>.json
+    // ------------------------------------------------------------
+    flavorDimensions += "environment"
+
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+            resValue("string", "app_name", "AfriMarket Dev")
+        }
+        create("staging") {
+            dimension = "environment"
+            applicationIdSuffix = ".staging"
+            versionNameSuffix = "-staging"
+            resValue("string", "app_name", "AfriMarket Staging")
+        }
+        create("prod") {
+            dimension = "environment"
+            resValue("string", "app_name", "AfriMarket")
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // TODO (avant publication Play Store) : signature avec une clé
+            // de production stockée hors du dépôt (GitHub Secrets).
+            // Signature debug pour l'instant, afin que les builds release fonctionnent.
             signingConfig = signingConfigs.getByName("debug")
         }
     }

@@ -1,0 +1,171 @@
+{
+  "@@locale": "fr",
+
+  "splashLoading": "Chargement",
+  "@splashLoading": {
+    "description": "Libellé d'accessibilité de l'indicateur de chargement au démarrage."
+  },
+
+  "loginTitle": "Connexion",
+  "@loginTitle": {
+    "description": "Titre de l'écran de connexion."
+  },
+
+  "loginComingSoon": "L'écran de connexion arrive bientôt.",
+  "@loginComingSoon": {
+    "description": "Texte provisoire affiché tant que le formulaire de connexion n'existe pas."
+  },
+
+  "homeComingSoon": "Le fil d'annonces arrive bientôt.",
+  "@homeComingSoon": {
+    "description": "Texte provisoire de la page d'accueil."
+  },
+
+  "logoutTooltip": "Se déconnecter",
+  "@logoutTooltip": {
+    "description": "Info-bulle et libellé d'accessibilité du bouton de déconnexion."
+  },
+
+  "devDiagnosticsButton": "Diagnostic (dev)",
+  "@devDiagnosticsButton": {
+    "description": "Bouton visible uniquement en développement, qui ouvre la page de diagnostic."
+  },
+
+  "notFoundMessage": "Page introuvable",
+  "@notFoundMessage": {
+    "description": "Message affiché pour une adresse inconnue."
+  },
+
+  "backToHome": "Retour à l'accueil",
+  "@backToHome": {
+    "description": "Bouton qui ramène à la page d'accueil."
+  },
+
+  "diagnosticsTitle": "{appName} – Test du serveur",
+  "@diagnosticsTitle": {
+    "description": "Titre de la page de diagnostic (développement uniquement).",
+    "placeholders": {
+      "appName": {
+        "type": "String",
+        "example": "AfriMarket Dev"
+      }
+    }
+  },
+
+  "diagnosticsEnvironment": "Environnement : {flavor}",
+  "@diagnosticsEnvironment": {
+    "description": "Environnement courant affiché sur la page de diagnostic.",
+    "placeholders": {
+      "flavor": {
+        "type": "String",
+        "example": "dev"
+      }
+    }
+  },
+
+  "diagnosticsIntro": "Appuyez sur le bouton pour tester le serveur.",
+  "@diagnosticsIntro": {
+    "description": "Consigne initiale de la page de diagnostic."
+  },
+
+  "diagnosticsTestButton": "Tester la connexion",
+  "@diagnosticsTestButton": {
+    "description": "Bouton qui lance le test du serveur."
+  },
+
+  "diagnosticsResult": "Statut : {status}\nBase de données : {database}\nWebSocket : {websocket}",
+  "@diagnosticsResult": {
+    "description": "Résultat du test du serveur.",
+    "placeholders": {
+      "status": {
+        "type": "String",
+        "example": "ok"
+      },
+      "database": {
+        "type": "String",
+        "example": "connected"
+      },
+      "websocket": {
+        "type": "String",
+        "example": "active"
+      }
+    }
+  },
+
+  "errorNetwork": "Pas de connexion Internet. Vérifiez votre réseau.",
+  "@errorNetwork": {
+    "description": "Erreur : pas de réseau ou serveur injoignable."
+  },
+
+  "errorTimeout": "Le serveur met trop de temps à répondre. Réessayez.",
+  "@errorTimeout": {
+    "description": "Erreur : délai de réponse dépassé."
+  },
+
+  "errorUnauthorized": "Votre session a expiré. Veuillez vous reconnecter.",
+  "@errorUnauthorized": {
+    "description": "Erreur 401 : session expirée ou invalide."
+  },
+
+  "errorForbidden": "Vous n'avez pas l'autorisation d'effectuer cette action.",
+  "@errorForbidden": {
+    "description": "Erreur 403 : action non autorisée."
+  },
+
+  "errorNotFound": "Élément introuvable.",
+  "@errorNotFound": {
+    "description": "Erreur 404 : ressource introuvable."
+  },
+
+  "errorValidation": "Certaines informations sont invalides. Vérifiez le formulaire.",
+  "@errorValidation": {
+    "description": "Erreur de validation des données saisies."
+  },
+
+  "errorRateLimit": "Trop de tentatives. Réessayez plus tard.",
+  "@errorRateLimit": {
+    "description": "Erreur 429 sans délai connu."
+  },
+
+  "errorRateLimitMinutes": "{minutes, plural, =1{Trop de tentatives. Réessayez dans 1 minute.} other{Trop de tentatives. Réessayez dans {minutes} minutes.}}",
+  "@errorRateLimitMinutes": {
+    "description": "Erreur 429 avec le délai d'attente en minutes.",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
+
+  "errorAccountLocked": "Compte temporairement bloqué. Réessayez plus tard.",
+  "@errorAccountLocked": {
+    "description": "Compte bloqué après trop de tentatives, délai inconnu."
+  },
+
+  "errorAccountLockedMinutes": "{minutes, plural, =1{Compte temporairement bloqué. Réessayez dans 1 minute.} other{Compte temporairement bloqué. Réessayez dans {minutes} minutes.}}",
+  "@errorAccountLockedMinutes": {
+    "description": "Compte bloqué, avec le délai de déblocage en minutes.",
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "15"
+      }
+    }
+  },
+
+  "errorServer": "Le service est temporairement indisponible. Réessayez plus tard.",
+  "@errorServer": {
+    "description": "Erreur 5xx. Aucun détail technique n'est affiché."
+  },
+
+  "errorStorage": "Impossible d'accéder aux données sécurisées de l'appareil.",
+  "@errorStorage": {
+    "description": "Erreur du stockage sécurisé local."
+  },
+
+  "errorUnexpected": "Une erreur inattendue s'est produite. Réessayez.",
+  "@errorUnexpected": {
+    "description": "Toute autre erreur."
+  }
+}

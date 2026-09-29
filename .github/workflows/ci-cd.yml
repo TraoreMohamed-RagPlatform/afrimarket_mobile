@@ -191,7 +191,7 @@ jobs:
           category: codeql-actions
 
   # ----------------------------------------------------------
-  # 7. Build APK (seulement si qualité + tests OK)
+  # 7. Build APK prod (seulement si qualité + tests OK)
   # ----------------------------------------------------------
   build:
     name: 🏗️ Build APK
@@ -214,14 +214,18 @@ jobs:
       - name: Installer les dépendances
         run: flutter pub get
 
-      - name: Compiler l'APK release
-        run: flutter build apk --release
+      - name: Compiler l'APK release (prod)
+        run: >
+          flutter build apk --release
+          --flavor prod
+          -t lib/main_prod.dart
+          --dart-define-from-file=config/prod.json
 
       - name: Sauvegarder l'APK
         uses: actions/upload-artifact@v7
         with:
-          name: afrimarket-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: afrimarket-apk-prod
+          path: build/app/outputs/flutter-apk/app-prod-release.apk
           retention-days: 7
 
   # ----------------------------------------------------------
