@@ -2,6 +2,8 @@ import 'package:afrimarket_mobile/app/router/app_router.dart';
 import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
 import 'package:afrimarket_mobile/core/l10n/generated/app_localizations.dart';
 import 'package:afrimarket_mobile/core/l10n/locale_provider.dart';
+import 'package:afrimarket_mobile/core/theme/app_theme.dart';
+import 'package:afrimarket_mobile/core/theme/theme_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,8 +23,10 @@ class AfriMarketApp extends ConsumerWidget {
       locale: ref.watch(localeProvider),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      // TEMPORAIRE : remplacé par le design system en F2
-      theme: ThemeData(colorSchemeSeed: Colors.green, useMaterial3: true),
+      // Thèmes ; par défaut, suit le réglage clair / sombre du téléphone.
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      themeMode: ref.watch(themeModeProvider),
       routerConfig: router,
     );
   }
