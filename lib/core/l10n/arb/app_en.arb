@@ -31,5 +31,6 @@
   "badgeRecent": "New",
   "badgeVerified": "Verified",
   "listingStatusSold": "Sold",
-  "listingStatusReserved": "Reserved"
+  "listingStatusReserved": "Reserved",
+  "searchHint": "Search AfriMarket"
 }

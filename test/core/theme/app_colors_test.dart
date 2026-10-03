@@ -10,6 +10,7 @@ Map<String, (Color, Color)> _textPairs(AppColors c) => {
   'texte principal / surface grise': (c.textPrimary, c.surfaceMuted),
   'texte secondaire / fond': (c.textSecondary, c.background),
   'texte secondaire / surface': (c.textSecondary, c.surface),
+  'texte secondaire / surface grise': (c.textSecondary, c.surfaceMuted),
   'texte sur bouton principal': (c.onBrand, c.brand),
   'texte de la pastille active': (c.onBrandSoft, c.brandSoft),
   'texte du badge': (c.onAccent, c.accent),
