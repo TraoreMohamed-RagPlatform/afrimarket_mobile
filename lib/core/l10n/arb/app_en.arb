@@ -25,5 +25,9 @@
   "errorAccountLockedMinutes": "{minutes, plural, =1{Account temporarily locked. Please try again in 1 minute.} other{Account temporarily locked. Please try again in {minutes} minutes.}}",
   "errorServer": "The service is temporarily unavailable. Please try again later.",
   "errorStorage": "Unable to access the device's secure data.",
-  "errorUnexpected": "An unexpected error occurred. Please try again."
+  "errorUnexpected": "An unexpected error occurred. Please try again.",
+  "priceAmount": "{amount} MAD",
+  "priceFree": "Free",
+  "badgeRecent": "New",
+  "badgeVerified": "Verified"
 }

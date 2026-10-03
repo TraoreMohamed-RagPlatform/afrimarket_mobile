@@ -167,5 +167,27 @@
   "errorUnexpected": "Une erreur inattendue s'est produite. Réessayez.",
   "@errorUnexpected": {
     "description": "Toute autre erreur."
+  },
+  "priceAmount": "{amount} DH",
+  "@priceAmount": {
+    "description": "Prix en dirhams marocains. amount est déjà formaté (ex. 1 400).",
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1 400"
+      }
+    }
+  },
+  "priceFree": "Gratuit",
+  "@priceFree": {
+    "description": "Affiché à la place du prix quand l'annonce est gratuite (don)."
+  },
+  "badgeRecent": "Récent",
+  "@badgeRecent": {
+    "description": "Badge des annonces publiées il y a moins de 24 heures."
+  },
+  "badgeVerified": "Vérifié",
+  "@badgeVerified": {
+    "description": "Badge des vendeurs dont l'identité a été vérifiée."
   }
 }
