@@ -201,5 +201,50 @@
   "searchHint": "Rechercher sur AfriMarket",
   "@searchHint": {
     "description": "Texte du champ de recherche de la barre du haut."
+  },
+  "seeMore": "Voir plus",
+  "@seeMore": {
+    "description": "Lien pour afficher la suite d'un texte ou d'une section."
+  },
+  "ratingCount": "{count, plural, =1{1 avis} other{{count} avis}}",
+  "@ratingCount": {
+    "description": "Nombre d'avis reçus par un vendeur (au moins 1).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ratingAverage": "Note {rating} sur 5",
+  "@ratingAverage": {
+    "description": "Note moyenne lue par les lecteurs d'écran.",
+    "placeholders": {
+      "rating": {
+        "type": "String",
+        "example": "4,8"
+      }
+    }
+  },
+  "sellerNew": "Nouveau vendeur",
+  "@sellerNew": {
+    "description": "Affiché à la place de la note quand le vendeur n'a encore aucun avis."
+  },
+  "passwordShow": "Afficher le mot de passe",
+  "@passwordShow": {
+    "description": "Bouton qui affiche le mot de passe en clair."
+  },
+  "passwordHide": "Masquer le mot de passe",
+  "@passwordHide": {
+    "description": "Bouton qui masque le mot de passe."
+  },
+  "avatarVerified": "{name}, identité vérifiée",
+  "@avatarVerified": {
+    "description": "Libellé lu par les lecteurs d'écran pour un utilisateur vérifié.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Fatou H."
+      }
+    }
   }
 }

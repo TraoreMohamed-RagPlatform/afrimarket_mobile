@@ -32,5 +32,12 @@
   "badgeVerified": "Verified",
   "listingStatusSold": "Sold",
   "listingStatusReserved": "Reserved",
-  "searchHint": "Search AfriMarket"
+  "searchHint": "Search AfriMarket",
+  "seeMore": "See more",
+  "ratingCount": "{count, plural, =1{1 review} other{{count} reviews}}",
+  "ratingAverage": "Rated {rating} out of 5",
+  "sellerNew": "New seller",
+  "passwordShow": "Show password",
+  "passwordHide": "Hide password",
+  "avatarVerified": "{name}, verified identity"
 }
