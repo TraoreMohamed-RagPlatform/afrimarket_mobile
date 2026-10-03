@@ -6,6 +6,13 @@ abstract final class AppRoutes {
   static const splash = '/splash';
   static const login = '/login';
 
+  /// Paramètre qui mémorise la page à rouvrir après la connexion.
+  static const returnParam = 'from';
+
+  /// Connexion, puis retour à [from] (chemin interne).
+  static String loginWithReturn(String from) =>
+      Uri(path: login, queryParameters: {returnParam: from}).toString();
+
   /// Le fil d'annonces (adresse racine, utilisée par les liens partagés).
   static const home = '/';
   static const search = '/search';

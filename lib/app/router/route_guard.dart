@@ -3,7 +3,7 @@ import 'package:afrimarket_mobile/core/navigation/route_access.dart';
 import 'package:afrimarket_mobile/core/session/session_provider.dart';
 
 /// Paramètre qui mémorise la page demandée avant une redirection.
-const fromParam = 'from';
+const String fromParam = AppRoutes.returnParam;
 
 /// Décide où envoyer l'utilisateur selon sa session et la page demandée
 /// (consultation sans compte, ADR 0002).

@@ -287,5 +287,53 @@
         "type": "int"
       }
     }
+  },
+  "signInAction": "Se connecter",
+  "@signInAction": {
+    "description": "Bouton des invitations à se connecter."
+  },
+  "signInFavoritesTitle": "Retrouvez vos favoris",
+  "@signInFavoritesTitle": {
+    "description": "Titre de l'invitation à se connecter (onglet Favoris)."
+  },
+  "signInFavoritesMessage": "Connectez-vous pour enregistrer des annonces et les retrouver ici.",
+  "@signInFavoritesMessage": {
+    "description": "Message de l'invitation à se connecter (onglet Favoris)."
+  },
+  "signInMessagesTitle": "Discutez avec les vendeurs",
+  "@signInMessagesTitle": {
+    "description": "Titre de l'invitation à se connecter (onglet Messages)."
+  },
+  "signInMessagesMessage": "Connectez-vous pour envoyer et recevoir des messages.",
+  "@signInMessagesMessage": {
+    "description": "Message de l'invitation à se connecter (onglet Messages)."
+  },
+  "signInNotificationsTitle": "Restez informé",
+  "@signInNotificationsTitle": {
+    "description": "Titre de l'invitation à se connecter (onglet Notifications)."
+  },
+  "signInNotificationsMessage": "Connectez-vous pour être averti des nouveaux messages et des baisses de prix.",
+  "@signInNotificationsMessage": {
+    "description": "Message de l'invitation à se connecter (onglet Notifications)."
+  },
+  "favoritesComingSoon": "Vos favoris arrivent bientôt.",
+  "@favoritesComingSoon": {
+    "description": "Texte provisoire de l'onglet Favoris."
+  },
+  "messagesComingSoon": "Vos messages arrivent bientôt.",
+  "@messagesComingSoon": {
+    "description": "Texte provisoire de l'onglet Messages."
+  },
+  "notificationsComingSoon": "Vos notifications arrivent bientôt.",
+  "@notificationsComingSoon": {
+    "description": "Texte provisoire de l'onglet Notifications."
+  },
+  "publishTitle": "Publier une annonce",
+  "@publishTitle": {
+    "description": "Titre de la page de publication."
+  },
+  "publishComingSoon": "La publication d'annonces arrive bientôt.",
+  "@publishComingSoon": {
+    "description": "Texte provisoire de la page de publication."
   }
 }

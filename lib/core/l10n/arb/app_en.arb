@@ -48,5 +48,17 @@
   "navPublish": "Post",
   "navMessages": "Messages",
   "navNotifications": "Notifications",
-  "unreadCount": "{count, plural, =1{1 unread} other{{count} unread}}"
+  "unreadCount": "{count, plural, =1{1 unread} other{{count} unread}}",
+  "signInAction": "Sign in",
+  "signInFavoritesTitle": "Find your favorites",
+  "signInFavoritesMessage": "Sign in to save listings and find them here.",
+  "signInMessagesTitle": "Chat with sellers",
+  "signInMessagesMessage": "Sign in to send and receive messages.",
+  "signInNotificationsTitle": "Stay informed",
+  "signInNotificationsMessage": "Sign in to be notified of new messages and price drops.",
+  "favoritesComingSoon": "Your favorites are coming soon.",
+  "messagesComingSoon": "Your messages are coming soon.",
+  "notificationsComingSoon": "Your notifications are coming soon.",
+  "publishTitle": "Post a listing",
+  "publishComingSoon": "Posting listings is coming soon."
 }

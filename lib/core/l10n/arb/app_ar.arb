@@ -48,5 +48,17 @@
   "navPublish": "نشر",
   "navMessages": "الرسائل",
   "navNotifications": "الإشعارات",
-  "unreadCount": "{count, plural, =1{عنصر واحد غير مقروء} =2{عنصران غير مقروءين} few{{count} عناصر غير مقروءة} many{{count} عنصرًا غير مقروء} other{{count} عنصر غير مقروء}}"
+  "unreadCount": "{count, plural, =1{عنصر واحد غير مقروء} =2{عنصران غير مقروءين} few{{count} عناصر غير مقروءة} many{{count} عنصرًا غير مقروء} other{{count} عنصر غير مقروء}}",
+  "signInAction": "تسجيل الدخول",
+  "signInFavoritesTitle": "اعثر على مفضلاتك",
+  "signInFavoritesMessage": "سجّل الدخول لحفظ الإعلانات والعثور عليها هنا.",
+  "signInMessagesTitle": "تحدث مع البائعين",
+  "signInMessagesMessage": "سجّل الدخول لإرسال الرسائل واستقبالها.",
+  "signInNotificationsTitle": "ابقَ على اطلاع",
+  "signInNotificationsMessage": "سجّل الدخول لتلقي إشعارات الرسائل الجديدة وانخفاض الأسعار.",
+  "favoritesComingSoon": "مفضلاتك قادمة قريبًا.",
+  "messagesComingSoon": "رسائلك قادمة قريبًا.",
+  "notificationsComingSoon": "إشعاراتك قادمة قريبًا.",
+  "publishTitle": "نشر إعلان",
+  "publishComingSoon": "نشر الإعلانات قادم قريبًا."
 }
