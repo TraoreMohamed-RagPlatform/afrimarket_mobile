@@ -189,5 +189,13 @@
   "badgeVerified": "Vérifié",
   "@badgeVerified": {
     "description": "Badge des vendeurs dont l'identité a été vérifiée."
+  },
+  "listingStatusSold": "Vendu",
+  "@listingStatusSold": {
+    "description": "Mention affichée sur une annonce vendue."
+  },
+  "listingStatusReserved": "Réservé",
+  "@listingStatusReserved": {
+    "description": "Badge d'une annonce réservée par un acheteur."
   }
 }

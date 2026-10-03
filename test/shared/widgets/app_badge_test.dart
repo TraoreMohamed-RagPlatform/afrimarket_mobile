@@ -34,4 +34,22 @@ void main() {
 
     expect(find.text(ar.badgeVerified), findsOneWidget);
   });
+
+  testWidgets('espace étroit et texte doublé : tronqué sans déborder', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MediaQuery(
+        data: const MediaQueryData(textScaler: TextScaler.linear(2)),
+        child: localizedApp(
+          const Center(
+            child: SizedBox(width: 40, child: AppBadge(AppBadgeType.reserved)),
+          ),
+          locale: const Locale('ar'),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+  });
 }

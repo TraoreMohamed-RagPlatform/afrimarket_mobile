@@ -4,17 +4,25 @@ import 'package:afrimarket_mobile/shared/extensions/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 /// Types de badges d'AfriMarket.
+///
+/// Pour un nouveau badge : ajouter une valeur ici, puis son libellé et ses
+/// couleurs dans [AppBadge] (le `switch` exhaustif oblige à le faire).
 enum AppBadgeType {
   /// Annonce publiée il y a moins de 24 heures.
   recent,
 
   /// Vendeur dont l'identité a été vérifiée.
   verified,
+
+  /// Annonce réservée par un acheteur.
+  reserved,
 }
 
-/// Petite pastille d'information (« Récent », « ✓ Vérifié »).
+/// Petite pastille d'information (« Récent », « ✓ Vérifié », « Réservé »).
 ///
-/// Couleurs issues du thème : contraste WCAG AA garanti en clair et sombre.
+/// - couleurs issues du thème : contraste WCAG AA en clair et en sombre ;
+/// - s'adapte à la place disponible : le texte est tronqué plutôt que de
+///   déborder (cartes étroites, arabe, grande taille de texte).
 class AppBadge extends StatelessWidget {
   const new(this.type, {super.key});
 
@@ -38,6 +46,12 @@ class AppBadge extends StatelessWidget {
         colors.onBrandSoft,
         Icons.verified_outlined,
       ),
+      AppBadgeType.reserved => (
+        l10n.listingStatusReserved,
+        colors.brandSoft,
+        colors.onBrandSoft,
+        null,
+      ),
     };
 
     return Container(
@@ -56,9 +70,13 @@ class AppBadge extends StatelessWidget {
             Icon(icon, size: 14, color: foreground),
             const SizedBox(width: AppSpacing.xs),
           ],
-          Text(
-            label,
-            style: context.textStyles.labelSmall?.copyWith(color: foreground),
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: context.textStyles.labelSmall?.copyWith(color: foreground),
+            ),
           ),
         ],
       ),

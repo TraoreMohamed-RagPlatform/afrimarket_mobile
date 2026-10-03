@@ -29,5 +29,7 @@
   "priceAmount": "{amount} د.م.",
   "priceFree": "مجانًا",
   "badgeRecent": "جديد",
-  "badgeVerified": "موثّق"
+  "badgeVerified": "موثّق",
+  "listingStatusSold": "تم البيع",
+  "listingStatusReserved": "محجوز"
 }

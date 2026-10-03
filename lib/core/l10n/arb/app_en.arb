@@ -29,5 +29,7 @@
   "priceAmount": "{amount} MAD",
   "priceFree": "Free",
   "badgeRecent": "New",
-  "badgeVerified": "Verified"
+  "badgeVerified": "Verified",
+  "listingStatusSold": "Sold",
+  "listingStatusReserved": "Reserved"
 }
