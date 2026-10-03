@@ -39,5 +39,8 @@
   "sellerNew": "New seller",
   "passwordShow": "Show password",
   "passwordHide": "Hide password",
-  "avatarVerified": "{name}, verified identity"
+  "avatarVerified": "{name}, verified identity",
+  "loadingLabel": "Loading…",
+  "retry": "Retry",
+  "undo": "Undo"
 }

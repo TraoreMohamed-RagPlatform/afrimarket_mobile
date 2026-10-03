@@ -39,5 +39,8 @@
   "sellerNew": "بائع جديد",
   "passwordShow": "إظهار كلمة المرور",
   "passwordHide": "إخفاء كلمة المرور",
-  "avatarVerified": "{name}، هوية موثّقة"
+  "avatarVerified": "{name}، هوية موثّقة",
+  "loadingLabel": "جارٍ التحميل…",
+  "retry": "إعادة المحاولة",
+  "undo": "تراجع"
 }

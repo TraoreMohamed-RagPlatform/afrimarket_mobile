@@ -246,5 +246,17 @@
         "example": "Fatou H."
       }
     }
+  },
+  "loadingLabel": "Chargement…",
+  "@loadingLabel": {
+    "description": "Annoncé par les lecteurs d'écran pendant un chargement."
+  },
+  "retry": "Réessayer",
+  "@retry": {
+    "description": "Bouton pour relancer une action qui a échoué."
+  },
+  "undo": "Annuler",
+  "@undo": {
+    "description": "Action d'un message de confirmation, pour revenir en arrière."
   }
 }
