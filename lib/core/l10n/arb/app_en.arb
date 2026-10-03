@@ -42,5 +42,11 @@
   "avatarVerified": "{name}, verified identity",
   "loadingLabel": "Loading…",
   "retry": "Retry",
-  "undo": "Undo"
+  "undo": "Undo",
+  "navHome": "Home",
+  "navFavorites": "Favorites",
+  "navPublish": "Post",
+  "navMessages": "Messages",
+  "navNotifications": "Notifications",
+  "unreadCount": "{count, plural, =1{1 unread} other{{count} unread}}"
 }

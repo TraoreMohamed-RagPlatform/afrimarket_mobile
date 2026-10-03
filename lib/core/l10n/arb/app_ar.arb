@@ -42,5 +42,11 @@
   "avatarVerified": "{name}، هوية موثّقة",
   "loadingLabel": "جارٍ التحميل…",
   "retry": "إعادة المحاولة",
-  "undo": "تراجع"
+  "undo": "تراجع",
+  "navHome": "الرئيسية",
+  "navFavorites": "المفضلة",
+  "navPublish": "نشر",
+  "navMessages": "الرسائل",
+  "navNotifications": "الإشعارات",
+  "unreadCount": "{count, plural, =1{عنصر واحد غير مقروء} =2{عنصران غير مقروءين} few{{count} عناصر غير مقروءة} many{{count} عنصرًا غير مقروء} other{{count} عنصر غير مقروء}}"
 }

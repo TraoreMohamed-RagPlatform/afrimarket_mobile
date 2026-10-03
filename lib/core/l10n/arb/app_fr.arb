@@ -258,5 +258,34 @@
   "undo": "Annuler",
   "@undo": {
     "description": "Action d'un message de confirmation, pour revenir en arrière."
+  },
+  "navHome": "Accueil",
+  "@navHome": {
+    "description": "Onglet du fil d'annonces (barre du bas)."
+  },
+  "navFavorites": "Favoris",
+  "@navFavorites": {
+    "description": "Onglet des annonces enregistrées (barre du bas)."
+  },
+  "navPublish": "Publier",
+  "@navPublish": {
+    "description": "Bouton central de publication d'une annonce (barre du bas)."
+  },
+  "navMessages": "Messages",
+  "@navMessages": {
+    "description": "Onglet des conversations (barre du bas)."
+  },
+  "navNotifications": "Notifications",
+  "@navNotifications": {
+    "description": "Onglet des notifications (barre du bas)."
+  },
+  "unreadCount": "{count, plural, =1{1 non lu} other{{count} non lus}}",
+  "@unreadCount": {
+    "description": "Nombre d'éléments non lus, lu par les lecteurs d'écran.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }
