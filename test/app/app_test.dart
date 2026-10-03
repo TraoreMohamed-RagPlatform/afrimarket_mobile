@@ -63,28 +63,59 @@ void main() {
     return container;
   }
 
-  group('Navigation', () {
-    testWidgets('sans session : page de connexion', (tester) async {
+  group('Navigation (consultation sans compte, ADR 0002)', () {
+    testWidgets('sans session : le fil, sans demander de compte', (
+      tester,
+    ) async {
       await startApp(tester, hasSession: false);
 
-      expect(find.text(fr.loginComingSoon), findsOneWidget);
+      expect(find.text(fr.homeComingSoon), findsOneWidget);
+      expect(find.text(fr.loginComingSoon), findsNothing);
     });
 
-    testWidgets('avec session : page d’accueil', (tester) async {
+    testWidgets('avec session : le fil', (tester) async {
       await startApp(tester, hasSession: true);
 
       expect(find.text(fr.homeComingSoon), findsOneWidget);
     });
 
-    testWidgets('session expirée : retour à la connexion', (tester) async {
+    testWidgets('visiteur qui ouvre Publier : connexion', (tester) async {
+      final container = await startApp(tester, hasSession: false);
+
+      container.read(appRouterProvider).go(AppRoutes.publish);
+      await tester.pumpAndSettle();
+
+      expect(find.text(fr.loginComingSoon), findsOneWidget);
+    });
+  });
+
+  group('Session expirée (sécurité)', () {
+    testWidgets('sur une page publique : l’utilisateur y reste', (
+      tester,
+    ) async {
       final container = await startApp(tester, hasSession: true);
+
+      container.read(sessionExpiryProvider.notifier).notify();
+      await tester.pumpAndSettle();
+
+      expect(find.text(fr.homeComingSoon), findsOneWidget);
+    });
+
+    testWidgets('sur une page protégée : sortie immédiate vers la connexion', (
+      tester,
+    ) async {
+      final container = await startApp(tester, hasSession: true);
+      container.read(appRouterProvider).go(AppRoutes.publish);
+      await tester.pumpAndSettle();
 
       container.read(sessionExpiryProvider.notifier).notify();
       await tester.pumpAndSettle();
 
       expect(find.text(fr.loginComingSoon), findsOneWidget);
     });
+  });
 
+  group('Page de diagnostic', () {
     testWidgets('dev : la page de diagnostic existe', (tester) async {
       final container = await startApp(tester, hasSession: false);
 
