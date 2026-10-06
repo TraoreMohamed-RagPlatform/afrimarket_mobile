@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  FLUTTER_VERSION: '3.47.5'
+  FLUTTER_VERSION: '3.47.6'
   JAVA_VERSION: '21'
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
   # ----------------------------------------------------------
   quality:
     name: 🧹 Qualité du code
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
 
@@ -53,7 +53,7 @@ jobs:
   # ----------------------------------------------------------
   tests:
     name: 🧪 Tests + couverture
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
 
@@ -81,7 +81,7 @@ jobs:
   # ----------------------------------------------------------
   dependencies:
     name: 📦 Dépendances (OSV-Scanner)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     continue-on-error: true
     permissions:
       contents: read
@@ -116,7 +116,7 @@ jobs:
   # ----------------------------------------------------------
   secrets:
     name: 🔑 Secrets (TruffleHog)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     continue-on-error: true
     steps:
       - uses: actions/checkout@v7
@@ -133,7 +133,7 @@ jobs:
   # ----------------------------------------------------------
   sonarcloud:
     name: 📊 SonarCloud (SAST)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     continue-on-error: true
     env:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -171,7 +171,7 @@ jobs:
   # ----------------------------------------------------------
   codeql:
     name: 🛡️ CodeQL (workflows)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     continue-on-error: true
     permissions:
       contents: read
@@ -195,7 +195,7 @@ jobs:
   # ----------------------------------------------------------
   build:
     name: 🏗️ Build APK
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [quality, tests]
     steps:
       - uses: actions/checkout@v7
@@ -233,7 +233,7 @@ jobs:
   # ----------------------------------------------------------
   summary:
     name: 📋 Résumé
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: always()
     needs: [quality, tests, dependencies, secrets, sonarcloud, codeql, build]
     steps:
