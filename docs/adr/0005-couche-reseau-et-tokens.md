@@ -53,3 +53,8 @@ plantent jamais l'interface et n'exposent aucun détail technique.
 - Faiblesses du backend identifiées (tokens identiques, pas de rotation,
   messages d'erreur 500 détaillés...) : à corriger lors de la phase de
   sécurisation du backend, avant toute mise en production.
+- `http` réapparaît dans `pubspec.lock` comme dépendance **transitive**
+  de `cached_network_image` (téléchargement des images). Il n'est pas
+  utilisé directement : toute requête vers l'API passe par Dio. Il reste
+  analysé par OSV-Scanner et suivi par Dependabot comme les autres
+  dépendances.
