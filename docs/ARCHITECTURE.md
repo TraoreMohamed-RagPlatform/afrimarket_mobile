@@ -187,3 +187,33 @@ Les outils de développement ne doivent jamais être livrés aux utilisateurs.
 
 Règle unique : `devToolsVisible(flavor)` (`lib/core/config/dev_tools.dart`).
 Tout nouvel outil de développement DOIT passer par cette règle.
+
+## Index des décisions (ADR)
+
+| ADR | Décision |
+|---|---|
+| [0001](adr/0001-clean-architecture-feature-first.md) | Clean Architecture organisée par fonctionnalité |
+| [0002](adr/0002-consultation-sans-compte.md) | Consultation sans compte, fermé par défaut |
+| [0003](adr/0003-coquille-onglets-et-liens.md) | Coquille à onglets et adresses des liens de partage |
+| [0004](adr/0004-riverpod-gestion-etat.md) | Riverpod pour la gestion d'état et l'injection |
+| [0005](adr/0005-couche-reseau-et-tokens.md) | Couche réseau, erreurs et tokens |
+| [0006](adr/0006-traductions-fr-en-ar.md) | Traductions français, anglais, arabe |
+| [0007](adr/0007-design-system.md) | Design system AfriMarket |
+| [0008](adr/0008-outils-dev-hors-production.md) | Outils de dev retirés du binaire de production |
+| [0009](adr/0009-textes-utilisateur-bidi.md) | Affichage des textes saisis par les utilisateurs |
+
+## Éléments ajoutés en phase F2
+
+| Emplacement | Contenu |
+|---|---|
+| `lib/core/theme/` | Tokens : palette, couleurs sémantiques, espacements, arrondis, typographie, animations, thème clair et sombre, calcul du contraste |
+| `lib/core/navigation/route_access.dart` | Table d'accès des pages (`public`, `signInPrompt`, `authenticated`) |
+| `lib/core/config/dev_tools.dart` | Règle unique des outils de dev (`devToolsVisible`) |
+| `lib/app/shell/` | Coquille à onglets (`AppShell`) |
+| `lib/app/dev/` | Galerie du design system (dev uniquement) |
+| `lib/shared/widgets/` | Widgets partagés : cartes et grille d'annonces, en-tête, pastilles, barre du bas, champs, avatars, états (vide, erreur, chargement)... |
+| `lib/shared/formatters/` | Prix, notes, textes utilisateur (`userText`) |
+| `lib/shared/extensions/` | `context.l10n`, `context.colors`, `context.textStyles`, messages de confirmation |
+| `test/helpers/` | Outils de test : `localizedApp`, `pumpAfriMarketApp` |
+
+Règles de travail : voir [Definition of Done](DEFINITION_OF_DONE.md).
