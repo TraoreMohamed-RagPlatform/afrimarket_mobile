@@ -45,6 +45,7 @@ nouvelle fonctionnalité puisse être ajoutée sans casser l'existant.
 | Aucun débordement avec une taille de texte doublée | Réglage fréquent chez les personnes âgées ou malvoyantes |
 | Mise en page compatible droite à gauche (`start` / `end`) | L'arabe est une langue de l'app |
 | Nouveaux textes ajoutés dans les 3 fichiers ARB | Le test de cohérence bloque sinon le pipeline |
+| Tout texte saisi par un utilisateur (titre, description, message, nom) est affiché via `userText()` | Ponctuation correcte entre langues de sens différents, et protection contre l'usurpation d'affichage (CWE-451) |
 
 ## 5. Visuel
 

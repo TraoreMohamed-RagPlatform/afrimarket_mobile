@@ -2,6 +2,7 @@ import 'package:afrimarket_mobile/core/theme/app_spacing.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:afrimarket_mobile/shared/extensions/theme_extension.dart';
 import 'package:afrimarket_mobile/shared/formatters/price_formatter.dart';
+import 'package:afrimarket_mobile/shared/formatters/user_text.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_badge.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_network_image.dart';
 import 'package:afrimarket_mobile/shared/widgets/listing_card_status.dart';
@@ -112,7 +113,11 @@ class ListingCard extends StatelessWidget {
       ListingCardStatus.reserved => l10n.listingStatusReserved,
       ListingCardStatus.sold => l10n.listingStatusSold,
     };
-    final semanticLabel = [?statusLabel, formattedPrice, title].join(', ');
+    final semanticLabel = [
+      ?statusLabel,
+      formattedPrice,
+      stripBidiControls(title),
+    ].join(', ');
 
     Widget image = AppNetworkImage(url: imageUrl);
     if (isSold) {
@@ -188,7 +193,7 @@ class ListingCard extends StatelessWidget {
                                 color: colors.textSecondary,
                               ),
                             ),
-                          TextSpan(text: ' · $title'),
+                          TextSpan(text: ' · ${userText(title)}'),
                         ],
                       ),
                       strutStyle: _strut(baseStyle),

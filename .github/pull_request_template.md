@@ -39,6 +39,7 @@ Détail et justification : [`docs/DEFINITION_OF_DONE.md`](../docs/DEFINITION_OF_
 - [ ] Zones tactiles ≥ 48 × 48, aucun débordement avec texte × 2
 - [ ] Compatible droite à gauche
 - [ ] Textes ajoutés dans les 3 fichiers ARB
+- [ ] Textes saisis par les utilisateurs affichés via `userText()`
 
 ### Visuel
 - [ ] Vérifié en mode clair et en mode sombre

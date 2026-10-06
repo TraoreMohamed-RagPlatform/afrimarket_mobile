@@ -39,7 +39,10 @@ void main() {
       await tester.pumpWidget(localizedApp(_card()));
 
       final text = tester.widget<Text>(find.textContaining('Appartement'));
-      expect(_plain(text.textSpan!.toPlainText()), '1 400 DH · Appartement');
+      expect(
+        _plain(text.textSpan!.toPlainText()),
+        '1 400 DH · \u2068Appartement\u2069',
+      );
       expect(tester.takeException(), isNull);
     });
 
@@ -214,6 +217,47 @@ void main() {
       );
 
       expect(tester.takeException(), isNull);
+    });
+  });
+
+  group('Textes saisis par les utilisateurs', () {
+    Widget card(String title) => Center(
+      child: SizedBox(
+        width: 180,
+        child: ListingCard(title: title, price: 1400, onTap: () {}),
+      ),
+    );
+
+    testWidgets('annonce en français dans l’app en arabe : titre isolé', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        localizedApp(
+          card('iPhone 11, très bon état!'),
+          locale: const Locale('ar'),
+        ),
+      );
+
+      final text = tester.widget<Text>(find.textContaining('iPhone'));
+      expect(
+        text.textSpan!.toPlainText(),
+        contains('\u2068iPhone 11, très bon état!\u2069'),
+      );
+    });
+
+    testWidgets('titre piégé : caractères de contrôle supprimés (CWE-451)', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        localizedApp(card('Vendeur officiel \u202Efdp.exe')),
+      );
+
+      final text = tester.widget<Text>(find.textContaining('Vendeur'));
+      expect(text.textSpan!.toPlainText(), isNot(contains('\u202E')));
+      expect(
+        find.bySemanticsLabel(RegExp(r'Vendeur officiel fdp.exe$')),
+        findsOneWidget,
+      );
     });
   });
 }
