@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
-import 'package:afrimarket_mobile/core/config/flavor.dart';
+import 'package:afrimarket_mobile/core/config/dev_tools.dart';
 import 'package:afrimarket_mobile/core/navigation/app_routes.dart';
 import 'package:afrimarket_mobile/core/session/session_provider.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
@@ -37,7 +37,7 @@ class HomePage extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(l10n.homeComingSoon),
-            if (config.flavor == Flavor.dev) ...[
+            if (devToolsVisible(config.flavor)) ...[
               const SizedBox(height: 16),
               OutlinedButton.icon(
                 onPressed: () => context.go(AppRoutes.diagnostics),

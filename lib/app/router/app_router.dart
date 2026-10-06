@@ -3,7 +3,7 @@ import 'package:afrimarket_mobile/app/pages/splash_page.dart';
 import 'package:afrimarket_mobile/app/router/route_guard.dart';
 import 'package:afrimarket_mobile/app/shell/app_shell.dart';
 import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
-import 'package:afrimarket_mobile/core/config/flavor.dart';
+import 'package:afrimarket_mobile/core/config/dev_tools.dart';
 import 'package:afrimarket_mobile/core/navigation/app_routes.dart';
 import 'package:afrimarket_mobile/core/session/session_provider.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/pages/login_page.dart';
@@ -100,7 +100,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.publish,
         builder: (context, state) => const PublishListingPage(),
       ),
-      if (config.flavor == Flavor.dev)
+      if (devToolsVisible(config.flavor))
         GoRoute(
           path: AppRoutes.diagnostics,
           builder: (context, state) => const HealthCheckPage(),

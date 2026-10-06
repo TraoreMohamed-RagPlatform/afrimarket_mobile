@@ -175,3 +175,15 @@ publiques** : jamais de clé, mot de passe ou secret.
 - [ ] Nom de route dans `core/navigation/app_routes.dart`, route déclarée dans `app/router/app_router.dart`
 - [ ] Tests dans `test/features/<nom>/`
 - [ ] Vérification des règles de sécurité (section 8)
+
+## Outils de développement (Diagnostic, Galerie)
+
+Les outils de développement ne doivent jamais être livrés aux utilisateurs.
+
+| Protection | Vérifiée | Effet |
+|---|---|---|
+| `kDevToolsEnabled` (`DEV_TOOLS` dans `config/*.json`) | À la compilation | Le code des outils est **retiré du binaire** en staging et en prod (tree shaking) |
+| `flavor == Flavor.dev` | À l'exécution | Les routes et les boutons ne sont déclarés qu'en dev |
+
+Règle unique : `devToolsVisible(flavor)` (`lib/core/config/dev_tools.dart`).
+Tout nouvel outil de développement DOIT passer par cette règle.
