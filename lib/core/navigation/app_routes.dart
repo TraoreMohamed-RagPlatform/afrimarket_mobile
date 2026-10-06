@@ -36,6 +36,9 @@ abstract final class AppRoutes {
   /// Page de diagnostic : déclarée UNIQUEMENT dans le flavor dev.
   static const diagnostics = '/dev/diagnostics';
 
+  /// Galerie du design system : déclarée UNIQUEMENT dans le flavor dev.
+  static const gallery = '/dev/gallery';
+
   /// Routes vers lesquelles on ne redirige jamais après connexion
   /// (évite les boucles).
   static const noReturnRoutes = <String>{splash, login};

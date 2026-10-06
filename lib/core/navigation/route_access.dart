@@ -32,6 +32,7 @@ abstract final class RouteAccessPolicy {
     (RegExp('^/listings/$_id\$'), RouteAccess.public),
     (RegExp('^/sellers/$_id\$'), RouteAccess.public),
     (RegExp(r'^/dev/diagnostics$'), RouteAccess.public),
+    (RegExp(r'^/dev/gallery$'), RouteAccess.public),
     (RegExp(r'^/favorites$'), RouteAccess.signInPrompt),
     (RegExp(r'^/messages$'), RouteAccess.signInPrompt),
     (RegExp(r'^/notifications$'), RouteAccess.signInPrompt),

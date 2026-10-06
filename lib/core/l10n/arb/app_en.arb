@@ -60,5 +60,6 @@
   "messagesComingSoon": "Your messages are coming soon.",
   "notificationsComingSoon": "Your notifications are coming soon.",
   "publishTitle": "Post a listing",
-  "publishComingSoon": "Posting listings is coming soon."
+  "publishComingSoon": "Posting listings is coming soon.",
+  "devGalleryButton": "Gallery (dev)"
 }

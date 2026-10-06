@@ -18,18 +18,22 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(appConfigProvider);
+    final isSignedIn =
+        ref.watch(sessionProvider) == SessionStatus.authenticated;
     final l10n = context.l10n;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(config.appName),
         actions: [
-          IconButton(
-            tooltip: l10n.logoutTooltip,
-            icon: const Icon(Icons.logout),
-            onPressed: () =>
-                unawaited(ref.read(sessionProvider.notifier).logout()),
-          ),
+          // La déconnexion n'a de sens que pour un utilisateur connecté.
+          if (isSignedIn)
+            IconButton(
+              tooltip: l10n.logoutTooltip,
+              icon: const Icon(Icons.logout),
+              onPressed: () =>
+                  unawaited(ref.read(sessionProvider.notifier).logout()),
+            ),
         ],
       ),
       body: Center(
@@ -39,10 +43,22 @@ class HomePage extends ConsumerWidget {
             Text(l10n.homeComingSoon),
             if (devToolsVisible(config.flavor)) ...[
               const SizedBox(height: 16),
-              OutlinedButton.icon(
-                onPressed: () => context.go(AppRoutes.diagnostics),
-                icon: const Icon(Icons.build_outlined),
-                label: Text(l10n.devDiagnosticsButton),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                alignment: WrapAlignment.center,
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: () => context.go(AppRoutes.diagnostics),
+                    icon: const Icon(Icons.build_outlined),
+                    label: Text(l10n.devDiagnosticsButton),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: () => unawaited(context.push(AppRoutes.gallery)),
+                    icon: const Icon(Icons.palette_outlined),
+                    label: Text(l10n.devGalleryButton),
+                  ),
+                ],
               ),
             ],
           ],

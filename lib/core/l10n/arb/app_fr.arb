@@ -335,5 +335,9 @@
   "publishComingSoon": "La publication d'annonces arrive bientôt.",
   "@publishComingSoon": {
     "description": "Texte provisoire de la page de publication."
+  },
+  "devGalleryButton": "Galerie (dev)",
+  "@devGalleryButton": {
+    "description": "Bouton d'accès à la galerie du design system (dev uniquement)."
   }
 }

@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/app/dev/gallery_page.dart';
 import 'package:afrimarket_mobile/app/pages/not_found_page.dart';
 import 'package:afrimarket_mobile/app/pages/splash_page.dart';
 import 'package:afrimarket_mobile/app/router/route_guard.dart';
@@ -24,7 +25,8 @@ import 'package:go_router/go_router.dart';
 ///   RouteAccessPolicy, fermé par défaut) ;
 /// - le routeur réagit à chaque changement de session (connexion,
 ///   déconnexion, session expirée) ;
-/// - la page de diagnostic n'est déclarée QU'EN dev.
+/// - les outils de dev ne sont déclarés que si devToolsVisible() : leur
+///   code est retiré du binaire en staging et en prod.
 ///
 /// Navigation (ADR 0003) : coquille à onglets (StatefulShellRoute), chaque
 /// onglet garde sa propre pile ; les pages plein écran (Publier,
@@ -100,11 +102,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.publish,
         builder: (context, state) => const PublishListingPage(),
       ),
-      if (devToolsVisible(config.flavor))
+      // Outils de développement (retirés du binaire en staging et prod).
+      if (devToolsVisible(config.flavor)) ...[
         GoRoute(
           path: AppRoutes.diagnostics,
           builder: (context, state) => const HealthCheckPage(),
         ),
+        GoRoute(
+          path: AppRoutes.gallery,
+          builder: (context, state) => const GalleryPage(),
+        ),
+      ],
     ],
     errorBuilder: (context, state) => const NotFoundPage(),
   );

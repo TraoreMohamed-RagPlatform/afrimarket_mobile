@@ -31,12 +31,18 @@ void main() {
 
   setUp(() {
     tokens = _MockTokenStorage();
-    when(() => tokens.hasTokens())
-        .thenAnswer((_) async => const Ok<bool>(true));
     when(() => tokens.clear()).thenAnswer((_) async => const Ok<void>(null));
   });
 
-  Future<ProviderContainer> pump(WidgetTester tester, Flavor flavor) async {
+  /// Affiche l'accueil et attend la fin de la vérification de la session.
+  Future<ProviderContainer> pump(
+    WidgetTester tester, {
+    required Flavor flavor,
+    bool hasSession = true,
+  }) async {
+    when(() => tokens.hasTokens())
+        .thenAnswer((_) async => Ok<bool>(hasSession));
+
     final container = ProviderContainer(
       overrides: [
         appConfigProvider.overrideWithValue(_config(flavor)),
@@ -51,28 +57,43 @@ void main() {
         child: localizedApp(const HomePage()),
       ),
     );
+    await tester.pumpAndSettle();
     return container;
   }
 
-  testWidgets('le bouton Diagnostic est visible en dev', (tester) async {
-    await pump(tester, Flavor.dev);
+  group('Outils de développement', () {
+    testWidgets('dev : boutons Diagnostic et Galerie visibles', (tester) async {
+      await pump(tester, flavor: Flavor.dev);
 
-    expect(find.text(fr.devDiagnosticsButton), findsOneWidget);
+      expect(find.text(fr.devDiagnosticsButton), findsOneWidget);
+      expect(find.text(fr.devGalleryButton), findsOneWidget);
+    });
+
+    testWidgets('prod : boutons Diagnostic et Galerie absents', (tester) async {
+      await pump(tester, flavor: Flavor.prod);
+
+      expect(find.text(fr.devDiagnosticsButton), findsNothing);
+      expect(find.text(fr.devGalleryButton), findsNothing);
+    });
   });
 
-  testWidgets('le bouton Diagnostic est absent en prod', (tester) async {
-    await pump(tester, Flavor.prod);
+  group('Déconnexion', () {
+    testWidgets('se déconnecter termine la session', (tester) async {
+      final container = await pump(tester, flavor: Flavor.prod);
 
-    expect(find.text(fr.devDiagnosticsButton), findsNothing);
-  });
+      await tester.tap(find.byTooltip(fr.logoutTooltip));
+      await tester.pump();
 
-  testWidgets('Se déconnecter termine la session', (tester) async {
-    final container = await pump(tester, Flavor.prod);
+      expect(container.read(sessionProvider), SessionStatus.unauthenticated);
+      verify(() => tokens.clear()).called(1);
+    });
 
-    await tester.tap(find.byTooltip(fr.logoutTooltip));
-    await tester.pump();
+    testWidgets('un visiteur ne voit pas le bouton de déconnexion', (
+      tester,
+    ) async {
+      await pump(tester, flavor: Flavor.prod, hasSession: false);
 
-    expect(container.read(sessionProvider), SessionStatus.unauthenticated);
-    verify(() => tokens.clear()).called(1);
+      expect(find.byTooltip(fr.logoutTooltip), findsNothing);
+    });
   });
 }

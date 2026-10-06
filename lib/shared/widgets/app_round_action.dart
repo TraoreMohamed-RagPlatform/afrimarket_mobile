@@ -27,6 +27,10 @@ class AppRoundAction extends StatelessWidget {
   /// Largeur minimale de la zone tactile (cercle + libellé).
   static const double minWidth = 64;
 
+  /// Largeur maximale : un libellé trop long est tronqué plutôt que de
+  /// faire déborder une rangée d'actions (grande taille de texte).
+  static const double maxWidth = 96;
+
   final IconData icon;
   final String label;
   final VoidCallback onTap;
@@ -56,7 +60,10 @@ class AppRoundAction extends StatelessWidget {
           onTap: onTap,
           borderRadius: AppRadius.md,
           child: ConstrainedBox(
-            constraints: const BoxConstraints(minWidth: minWidth),
+            constraints: const BoxConstraints(
+              minWidth: minWidth,
+              maxWidth: maxWidth,
+            ),
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.xs),
               child: Column(
@@ -90,6 +97,27 @@ class AppRoundAction extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Rangée de boutons d'action ronds (page de détail, profil vendeur).
+///
+/// Partage la largeur disponible à parts égales : chaque libellé est
+/// tronqué dans sa part. Fonctionne quels que soient le nombre d'actions,
+/// la largeur de l'écran et la taille de texte choisie.
+class AppRoundActionRow extends StatelessWidget {
+  const new({required this.actions, super.key});
+
+  final List<AppRoundAction> actions;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final action in actions) Expanded(child: Center(child: action)),
+      ],
     );
   }
 }

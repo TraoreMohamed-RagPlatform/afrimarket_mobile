@@ -11,6 +11,7 @@ void main() {
       AppRoutes.listing('a1B2-c3_d4'),
       AppRoutes.seller('42'),
       AppRoutes.diagnostics,
+      AppRoutes.gallery,
     ]) {
       test(path, () {
         expect(RouteAccessPolicy.of(path), RouteAccess.public);
