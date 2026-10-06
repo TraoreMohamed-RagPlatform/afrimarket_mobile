@@ -16,6 +16,8 @@ import '../helpers/l10n.dart';
 
 class _MockTokenStorage extends Mock implements TokenStorage;
 
+/// Les visiteurs arrivent sur le fil (ADR 0002) : on vérifie la langue
+/// avec le texte de la page d'accueil.
 void main() {
   final ar = lookupAppLocalizations(const Locale('ar'));
   final en = lookupAppLocalizations(const Locale('en'));
@@ -54,7 +56,7 @@ void main() {
     useFrenchDevice(tester);
     await startApp(tester);
 
-    expect(find.text(fr.loginComingSoon), findsOneWidget);
+    expect(find.text(fr.homeComingSoon), findsOneWidget);
   });
 
   testWidgets('passe en arabe instantanément (droite à gauche)', (
@@ -66,7 +68,7 @@ void main() {
     container.read(localeProvider.notifier).setLocale(const Locale('ar'));
     await tester.pumpAndSettle();
 
-    final text = find.text(ar.loginComingSoon);
+    final text = find.text(ar.homeComingSoon);
     expect(text, findsOneWidget);
     expect(Directionality.of(tester.element(text)), TextDirection.rtl);
   });
@@ -78,6 +80,6 @@ void main() {
     container.read(localeProvider.notifier).setLocale(const Locale('en'));
     await tester.pumpAndSettle();
 
-    expect(find.text(en.loginComingSoon), findsOneWidget);
+    expect(find.text(en.homeComingSoon), findsOneWidget);
   });
 }

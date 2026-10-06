@@ -2,5 +2,6 @@
   "FLAVOR": "prod",
   "APP_NAME": "AfriMarket",
   "API_BASE_URL": "https://api.example.com",
-  "ENABLE_NETWORK_LOGS": false
+  "ENABLE_NETWORK_LOGS": false,
+  "DEV_TOOLS": false
 }

@@ -167,5 +167,177 @@
   "errorUnexpected": "Une erreur inattendue s'est produite. Réessayez.",
   "@errorUnexpected": {
     "description": "Toute autre erreur."
+  },
+  "priceAmount": "{amount} DH",
+  "@priceAmount": {
+    "description": "Prix en dirhams marocains. amount est déjà formaté (ex. 1 400).",
+    "placeholders": {
+      "amount": {
+        "type": "String",
+        "example": "1 400"
+      }
+    }
+  },
+  "priceFree": "Gratuit",
+  "@priceFree": {
+    "description": "Affiché à la place du prix quand l'annonce est gratuite (don)."
+  },
+  "badgeRecent": "Récent",
+  "@badgeRecent": {
+    "description": "Badge des annonces publiées il y a moins de 24 heures."
+  },
+  "badgeVerified": "Vérifié",
+  "@badgeVerified": {
+    "description": "Badge des vendeurs dont l'identité a été vérifiée."
+  },
+  "listingStatusSold": "Vendu",
+  "@listingStatusSold": {
+    "description": "Mention affichée sur une annonce vendue."
+  },
+  "listingStatusReserved": "Réservé",
+  "@listingStatusReserved": {
+    "description": "Badge d'une annonce réservée par un acheteur."
+  },
+  "searchHint": "Rechercher sur AfriMarket",
+  "@searchHint": {
+    "description": "Texte du champ de recherche de la barre du haut."
+  },
+  "seeMore": "Voir plus",
+  "@seeMore": {
+    "description": "Lien pour afficher la suite d'un texte ou d'une section."
+  },
+  "ratingCount": "{count, plural, =1{1 avis} other{{count} avis}}",
+  "@ratingCount": {
+    "description": "Nombre d'avis reçus par un vendeur (au moins 1).",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ratingAverage": "Note {rating} sur 5",
+  "@ratingAverage": {
+    "description": "Note moyenne lue par les lecteurs d'écran.",
+    "placeholders": {
+      "rating": {
+        "type": "String",
+        "example": "4,8"
+      }
+    }
+  },
+  "sellerNew": "Nouveau vendeur",
+  "@sellerNew": {
+    "description": "Affiché à la place de la note quand le vendeur n'a encore aucun avis."
+  },
+  "passwordShow": "Afficher le mot de passe",
+  "@passwordShow": {
+    "description": "Bouton qui affiche le mot de passe en clair."
+  },
+  "passwordHide": "Masquer le mot de passe",
+  "@passwordHide": {
+    "description": "Bouton qui masque le mot de passe."
+  },
+  "avatarVerified": "{name}, identité vérifiée",
+  "@avatarVerified": {
+    "description": "Libellé lu par les lecteurs d'écran pour un utilisateur vérifié.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Fatou H."
+      }
+    }
+  },
+  "loadingLabel": "Chargement…",
+  "@loadingLabel": {
+    "description": "Annoncé par les lecteurs d'écran pendant un chargement."
+  },
+  "retry": "Réessayer",
+  "@retry": {
+    "description": "Bouton pour relancer une action qui a échoué."
+  },
+  "undo": "Annuler",
+  "@undo": {
+    "description": "Action d'un message de confirmation, pour revenir en arrière."
+  },
+  "navHome": "Accueil",
+  "@navHome": {
+    "description": "Onglet du fil d'annonces (barre du bas)."
+  },
+  "navFavorites": "Favoris",
+  "@navFavorites": {
+    "description": "Onglet des annonces enregistrées (barre du bas)."
+  },
+  "navPublish": "Publier",
+  "@navPublish": {
+    "description": "Bouton central de publication d'une annonce (barre du bas)."
+  },
+  "navMessages": "Messages",
+  "@navMessages": {
+    "description": "Onglet des conversations (barre du bas)."
+  },
+  "navNotifications": "Notifications",
+  "@navNotifications": {
+    "description": "Onglet des notifications (barre du bas)."
+  },
+  "unreadCount": "{count, plural, =1{1 non lu} other{{count} non lus}}",
+  "@unreadCount": {
+    "description": "Nombre d'éléments non lus, lu par les lecteurs d'écran.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "signInAction": "Se connecter",
+  "@signInAction": {
+    "description": "Bouton des invitations à se connecter."
+  },
+  "signInFavoritesTitle": "Retrouvez vos favoris",
+  "@signInFavoritesTitle": {
+    "description": "Titre de l'invitation à se connecter (onglet Favoris)."
+  },
+  "signInFavoritesMessage": "Connectez-vous pour enregistrer des annonces et les retrouver ici.",
+  "@signInFavoritesMessage": {
+    "description": "Message de l'invitation à se connecter (onglet Favoris)."
+  },
+  "signInMessagesTitle": "Discutez avec les vendeurs",
+  "@signInMessagesTitle": {
+    "description": "Titre de l'invitation à se connecter (onglet Messages)."
+  },
+  "signInMessagesMessage": "Connectez-vous pour envoyer et recevoir des messages.",
+  "@signInMessagesMessage": {
+    "description": "Message de l'invitation à se connecter (onglet Messages)."
+  },
+  "signInNotificationsTitle": "Restez informé",
+  "@signInNotificationsTitle": {
+    "description": "Titre de l'invitation à se connecter (onglet Notifications)."
+  },
+  "signInNotificationsMessage": "Connectez-vous pour être averti des nouveaux messages et des baisses de prix.",
+  "@signInNotificationsMessage": {
+    "description": "Message de l'invitation à se connecter (onglet Notifications)."
+  },
+  "favoritesComingSoon": "Vos favoris arrivent bientôt.",
+  "@favoritesComingSoon": {
+    "description": "Texte provisoire de l'onglet Favoris."
+  },
+  "messagesComingSoon": "Vos messages arrivent bientôt.",
+  "@messagesComingSoon": {
+    "description": "Texte provisoire de l'onglet Messages."
+  },
+  "notificationsComingSoon": "Vos notifications arrivent bientôt.",
+  "@notificationsComingSoon": {
+    "description": "Texte provisoire de l'onglet Notifications."
+  },
+  "publishTitle": "Publier une annonce",
+  "@publishTitle": {
+    "description": "Titre de la page de publication."
+  },
+  "publishComingSoon": "La publication d'annonces arrive bientôt.",
+  "@publishComingSoon": {
+    "description": "Texte provisoire de la page de publication."
+  },
+  "devGalleryButton": "Galerie (dev)",
+  "@devGalleryButton": {
+    "description": "Bouton d'accès à la galerie du design system (dev uniquement)."
   }
 }
