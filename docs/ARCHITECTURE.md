@@ -115,8 +115,18 @@ Fichiers et dossiers en `snake_case`, classes en `PascalCase`, variables en
 La configuration est injectée au build avec
 `--dart-define-from-file=config/<env>.json` et **validée au démarrage**
 (`AppConfig`) : l'app refuse de démarrer si HTTPS n'est pas utilisé en staging
-ou en production. Les fichiers `config/*.json` ne contiennent **que des valeurs
+ou en production. Les fichiers `config/<env>.json` ne contiennent **que des valeurs
 publiques** : jamais de clé, mot de passe ou secret.
+
+La configuration **Firebase** (clé d'API, jeton de débogage App Check) est dans un
+second fichier, **local et jamais committé** : `config/firebase.<env>.json`
+(modèle : `config/firebase.example.json`, voir ADR 0010) :
+
+```
+flutter run --flavor dev -t lib/main_dev.dart \
+  --dart-define-from-file=config/dev.json \
+  --dart-define-from-file=config/firebase.dev.json
+```
 
 ## 7. Internationalisation
 
@@ -133,6 +143,7 @@ publiques** : jamais de clé, mot de passe ou secret.
 | **STORAGE** | Tokens et secrets uniquement via `SecureStorage` (Keystore / Keychain). Sauvegarde Android désactivée (`allowBackup="false"`). Le refresh token n'est jamais gardé en mémoire. |
 | **NETWORK** | HTTPS obligatoire en staging / prod (vérifié au démarrage). HTTP autorisé uniquement en debug vers le backend local. Redirections HTTP désactivées. Le token n'est envoyé **qu'à notre API** (même protocole, serveur et port). |
 | **AUTH** | Refresh automatique : un seul refresh simultané, pas de boucle, session effacée seulement si le serveur refuse. Session « fermée par défaut » en cas d'erreur. Session expirée : retour automatique à la connexion. Paramètre `from` limité aux chemins internes (CWE-601). |
+| **RESILIENCE (App Check)** | Connexion, inscription et contact accompagnés d'un jeton Firebase App Check à usage unique (Play Integrity / App Attest en production, fournisseur debug en dev et staging), envoyé **qu'à notre API** (ADR 0010). |
 | **CODE** | Lints stricts, pipeline DevSecOps (OSV-Scanner, TruffleHog, SonarCloud, CodeQL), aucun secret commité. |
 | **RESILIENCE** | Obfuscation et détection root / émulateur avant la mise en production. |
 | **PRIVACY** | Logs réseau uniquement en dev, avec masquage des clés sensibles. Aucun en-tête ni formulaire multipart journalisé. Permissions Android minimales. Page de diagnostic déclarée uniquement en dev. |

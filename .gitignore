@@ -49,3 +49,14 @@ app.*.map.json
 
 # Generated localizations (source of truth: lib/core/l10n/arb/*.arb)
 lib/core/l10n/generated/
+
+# Configuration Firebase : clé d'API Google et jeton de débogage App Check,
+# jamais dans le dépôt (dépôt public). Firebase est initialisé à partir de
+# config/firebase.<environnement>.json (modèle : config/firebase.example.json).
+config/firebase.*.json
+!config/firebase.example.json
+# Fichiers de configuration natifs de Firebase (non utilisés, jamais committés)
+android/app/google-services.json
+android/app/src/*/google-services.json
+ios/Runner/GoogleService-Info.plist
+ios/config/*/GoogleService-Info.plist

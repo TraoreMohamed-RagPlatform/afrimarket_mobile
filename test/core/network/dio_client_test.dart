@@ -61,5 +61,20 @@ void main() {
         isNot(contains(ApiEndpoints.changePassword)),
       );
     });
+
+    test('preuve App Check exigée sur connexion, inscription et contact', () {
+      expect(
+        ApiEndpoints.attestedRoutes,
+        containsAll(<String>[
+          ApiEndpoints.login,
+          ApiEndpoints.register,
+          ApiEndpoints.contactForm,
+        ]),
+      );
+      expect(
+        ApiEndpoints.attestedRoutes,
+        isNot(contains(ApiEndpoints.refreshToken)),
+      );
+    });
   });
 }
