@@ -1,9 +1,11 @@
 import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
 import 'package:afrimarket_mobile/core/network/dio_client.dart';
+import 'package:afrimarket_mobile/core/network/interceptors/app_check_interceptor.dart';
 import 'package:afrimarket_mobile/core/network/interceptors/auth_interceptor.dart';
 import 'package:afrimarket_mobile/core/network/interceptors/refresh_token_interceptor.dart';
 import 'package:afrimarket_mobile/core/network/interceptors/safe_log_interceptor.dart';
 import 'package:afrimarket_mobile/core/network/session_expiry.dart';
+import 'package:afrimarket_mobile/core/security/app_attestation.dart';
 import 'package:afrimarket_mobile/core/storage/storage_providers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,8 +22,12 @@ final refreshDioProvider = Provider<Dio>((ref) {
 ///
 /// Ordre des intercepteurs :
 /// 1. SafeLogInterceptor (dev uniquement) : voit tout, y compris les 401 ;
-/// 2. AuthInterceptor : ajoute le token ;
-/// 3. RefreshTokenInterceptor : renouvelle le token sur 401.
+/// 2. AppCheckInterceptor : preuve App Check sur les routes sensibles ;
+/// 3. AuthInterceptor : ajoute le token ;
+/// 4. RefreshTokenInterceptor : renouvelle le token sur 401.
+///
+/// Les logs passent avant l'ajout des en-têtes : le jeton App Check et le
+/// token d'accès n'y apparaissent donc jamais.
 final dioProvider = Provider<Dio>((ref) {
   final config = ref.watch(appConfigProvider);
   final tokenStorage = ref.watch(tokenStorageProvider);
@@ -29,6 +35,10 @@ final dioProvider = Provider<Dio>((ref) {
 
   dio.interceptors.addAll([
     if (config.networkLogsEnabled) SafeLogInterceptor(),
+    AppCheckInterceptor(
+      attestation: ref.watch(appAttestationProvider),
+      apiBaseUrl: config.apiBaseUrl,
+    ),
     AuthInterceptor(tokenStorage: tokenStorage, apiBaseUrl: config.apiBaseUrl),
     RefreshTokenInterceptor(
       dio: dio,

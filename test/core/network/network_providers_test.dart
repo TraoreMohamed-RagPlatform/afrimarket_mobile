@@ -1,6 +1,7 @@
 import 'package:afrimarket_mobile/core/config/app_config.dart';
 import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
 import 'package:afrimarket_mobile/core/config/flavor.dart';
+import 'package:afrimarket_mobile/core/network/interceptors/app_check_interceptor.dart';
 import 'package:afrimarket_mobile/core/network/interceptors/auth_interceptor.dart';
 import 'package:afrimarket_mobile/core/network/interceptors/refresh_token_interceptor.dart';
 import 'package:afrimarket_mobile/core/network/interceptors/safe_log_interceptor.dart';
@@ -47,6 +48,16 @@ void main() {
       expect(interceptors.whereType<RefreshTokenInterceptor>(), hasLength(1));
     });
 
+    test('ajoute la preuve App Check avant le token d’accès', () {
+      final container = _container(_config(flavor: Flavor.prod, logs: false));
+      final interceptors = container.read(dioProvider).interceptors.toList();
+
+      final appCheck = interceptors.indexWhere((i) => i is AppCheckInterceptor);
+      final auth = interceptors.indexWhere((i) => i is AuthInterceptor);
+      expect(appCheck, isNonNegative);
+      expect(appCheck, lessThan(auth));
+    });
+
     test('active les logs en dev', () {
       final container = _container(_config(flavor: Flavor.dev, logs: true));
       final interceptors = container.read(dioProvider).interceptors;
@@ -78,6 +89,7 @@ void main() {
 
       expect(interceptors.whereType<AuthInterceptor>(), isEmpty);
       expect(interceptors.whereType<RefreshTokenInterceptor>(), isEmpty);
+      expect(interceptors.whereType<AppCheckInterceptor>(), isEmpty);
       expect(interceptors.whereType<SafeLogInterceptor>(), isEmpty);
     });
   });

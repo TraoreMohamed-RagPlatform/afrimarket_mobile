@@ -17,6 +17,10 @@ abstract final class ApiEndpoints {
   static const forgotPassword = '/api/auth/forgot-password';
   static const resetPassword = '/api/auth/reset-password';
   static const changePassword = '/api/auth/change-password';
+  static const logoutAll = '/api/auth/logout-all';
+
+  // Support
+  static const contactForm = '/api/support/contact-form';
 
   /// Routes qui ne doivent JAMAIS recevoir de token d'accès
   /// ni déclencher de refresh automatique.
@@ -29,4 +33,8 @@ abstract final class ApiEndpoints {
     forgotPassword,
     resetPassword,
   };
+
+  /// Routes qui exigent une preuve App Check (anti-robots) : le serveur
+  /// refuse ces requêtes sans en-tête `X-Firebase-AppCheck` valide.
+  static const attestedRoutes = <String>{register, login, contactForm};
 }
