@@ -11,10 +11,6 @@
     "description": "Titre de l'écran de connexion."
   },
 
-  "loginComingSoon": "L'écran de connexion arrive bientôt.",
-  "@loginComingSoon": {
-    "description": "Texte provisoire affiché tant que le formulaire de connexion n'existe pas."
-  },
 
   "homeComingSoon": "Le fil d'annonces arrive bientôt.",
   "@homeComingSoon": {
@@ -339,5 +335,216 @@
   "devGalleryButton": "Galerie (dev)",
   "@devGalleryButton": {
     "description": "Bouton d'accès à la galerie du design system (dev uniquement)."
+  },
+
+  "loginIntro": "Connectez-vous pour publier, discuter avec les vendeurs et retrouver vos favoris.",
+  "@loginIntro": {
+    "description": "Texte d'introduction de l'écran de connexion."
+  },
+
+  "loginSubmit": "Se connecter",
+  "@loginSubmit": {
+    "description": "Bouton d'envoi du formulaire de connexion."
+  },
+
+  "loginForgotPassword": "Mot de passe oublié ?",
+  "@loginForgotPassword": {
+    "description": "Lien vers la réinitialisation du mot de passe."
+  },
+
+  "loginNoAccount": "Pas encore de compte ?",
+  "@loginNoAccount": {
+    "description": "Texte devant le lien de création de compte."
+  },
+
+  "loginCreateAccount": "Créer un compte",
+  "@loginCreateAccount": {
+    "description": "Lien vers l'inscription."
+  },
+
+  "loginInvalidCredentials": "E-mail ou mot de passe incorrect.",
+  "@loginInvalidCredentials": {
+    "description": "Erreur de connexion : identifiants refusés (même message que le compte existe ou non)."
+  },
+
+  "authForbidden": "Accès refusé. Votre compte est peut-être désactivé, ou l'application n'a pas pu être vérifiée. Réessayez ou contactez le support.",
+  "@authForbidden": {
+    "description": "Erreur 403 sur la connexion ou l'inscription (compte inactif ou App Check refusé)."
+  },
+
+  "authEmailLabel": "Adresse e-mail",
+  "@authEmailLabel": {
+    "description": "Libellé du champ e-mail."
+  },
+
+  "authPasswordLabel": "Mot de passe",
+  "@authPasswordLabel": {
+    "description": "Libellé du champ mot de passe."
+  },
+
+  "authNewPasswordLabel": "Nouveau mot de passe",
+  "@authNewPasswordLabel": {
+    "description": "Libellé du champ nouveau mot de passe."
+  },
+
+  "authConfirmPasswordLabel": "Confirmer le mot de passe",
+  "@authConfirmPasswordLabel": {
+    "description": "Libellé du champ de confirmation du mot de passe."
+  },
+
+  "authPasswordHelper": "Au moins 8 caractères. Une phrase facile à retenir est idéale.",
+  "@authPasswordHelper": {
+    "description": "Aide sous le champ de création d'un mot de passe."
+  },
+
+  "authFullNameLabel": "Nom complet",
+  "@authFullNameLabel": {
+    "description": "Libellé du champ nom complet."
+  },
+
+  "authUsernameLabel": "Nom d'utilisateur",
+  "@authUsernameLabel": {
+    "description": "Libellé du champ nom d'utilisateur."
+  },
+
+  "authUsernameHelper": "3 à 30 caractères : lettres, chiffres, point, tiret, tiret bas.",
+  "@authUsernameHelper": {
+    "description": "Aide sous le champ nom d'utilisateur."
+  },
+
+  "authCodeLabel": "Code reçu par e-mail",
+  "@authCodeLabel": {
+    "description": "Libellé du champ code de réinitialisation."
+  },
+
+  "authFieldRequired": "Ce champ est obligatoire.",
+  "@authFieldRequired": {
+    "description": "Erreur : champ vide."
+  },
+
+  "authEmailInvalid": "Adresse e-mail invalide.",
+  "@authEmailInvalid": {
+    "description": "Erreur : format d'e-mail invalide."
+  },
+
+  "authPasswordTooShort": "Au moins 8 caractères.",
+  "@authPasswordTooShort": {
+    "description": "Erreur : mot de passe trop court."
+  },
+
+  "authPasswordTooLong": "Mot de passe trop long.",
+  "@authPasswordTooLong": {
+    "description": "Erreur : mot de passe trop long (limite technique de 72 octets)."
+  },
+
+  "authPasswordMismatch": "Les mots de passe ne correspondent pas.",
+  "@authPasswordMismatch": {
+    "description": "Erreur : confirmation différente du mot de passe."
+  },
+
+  "authUsernameTooShort": "Au moins 3 caractères.",
+  "@authUsernameTooShort": {
+    "description": "Erreur : nom d'utilisateur trop court."
+  },
+
+  "authUsernameTooLong": "30 caractères maximum.",
+  "@authUsernameTooLong": {
+    "description": "Erreur : nom d'utilisateur trop long."
+  },
+
+  "authUsernameInvalid": "Lettres, chiffres, point, tiret et tiret bas uniquement.",
+  "@authUsernameInvalid": {
+    "description": "Erreur : caractère interdit dans le nom d'utilisateur."
+  },
+
+  "authNameTooLong": "100 caractères maximum.",
+  "@authNameTooLong": {
+    "description": "Erreur : nom complet trop long."
+  },
+
+  "authCodeInvalid": "Le code contient 6 chiffres.",
+  "@authCodeInvalid": {
+    "description": "Erreur : code de réinitialisation mal formé."
+  },
+
+  "registerTitle": "Créer un compte",
+  "@registerTitle": {
+    "description": "Titre de l'écran d'inscription."
+  },
+
+  "registerIntro": "Rejoignez la communauté AfriMarket pour acheter et vendre près de chez vous.",
+  "@registerIntro": {
+    "description": "Texte d'introduction de l'écran d'inscription."
+  },
+
+  "registerSubmit": "Créer mon compte",
+  "@registerSubmit": {
+    "description": "Bouton d'envoi du formulaire d'inscription."
+  },
+
+  "registerHaveAccount": "Déjà un compte ?",
+  "@registerHaveAccount": {
+    "description": "Texte devant le lien de connexion."
+  },
+
+  "registerRejected": "Inscription impossible : cet e-mail ou ce nom d'utilisateur est peut-être déjà utilisé.",
+  "@registerRejected": {
+    "description": "Erreur d'inscription refusée par le serveur (doublon ou données invalides)."
+  },
+
+  "forgotTitle": "Mot de passe oublié",
+  "@forgotTitle": {
+    "description": "Titre de l'écran de réinitialisation."
+  },
+
+  "forgotIntro": "Saisissez l'adresse e-mail de votre compte. Nous vous enverrons un code à 6 chiffres.",
+  "@forgotIntro": {
+    "description": "Texte de la première étape (demande du code)."
+  },
+
+  "forgotSendCode": "Envoyer le code",
+  "@forgotSendCode": {
+    "description": "Bouton de demande du code."
+  },
+
+  "forgotCodeSent": "Si un compte existe pour {email}, un code à 6 chiffres vient d'y être envoyé. Il est valable 15 minutes.",
+  "@forgotCodeSent": {
+    "description": "Texte de la deuxième étape. Même message que le compte existe ou non (anti-énumération).",
+    "placeholders": {
+      "email": {
+        "type": "String",
+        "example": "awa@example.com"
+      }
+    }
+  },
+
+  "forgotResetSubmit": "Changer le mot de passe",
+  "@forgotResetSubmit": {
+    "description": "Bouton de validation du nouveau mot de passe."
+  },
+
+  "forgotResendCode": "Renvoyer le code",
+  "@forgotResendCode": {
+    "description": "Bouton pour demander un nouveau code."
+  },
+
+  "forgotChangeEmail": "Modifier l'adresse e-mail",
+  "@forgotChangeEmail": {
+    "description": "Bouton pour revenir à la saisie de l'e-mail."
+  },
+
+  "forgotCodeResent": "Si un compte existe, un nouveau code vient d'être envoyé.",
+  "@forgotCodeResent": {
+    "description": "Confirmation après « Renvoyer le code »."
+  },
+
+  "resetCodeRejected": "Code invalide ou expiré. Demandez un nouveau code.",
+  "@resetCodeRejected": {
+    "description": "Erreur : code de réinitialisation refusé."
+  },
+
+  "resetPasswordDone": "Mot de passe modifié. Connectez-vous avec le nouveau mot de passe.",
+  "@resetPasswordDone": {
+    "description": "Confirmation après la réinitialisation (toutes les sessions sont fermées)."
   }
 }

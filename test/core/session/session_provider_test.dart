@@ -124,5 +124,17 @@ void main() {
       expect(container.read(sessionProvider), SessionStatus.unauthenticated);
       verify(() => tokens.clear()).called(1);
     });
+
+    test('markSignedOut masque la session sans toucher aux tokens', () async {
+      when(() => tokens.hasTokens())
+          .thenAnswer((_) async => const Ok<bool>(true));
+      final container = createContainer();
+      await settled(container);
+
+      container.read(sessionProvider.notifier).markSignedOut();
+
+      expect(container.read(sessionProvider), SessionStatus.unauthenticated);
+      verifyNever(() => tokens.clear());
+    });
   });
 }

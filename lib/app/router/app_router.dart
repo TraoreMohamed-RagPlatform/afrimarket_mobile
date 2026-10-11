@@ -7,7 +7,9 @@ import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
 import 'package:afrimarket_mobile/core/config/dev_tools.dart';
 import 'package:afrimarket_mobile/core/navigation/app_routes.dart';
 import 'package:afrimarket_mobile/core/session/session_provider.dart';
+import 'package:afrimarket_mobile/features/auth/presentation/pages/forgot_password_page.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/pages/login_page.dart';
+import 'package:afrimarket_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:afrimarket_mobile/features/favorites/presentation/pages/favorites_page.dart';
 import 'package:afrimarket_mobile/features/health/presentation/pages/health_check_page.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/pages/home_page.dart';
@@ -54,9 +56,23 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.splash,
         builder: (context, state) => const SplashPage(),
       ),
+      // Authentification (plein écran, hors onglets). `from` est transmis
+      // pour revenir à la page demandée après la connexion.
       GoRoute(
         path: AppRoutes.login,
-        builder: (context, state) => const LoginPage(),
+        builder: (context, state) => LoginPage(
+          returnTo: state.uri.queryParameters[AppRoutes.returnParam],
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.register,
+        builder: (context, state) => RegisterPage(
+          returnTo: state.uri.queryParameters[AppRoutes.returnParam],
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.forgotPassword,
+        builder: (context, state) => const ForgotPasswordPage(),
       ),
       // Onglets : l'ordre des branches = l'ordre des onglets (AppShell).
       StatefulShellRoute.indexedStack(

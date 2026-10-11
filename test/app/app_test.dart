@@ -8,6 +8,7 @@ import 'package:afrimarket_mobile/core/navigation/app_routes.dart';
 import 'package:afrimarket_mobile/core/network/session_expiry.dart';
 import 'package:afrimarket_mobile/core/storage/storage_providers.dart';
 import 'package:afrimarket_mobile/core/storage/token_storage.dart';
+import 'package:afrimarket_mobile/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -70,7 +71,7 @@ void main() {
       await startApp(tester, hasSession: false);
 
       expect(find.text(fr.homeComingSoon), findsOneWidget);
-      expect(find.text(fr.loginComingSoon), findsNothing);
+      expect(find.byType(LoginPage), findsNothing);
     });
 
     testWidgets('avec session : le fil', (tester) async {
@@ -85,7 +86,7 @@ void main() {
       container.read(appRouterProvider).go(AppRoutes.publish);
       await tester.pumpAndSettle();
 
-      expect(find.text(fr.loginComingSoon), findsOneWidget);
+      expect(find.byType(LoginPage), findsOneWidget);
     });
   });
 
@@ -111,7 +112,7 @@ void main() {
       container.read(sessionExpiryProvider.notifier).notify();
       await tester.pumpAndSettle();
 
-      expect(find.text(fr.loginComingSoon), findsOneWidget);
+      expect(find.byType(LoginPage), findsOneWidget);
     });
   });
 

@@ -212,6 +212,7 @@ Tout nouvel outil de développement DOIT passer par cette règle.
 | [0007](adr/0007-design-system.md) | Design system AfriMarket |
 | [0008](adr/0008-outils-dev-hors-production.md) | Outils de dev retirés du binaire de production |
 | [0009](adr/0009-textes-utilisateur-bidi.md) | Affichage des textes saisis par les utilisateurs |
+| [0010](adr/0010-app-check-anti-robots.md) | App Check : preuve anti-robots sur les routes sensibles |
 
 ## Éléments ajoutés en phase F2
 
@@ -226,5 +227,25 @@ Tout nouvel outil de développement DOIT passer par cette règle.
 | `lib/shared/formatters/` | Prix, notes, textes utilisateur (`userText`) |
 | `lib/shared/extensions/` | `context.l10n`, `context.colors`, `context.textStyles`, messages de confirmation |
 | `test/helpers/` | Outils de test : `localizedApp`, `pumpAfriMarketApp` |
+
+## Éléments ajoutés en phase F3 (authentification)
+
+| Emplacement | Contenu |
+|---|---|
+| `lib/features/auth/domain/` | `AuthUser`, contrat `AuthRepository`, cas d'usage (connexion, inscription, mot de passe oublié, déconnexion), règles de saisie `AuthValidators` alignées sur le serveur (8 caractères minimum, 72 octets maximum) |
+| `lib/features/auth/data/` | `AuthRemoteDataSource` (`/api/auth/*`), `AuthSessionModel` (JSON validé, tokens jamais affichés), `AuthRepositoryImpl` (tokens enregistrés dans le stockage chiffré, anti-énumération) |
+| `lib/features/auth/presentation/` | Écrans connexion, inscription et mot de passe oublié (code à 6 chiffres), contrôleurs Riverpod, déconnexion complète `signOutProvider` |
+| `lib/core/navigation/` | Routes `/register` et `/forgot-password` (publiques), paramètre `from` conservé entre connexion et inscription |
+| `test/helpers/auth_page_harness.dart` | Ouvre un écran d'authentification dans un vrai routeur pour les tests |
+
+Parcours :
+
+- **Connexion / inscription** : la session s'ouvre, puis le routeur ramène
+  l'utilisateur à la page demandée (`from`, chemin interne uniquement).
+- **Mot de passe oublié** : même réponse que le compte existe ou non ; après
+  le changement, le serveur ferme toutes les sessions et l'utilisateur se
+  reconnecte.
+- **Déconnexion** : les pages protégées sont masquées, la session locale est
+  effacée, puis le serveur révoque le jeton (au mieux, même hors ligne).
 
 Règles de travail : voir [Definition of Done](DEFINITION_OF_DONE.md).

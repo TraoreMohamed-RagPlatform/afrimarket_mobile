@@ -4,6 +4,7 @@ import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
 import 'package:afrimarket_mobile/core/config/dev_tools.dart';
 import 'package:afrimarket_mobile/core/navigation/app_routes.dart';
 import 'package:afrimarket_mobile/core/session/session_provider.dart';
+import 'package:afrimarket_mobile/features/auth/presentation/controllers/sign_out.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,8 +32,7 @@ class HomePage extends ConsumerWidget {
             IconButton(
               tooltip: l10n.logoutTooltip,
               icon: const Icon(Icons.logout),
-              onPressed: () =>
-                  unawaited(ref.read(sessionProvider.notifier).logout()),
+              onPressed: () => unawaited(ref.read(signOutProvider)()),
             ),
         ],
       ),

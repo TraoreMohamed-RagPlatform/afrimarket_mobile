@@ -1,4 +1,5 @@
 import 'package:afrimarket_mobile/core/session/session_provider.dart';
+import 'package:afrimarket_mobile/features/auth/presentation/pages/login_page.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_bottom_nav_bar.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -33,7 +34,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text(fr.signInAction));
       await tester.pumpAndSettle();
-      expect(find.text(fr.loginComingSoon), findsOneWidget);
+      expect(find.byType(LoginPage), findsOneWidget);
 
       container.read(sessionProvider.notifier).markAuthenticated();
       await tester.pumpAndSettle();
@@ -47,7 +48,7 @@ void main() {
       await tester.tap(find.text(fr.navPublish));
       await tester.pumpAndSettle();
 
-      expect(find.text(fr.loginComingSoon), findsOneWidget);
+      expect(find.byType(LoginPage), findsOneWidget);
     });
   });
 

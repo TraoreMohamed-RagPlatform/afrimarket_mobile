@@ -28,6 +28,8 @@ abstract final class RouteAccessPolicy {
   static final List<(RegExp, RouteAccess)> _rules = [
     (RegExp(r'^/$'), RouteAccess.public),
     (RegExp(r'^/login$'), RouteAccess.public),
+    (RegExp(r'^/register$'), RouteAccess.public),
+    (RegExp(r'^/forgot-password$'), RouteAccess.public),
     (RegExp(r'^/search$'), RouteAccess.public),
     (RegExp('^/listings/$_id\$'), RouteAccess.public),
     (RegExp('^/sellers/$_id\$'), RouteAccess.public),

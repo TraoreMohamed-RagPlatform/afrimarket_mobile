@@ -32,6 +32,9 @@ void main() {
   setUp(() {
     tokens = _MockTokenStorage();
     when(() => tokens.clear()).thenAnswer((_) async => const Ok<void>(null));
+    // Aucun jeton à révoquer : la déconnexion ne fait aucun appel réseau.
+    when(() => tokens.readRefreshToken())
+        .thenAnswer((_) async => const Ok<String?>(null));
   });
 
   /// Affiche l'accueil et attend la fin de la vérification de la session.
