@@ -80,6 +80,10 @@ void main() {
       );
     });
 
+    test('lecture au build : rien de défini en dev, Firebase désactivé', () {
+      expect(FirebaseConfig.fromEnvironment(flavor: Flavor.dev), isNull);
+    });
+
     test('production sans jeton de débogage : acceptée', () {
       expect(build(flavor: Flavor.prod), isNotNull);
     });

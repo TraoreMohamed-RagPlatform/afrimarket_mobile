@@ -24,15 +24,28 @@ final class FirebaseAppAttestation implements AppAttestation {
   }
 }
 
+/// Initialise Firebase (remplaçable dans les tests).
+typedef FirebaseInitializer = Future<void> Function(FirebaseOptions options);
+
+Future<void> _initializeFirebase(FirebaseOptions options) async {
+  await Firebase.initializeApp(options: options);
+}
+
+FirebaseAppCheck _defaultAppCheck() => FirebaseAppCheck.instance;
+
 /// Initialise Firebase et App Check, puis renvoie l'attestation à utiliser.
 ///
 /// Fournisseur d'attestation selon l'environnement :
 /// - production : Play Integrity (Android) / App Attest (iOS) ;
 /// - dev et staging : fournisseur « debug » (émulateur, installation hors
 ///   Play Store). Le jeton de débogage doit être déclaré dans la console.
+///
+/// [initializeFirebase] et [appCheck] ne sont remplacés que par les tests.
 Future<AppAttestation> initAppAttestation({
   required Flavor flavor,
   required FirebaseConfig? config,
+  FirebaseInitializer initializeFirebase = _initializeFirebase,
+  FirebaseAppCheck Function() appCheck = _defaultAppCheck,
 }) async {
   if (config == null) {
     debugPrint(
@@ -42,8 +55,8 @@ Future<AppAttestation> initAppAttestation({
     return const NoAppAttestation();
   }
 
-  await Firebase.initializeApp(
-    options: FirebaseOptions(
+  await initializeFirebase(
+    FirebaseOptions(
       apiKey: config.apiKey,
       appId: config.appId,
       messagingSenderId: config.messagingSenderId,
@@ -51,10 +64,10 @@ Future<AppAttestation> initAppAttestation({
     ),
   );
 
-  final appCheck = FirebaseAppCheck.instance;
+  final instance = appCheck();
   final useDebugProvider = flavor != Flavor.prod;
 
-  await appCheck.activate(
+  await instance.activate(
     providerAndroid: useDebugProvider
         ? AndroidDebugProvider(debugToken: config.appCheckDebugToken)
         : const AndroidPlayIntegrityProvider(),
@@ -63,5 +76,5 @@ Future<AppAttestation> initAppAttestation({
         : const AppleAppAttestWithDeviceCheckFallbackProvider(),
   );
 
-  return FirebaseAppAttestation(appCheck);
+  return FirebaseAppAttestation(instance);
 }

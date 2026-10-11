@@ -30,6 +30,10 @@ final class FirebaseConfig {
         'FIREBASE_MESSAGING_SENDER_ID',
       ),
       projectId: const String.fromEnvironment('FIREBASE_PROJECT_ID'),
+      // Valeur vide à l'analyse mais fournie au build par
+      // --dart-define-from-file : ne pas laisser `dart fix` la supprimer.
+      // ignore: avoid_redundant_argument_values
+      appCheckDebugToken: const String.fromEnvironment('APP_CHECK_DEBUG_TOKEN'),
     );
   }
 
