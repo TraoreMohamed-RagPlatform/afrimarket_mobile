@@ -5,6 +5,8 @@
 abstract final class AppRoutes {
   static const splash = '/splash';
   static const login = '/login';
+  static const register = '/register';
+  static const forgotPassword = '/forgot-password';
 
   /// Paramètre qui mémorise la page à rouvrir après la connexion.
   static const returnParam = 'from';
@@ -12,6 +14,15 @@ abstract final class AppRoutes {
   /// Connexion, puis retour à [from] (chemin interne).
   static String loginWithReturn(String from) =>
       Uri(path: login, queryParameters: {returnParam: from}).toString();
+
+  /// [path] avec `?from=<from>` si [from] est fourni.
+  ///
+  /// [from] n'est pas vérifié ici : le routeur n'ouvre ensuite que les
+  /// chemins internes sûrs (`safeInternalPath`).
+  static String withReturn(String path, String? from) {
+    if (from == null || from.isEmpty) return path;
+    return Uri(path: path, queryParameters: {returnParam: from}).toString();
+  }
 
   /// Le fil d'annonces (adresse racine, utilisée par les liens partagés).
   static const home = '/';
@@ -40,6 +51,12 @@ abstract final class AppRoutes {
   static const gallery = '/dev/gallery';
 
   /// Routes vers lesquelles on ne redirige jamais après connexion
-  /// (évite les boucles).
-  static const noReturnRoutes = <String>{splash, login};
+  /// (évite les boucles). Un utilisateur connecté qui les ouvre est
+  /// renvoyé vers sa page d'origine ou le fil.
+  static const noReturnRoutes = <String>{
+    splash,
+    login,
+    register,
+    forgotPassword,
+  };
 }

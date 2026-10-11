@@ -26,6 +26,11 @@ void main() {
   group('Visiteur (non connecté)', () {
     const guest = SessionStatus.unauthenticated;
 
+    test('inscription et mot de passe oublié : accès libre', () {
+      expect(_redirect(guest, AppRoutes.register), isNull);
+      expect(_redirect(guest, AppRoutes.forgotPassword), isNull);
+    });
+
     test('fil, annonce et recherche : accès libre', () {
       expect(_redirect(guest, AppRoutes.home), isNull);
       expect(_redirect(guest, '/listings/12'), isNull);
@@ -96,6 +101,24 @@ void main() {
 
     test('connexion sans page mémorisée : le fil', () {
       expect(_redirect(user, AppRoutes.login), AppRoutes.home);
+    });
+
+    test('inscription réussie : retour à la page mémorisée', () {
+      expect(
+        _redirect(user, _from(AppRoutes.register, AppRoutes.publish)),
+        AppRoutes.publish,
+      );
+    });
+
+    test('mot de passe oublié, une fois connecté : le fil', () {
+      expect(_redirect(user, AppRoutes.forgotPassword), AppRoutes.home);
+    });
+
+    test('inscription avec un `from` externe : le fil (CWE-601)', () {
+      expect(
+        _redirect(user, _from(AppRoutes.register, 'https://evil.com')),
+        AppRoutes.home,
+      );
     });
   });
 

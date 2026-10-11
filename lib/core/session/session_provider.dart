@@ -54,7 +54,16 @@ class SessionNotifier extends Notifier<SessionStatus> {
     state = SessionStatus.authenticated;
   }
 
-  /// Déconnexion locale : masque d'abord les pages, puis efface les tokens.
+  /// Masque immédiatement les pages protégées, sans toucher aux tokens.
+  ///
+  /// Utilisé par la déconnexion complète (fonctionnalité « auth »), qui
+  /// efface ensuite la session locale et prévient le serveur.
+  void markSignedOut() {
+    state = SessionStatus.unauthenticated;
+  }
+
+  /// Déconnexion locale uniquement : masque d'abord les pages, puis efface
+  /// les tokens. Le serveur n'est pas prévenu.
   Future<void> logout() async {
     state = SessionStatus.unauthenticated;
     await ref.read(tokenStorageProvider).clear();

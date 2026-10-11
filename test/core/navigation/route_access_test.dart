@@ -7,6 +7,8 @@ void main() {
     for (final path in [
       AppRoutes.home,
       AppRoutes.login,
+      AppRoutes.register,
+      AppRoutes.forgotPassword,
       AppRoutes.search,
       AppRoutes.listing('a1B2-c3_d4'),
       AppRoutes.seller('42'),
@@ -61,6 +63,15 @@ void main() {
         );
       }
     });
+  });
+
+  test('withReturn : ajoute `from` seulement s’il est fourni', () {
+    expect(AppRoutes.withReturn(AppRoutes.register, null), AppRoutes.register);
+    expect(AppRoutes.withReturn(AppRoutes.register, ''), AppRoutes.register);
+    expect(
+      AppRoutes.withReturn(AppRoutes.register, AppRoutes.publish),
+      '/register?from=%2Fpublish',
+    );
   });
 
   test('les identifiants sont encodés dans les adresses', () {
