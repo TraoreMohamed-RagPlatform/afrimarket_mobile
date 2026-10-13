@@ -46,6 +46,8 @@ Future<ProviderContainer> pumpAuthPage(
   /// Pages ouvertes AVANT `initialLocation` (la première est la racine) :
   /// permet de tester un retour en arrière.
   List<String> stack = const [],
+  Locale locale = const Locale('fr'),
+  ThemeMode themeMode = ThemeMode.light,
 }) async {
   // Écran haut : tout le formulaire est visible sans défilement.
   tester.view
@@ -101,10 +103,12 @@ Future<ProviderContainer> pumpAuthPage(
     UncontrolledProviderScope(
       container: container,
       child: MaterialApp.router(
-        locale: const Locale('fr'),
+        locale: locale,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         theme: AppTheme.light(),
+        darkTheme: AppTheme.dark(),
+        themeMode: themeMode,
         routerConfig: router,
       ),
     ),

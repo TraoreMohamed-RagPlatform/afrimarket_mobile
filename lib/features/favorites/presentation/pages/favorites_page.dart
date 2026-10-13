@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:afrimarket_mobile/shared/widgets/auth_gate.dart';
 import 'package:afrimarket_mobile/shared/widgets/sign_in_prompt_view.dart';
@@ -18,7 +19,7 @@ class FavoritesPage extends StatelessWidget {
       appBar: AppBar(title: Text(l10n.navFavorites)),
       body: AuthGate(
         signInPrompt: SignInPromptView(
-          icon: Icons.star_border,
+          icon: AppIcons.star,
           title: l10n.signInFavoritesTitle,
           message: l10n.signInFavoritesMessage,
         ),

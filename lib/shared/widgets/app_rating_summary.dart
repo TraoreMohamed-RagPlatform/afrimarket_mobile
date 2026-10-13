@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/core/theme/app_spacing.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:afrimarket_mobile/shared/extensions/theme_extension.dart';
@@ -34,7 +35,7 @@ class AppRatingSummary extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.star_rounded, size: 16, color: colors.brand),
+          Icon(AppIconsFill.star, size: 16, color: colors.brand),
           const SizedBox(width: AppSpacing.xs),
           Flexible(
             child: Text(

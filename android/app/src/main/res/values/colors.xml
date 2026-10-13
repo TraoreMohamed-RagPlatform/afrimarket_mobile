@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Fond crème de l'icône et de l'écran de lancement (ADR 0011). -->
+    <color name="ic_launcher_background">#FFF6F0</color>
+    <color name="launch_background">#FFF6F0</color>
+</resources>

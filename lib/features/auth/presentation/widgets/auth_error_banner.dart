@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/core/theme/app_spacing.dart';
 import 'package:afrimarket_mobile/shared/extensions/theme_extension.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class AuthErrorBanner extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.error_outline_rounded, color: colors.onError),
+              Icon(AppIcons.warningCircle, color: colors.onError),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(

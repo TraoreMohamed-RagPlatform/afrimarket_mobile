@@ -1,4 +1,5 @@
 import 'package:afrimarket_mobile/core/error/failure.dart';
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/core/theme/app_spacing.dart';
 import 'package:afrimarket_mobile/core/theme/app_theme.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
@@ -10,12 +11,14 @@ import 'package:afrimarket_mobile/shared/widgets/app_chip_bar.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_empty_state.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_error_state.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_load_more_indicator.dart';
+import 'package:afrimarket_mobile/shared/widgets/app_logo.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_rating_summary.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_round_action.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_search_launcher.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_section_header.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_skeleton.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_text_field.dart';
+import 'package:afrimarket_mobile/shared/widgets/bogolan_strip.dart';
 import 'package:afrimarket_mobile/shared/widgets/listing_card.dart';
 import 'package:afrimarket_mobile/shared/widgets/listing_card_status.dart';
 import 'package:afrimarket_mobile/shared/widgets/price_text.dart';
@@ -129,6 +132,60 @@ class GalleryCatalog extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
+        const _Section(
+          name: 'AppLogo',
+          usage:
+              'Logo officiel : chariot + nom (couleur du pagne). '
+              'AppLogoMark : chariot seul. Trait noir en clair, blanc en '
+              'sombre.',
+          child: Wrap(
+            spacing: AppSpacing.xl,
+            runSpacing: AppSpacing.md,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              AppLogo(),
+              AppLogoMark(size: 48, semanticLabel: AppLogo.brandName),
+              AppLogoMark(semanticLabel: AppLogo.brandName),
+            ],
+          ),
+        ),
+        _Section(
+          name: 'BogolanStrip',
+          usage:
+              'Motif signature : démarrage, en-tête connexion / '
+              'inscription, écrans vides. Jamais derrière du texte.',
+          child: BogolanStrip(color: colors.brand.withValues(alpha: 0.5)),
+        ),
+        const _Section(
+          name: 'AppIcons',
+          usage:
+              'Phosphor : regular au repos, fill (AppIconsFill) quand '
+              'actif. Aucune icône Material.',
+          child: Wrap(
+            spacing: AppSpacing.md,
+            runSpacing: AppSpacing.md,
+            children: [
+              Icon(AppIcons.house),
+              Icon(AppIconsFill.house),
+              Icon(AppIcons.star),
+              Icon(AppIconsFill.star),
+              Icon(AppIcons.chatCircle),
+              Icon(AppIcons.bell),
+              Icon(AppIcons.plusCircle),
+              Icon(AppIcons.magnifyingGlass),
+              Icon(AppIcons.mapPin),
+              Icon(AppIcons.shoppingBag),
+              Icon(AppIcons.wrench),
+              Icon(AppIcons.briefcase),
+              Icon(AppIcons.car),
+              Icon(AppIcons.megaphone),
+              Icon(AppIcons.whatsappLogo),
+              Icon(AppIcons.phone),
+              Icon(AppIcons.shareNetwork),
+              Icon(AppIcons.sealCheck),
+            ],
+          ),
+        ),
         _Section(
           name: 'AppColors',
           usage: 'Couleurs sémantiques ; contraste WCAG AA testé.',
@@ -226,7 +283,7 @@ class GalleryCatalog extends StatelessWidget {
                   onTap: () {},
                   action: IconButton(
                     tooltip: 'Enregistrer',
-                    icon: const Icon(Icons.favorite_border),
+                    icon: const Icon(AppIcons.heart),
                     onPressed: () {},
                   ),
                 ),
@@ -271,7 +328,7 @@ class GalleryCatalog extends StatelessWidget {
                 ],
                 trailing: IconButton(
                   tooltip: 'Localisation',
-                  icon: const Icon(Icons.place_outlined),
+                  icon: const Icon(AppIcons.mapPin),
                   onPressed: () {},
                 ),
               ),
@@ -284,18 +341,18 @@ class GalleryCatalog extends StatelessWidget {
           child: AppRoundActionRow(
             actions: [
               AppRoundAction(
-                icon: Icons.chat_bubble_outline,
+                icon: AppIcons.chatCircle,
                 label: l10n.navMessages,
                 onTap: () {},
               ),
               AppRoundAction(
-                icon: Icons.share_outlined,
+                icon: AppIcons.shareNetwork,
                 label: 'Partager',
                 onTap: () {},
               ),
               AppRoundAction(
-                icon: Icons.bookmark_border,
-                activeIcon: Icons.bookmark,
+                icon: AppIcons.bookmarkSimple,
+                activeIcon: AppIconsFill.bookmarkSimple,
                 label: 'Enregistrer',
                 activeLabel: 'Enregistré',
                 active: true,
@@ -354,7 +411,7 @@ class GalleryCatalog extends StatelessWidget {
           child: Column(
             children: [
               AppEmptyState(
-                icon: Icons.inventory_2_outlined,
+                icon: AppIcons.package,
                 title: 'Publiez votre première annonce',
                 message: 'Vendez ce dont vous n’avez plus besoin.',
                 actionLabel: l10n.navPublish,
@@ -404,30 +461,30 @@ class GalleryCatalog extends StatelessWidget {
             onSelect: (_) {},
             items: [
               AppNavItem(
-                icon: Icons.home_outlined,
-                selectedIcon: Icons.home,
+                icon: AppIcons.house,
+                selectedIcon: AppIconsFill.house,
                 label: l10n.navHome,
               ),
               AppNavItem(
-                icon: Icons.star_border,
-                selectedIcon: Icons.star,
+                icon: AppIcons.star,
+                selectedIcon: AppIconsFill.star,
                 label: l10n.navFavorites,
               ),
               AppNavItem(
-                icon: Icons.chat_bubble_outline,
-                selectedIcon: Icons.chat_bubble,
+                icon: AppIcons.chatCircle,
+                selectedIcon: AppIconsFill.chatCircle,
                 label: l10n.navMessages,
                 badgeCount: 3,
               ),
               AppNavItem(
-                icon: Icons.notifications_none,
-                selectedIcon: Icons.notifications,
+                icon: AppIcons.bell,
+                selectedIcon: AppIconsFill.bell,
                 label: l10n.navNotifications,
                 badgeCount: 250,
               ),
             ],
             centerAction: AppNavAction(
-              icon: Icons.add,
+              icon: AppIcons.plusCircle,
               label: l10n.navPublish,
               onTap: () {},
             ),

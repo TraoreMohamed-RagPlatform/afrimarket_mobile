@@ -10,6 +10,43 @@ String _from(String target, String from) =>
     Uri(path: target, queryParameters: {fromParam: from}).toString();
 
 void main() {
+  group('Animation du démarrage', () {
+    test('tant qu’elle joue, l’écran de démarrage reste affiché', () {
+      for (final status in SessionStatus.values) {
+        expect(
+          resolveRedirect(
+            status: status,
+            location: Uri.parse(AppRoutes.splash),
+            introFinished: false,
+          ),
+          isNull,
+          reason: status.name,
+        );
+      }
+    });
+
+    test('une fois terminée, le visiteur arrive sur le fil', () {
+      expect(
+        resolveRedirect(
+          status: SessionStatus.unauthenticated,
+          location: Uri.parse(AppRoutes.splash),
+        ),
+        AppRoutes.home,
+      );
+    });
+
+    test('ne bloque jamais les autres pages', () {
+      expect(
+        resolveRedirect(
+          status: SessionStatus.unauthenticated,
+          location: Uri.parse(AppRoutes.home),
+          introFinished: false,
+        ),
+        isNull,
+      );
+    });
+  });
+
   group('Session en cours de vérification', () {
     test('toute page passe par le démarrage, en la mémorisant', () {
       expect(

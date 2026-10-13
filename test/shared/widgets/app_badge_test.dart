@@ -1,4 +1,5 @@
 import 'package:afrimarket_mobile/core/l10n/generated/app_localizations.dart';
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_badge.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,7 +21,7 @@ void main() {
     );
 
     expect(find.text(fr.badgeVerified), findsOneWidget);
-    expect(find.byIcon(Icons.verified_outlined), findsOneWidget);
+    expect(find.byIcon(AppIcons.sealCheck), findsOneWidget);
   });
 
   testWidgets('fonctionne en arabe et en mode sombre', (tester) async {

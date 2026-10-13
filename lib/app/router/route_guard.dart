@@ -11,13 +11,18 @@ const String fromParam = AppRoutes.returnParam;
 /// Renvoie `null` si la page demandée est autorisée, sinon le chemin
 /// vers lequel rediriger.
 ///
+/// [introFinished] : faux tant que le logo de l'écran de démarrage
+/// s'anime ; l'écran de démarrage reste alors affiché.
+///
 /// Fonction pure (sans Flutter ni go_router) : toutes les règles
 /// de navigation sont testables unitairement.
 String? resolveRedirect({
   required SessionStatus status,
   required Uri location,
+  bool introFinished = true,
 }) {
   final path = location.path;
+  if (path == AppRoutes.splash && !introFinished) return null;
 
   switch (status) {
     case SessionStatus.unknown:

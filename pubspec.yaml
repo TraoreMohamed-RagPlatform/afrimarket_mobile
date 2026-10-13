@@ -38,3 +38,24 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
+
+  # Licences des polices intégrées, affichées dans « Licences » (OFL, MIT).
+  assets:
+    - assets/fonts/bricolage/OFL.txt
+    - assets/fonts/phosphor/LICENSE
+
+  fonts:
+    # Police de marque (logo, titres, prix, boutons) : ADR 0011.
+    - family: BricolageGrotesque
+      fonts:
+        - asset: assets/fonts/bricolage/BricolageGrotesque-600.ttf
+          weight: 600
+        - asset: assets/fonts/bricolage/BricolageGrotesque-800.ttf
+          weight: 800
+    # Icônes Phosphor (MIT) : regular au repos, fill quand actif.
+    - family: PhosphorRegular
+      fonts:
+        - asset: assets/fonts/phosphor/Phosphor.ttf
+    - family: PhosphorFill
+      fonts:
+        - asset: assets/fonts/phosphor/Phosphor-Fill.ttf

@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:flutter/material.dart';
 
 /// Titre de section (« Description », « Vendeur › »).
@@ -46,7 +47,7 @@ class AppSectionHeader extends StatelessWidget {
           ),
           if (label != null)
             TextButton(onPressed: onAction, child: Text(label)),
-          if (tapHandler != null) const Icon(Icons.chevron_right),
+          if (tapHandler != null) const Icon(AppIcons.caretRight),
         ],
       ),
     );

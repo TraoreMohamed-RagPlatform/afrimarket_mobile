@@ -1,5 +1,6 @@
 import 'package:afrimarket_mobile/core/error/failure.dart';
 import 'package:afrimarket_mobile/core/l10n/failure_messages.dart';
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_error_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,7 +21,7 @@ void main() {
     );
 
     expect(find.text(failure.message(fr)), findsOneWidget);
-    expect(find.byIcon(Icons.wifi_off_rounded), findsOneWidget);
+    expect(find.byIcon(AppIcons.wifiSlash), findsOneWidget);
 
     await tester.tap(find.text(fr.retry));
     expect(retried, isTrue);

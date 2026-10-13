@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_chip_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -26,7 +27,7 @@ Widget _bar({void Function(String)? onTap}) => SizedBox(
     items: _items(onTap: onTap),
     trailing: IconButton(
       tooltip: 'Localisation',
-      icon: const Icon(Icons.place_outlined),
+      icon: const Icon(AppIcons.mapPin),
       onPressed: () {},
     ),
   ),
@@ -38,7 +39,7 @@ void main() {
 
     expect(find.byType(ChoiceChip), findsNWidgets(5));
     expect(find.byTooltip('Localisation'), findsOneWidget);
-    expect(find.byIcon(Icons.expand_more), findsOneWidget);
+    expect(find.byIcon(AppIcons.caretDown), findsOneWidget);
   });
 
   testWidgets('toucher une pastille appelle son action', (tester) async {

@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_badge.dart';
 import 'package:afrimarket_mobile/shared/widgets/listing_card.dart';
 import 'package:afrimarket_mobile/shared/widgets/listing_card_status.dart';
@@ -139,7 +140,7 @@ void main() {
             onTap: () => cardTapped = true,
             action: IconButton(
               tooltip: 'Enregistrer',
-              icon: const Icon(Icons.favorite_border),
+              icon: const Icon(AppIcons.heart),
               onPressed: () => actionTapped = true,
             ),
           ),
@@ -182,7 +183,7 @@ void main() {
               label: 'Enregistrer',
               button: true,
               child: IconButton(
-                icon: const Icon(Icons.favorite_border),
+                icon: const Icon(AppIcons.heart),
                 onPressed: () {},
               ),
             ),
@@ -206,7 +207,7 @@ void main() {
               badges: const [AppBadgeType.recent],
               oldPrice: 2000,
               action: IconButton(
-                icon: const Icon(Icons.favorite_border),
+                icon: const Icon(AppIcons.heart),
                 onPressed: () {},
               ),
             ),

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
 import 'package:afrimarket_mobile/core/l10n/failure_messages.dart';
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/features/health/presentation/controllers/health_controller.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:afrimarket_mobile/shared/extensions/theme_extension.dart';
@@ -23,12 +24,14 @@ class HealthCheckPage extends ConsumerWidget {
 
     final (icon, color, message) = switch (state) {
       HealthIdle() || HealthLoading() => (
-        Icons.cloud_outlined,
+        AppIcons.cloud,
         colors.textSecondary,
         l10n.diagnosticsIntro,
       ),
       HealthLoaded(:final status) => (
-        status.isHealthy ? Icons.check_circle : Icons.error,
+        status.isHealthy
+            ? AppIconsFill.checkCircle
+            : AppIconsFill.warningCircle,
         status.isHealthy ? colors.success : colors.error,
         l10n.diagnosticsResult(
           status.status,
@@ -37,7 +40,7 @@ class HealthCheckPage extends ConsumerWidget {
         ),
       ),
       HealthFailed(:final failure) => (
-        Icons.error,
+        AppIconsFill.warningCircle,
         colors.error,
         failure.message(l10n),
       ),
@@ -78,7 +81,7 @@ class HealthCheckPage extends ConsumerWidget {
                           color: colors.onBrand,
                         ),
                       )
-                    : const Icon(Icons.wifi_tethering),
+                    : const Icon(AppIcons.broadcast),
                 label: Text(l10n.diagnosticsTestButton),
               ),
             ],

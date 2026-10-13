@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -126,11 +127,7 @@ class _AppTextFieldState extends State<AppTextField> {
           suffixIcon: isPassword
               ? IconButton(
                   tooltip: _obscured ? l10n.passwordShow : l10n.passwordHide,
-                  icon: Icon(
-                    _obscured
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,
-                  ),
+                  icon: Icon(_obscured ? AppIcons.eye : AppIcons.eyeSlash),
                   onPressed: () => setState(() => _obscured = !_obscured),
                 )
               : null,

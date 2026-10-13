@@ -5,6 +5,9 @@ import 'package:afrimarket_mobile/features/auth/auth_providers.dart';
 import 'package:afrimarket_mobile/features/auth/domain/usecases/request_password_reset_usecase.dart';
 import 'package:afrimarket_mobile/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/pages/forgot_password_page.dart';
+import 'package:afrimarket_mobile/features/auth/presentation/widgets/auth_form_layout.dart';
+import 'package:afrimarket_mobile/shared/widgets/app_logo.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -178,5 +181,27 @@ void main() {
     await pump(tester);
 
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('arabe et mode sombre : droite à gauche, logo affiché', (
+    tester,
+  ) async {
+    await pumpAuthPage(
+      tester,
+      initialLocation: AppRoutes.forgotPassword,
+      pages: {AppRoutes.forgotPassword: (_) => const ForgotPasswordPage()},
+      overrides: [
+        requestPasswordResetUseCaseProvider.overrideWithValue(requestReset),
+        resetPasswordUseCaseProvider.overrideWithValue(reset),
+      ],
+      locale: const Locale('ar'),
+      themeMode: ThemeMode.dark,
+    );
+
+    expect(tester.takeException(), isNull);
+    final context = tester.element(find.byType(AuthFormLayout));
+    expect(Directionality.of(context), TextDirection.rtl);
+    expect(Theme.of(context).brightness, Brightness.dark);
+    expect(find.byType(AppLogo), findsOneWidget);
   });
 }

@@ -4,8 +4,10 @@ import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
 import 'package:afrimarket_mobile/core/config/dev_tools.dart';
 import 'package:afrimarket_mobile/core/navigation/app_routes.dart';
 import 'package:afrimarket_mobile/core/session/session_provider.dart';
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/controllers/sign_out.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
+import 'package:afrimarket_mobile/shared/widgets/app_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -25,13 +27,13 @@ class HomePage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(config.appName),
+        title: const AppLogo(height: 32),
         actions: [
           // La déconnexion n'a de sens que pour un utilisateur connecté.
           if (isSignedIn)
             IconButton(
               tooltip: l10n.logoutTooltip,
-              icon: const Icon(Icons.logout),
+              icon: const Icon(AppIcons.signOut),
               onPressed: () => unawaited(ref.read(signOutProvider)()),
             ),
         ],
@@ -50,12 +52,12 @@ class HomePage extends ConsumerWidget {
                 children: [
                   OutlinedButton.icon(
                     onPressed: () => context.go(AppRoutes.diagnostics),
-                    icon: const Icon(Icons.build_outlined),
+                    icon: const Icon(AppIcons.wrench),
                     label: Text(l10n.devDiagnosticsButton),
                   ),
                   OutlinedButton.icon(
                     onPressed: () => unawaited(context.push(AppRoutes.gallery)),
-                    icon: const Icon(Icons.palette_outlined),
+                    icon: const Icon(AppIcons.palette),
                     label: Text(l10n.devGalleryButton),
                   ),
                 ],

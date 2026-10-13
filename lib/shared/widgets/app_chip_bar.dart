@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/core/theme/app_spacing.dart';
 import 'package:afrimarket_mobile/shared/extensions/theme_extension.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +75,7 @@ class AppChipBar extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(item.label),
-                                const Icon(Icons.expand_more, size: 18),
+                                const Icon(AppIcons.caretDown, size: 18),
                               ],
                             )
                           : Text(item.label),
