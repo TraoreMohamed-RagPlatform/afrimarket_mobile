@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_sliver_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,13 +11,13 @@ Widget _page() => CustomScrollView(
       title: 'AfriMarket',
       leading: IconButton(
         tooltip: 'Menu',
-        icon: const Icon(Icons.menu),
+        icon: const Icon(AppIcons.magnifyingGlass),
         onPressed: () {},
       ),
       actions: [
         IconButton(
           tooltip: 'Profil',
-          icon: const Icon(Icons.account_circle_outlined),
+          icon: const Icon(AppIcons.user),
           onPressed: () {},
         ),
       ],

@@ -150,7 +150,36 @@ abstract final class AppTheme {
       progressIndicatorTheme: ProgressIndicatorThemeData(color: c.brand),
       snackBarTheme: const SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
+        elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: AppRadius.sm),
+      ),
+      // Charte : aucune ombre portée. La hiérarchie vient des fonds teintés
+      // et des séparateurs fins.
+      dialogTheme: DialogThemeData(
+        backgroundColor: c.surface,
+        elevation: 0,
+        shape: const RoundedRectangleBorder(borderRadius: AppRadius.sm),
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: c.surface,
+        elevation: 0,
+        modalElevation: 0,
+      ),
+      popupMenuTheme: PopupMenuThemeData(
+        color: c.surface,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: AppRadius.sm,
+          side: BorderSide(color: c.border),
+        ),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: c.brand,
+        foregroundColor: c.onBrand,
+        elevation: 0,
+        focusElevation: 0,
+        hoverElevation: 0,
+        highlightElevation: 0,
       ),
     );
   }

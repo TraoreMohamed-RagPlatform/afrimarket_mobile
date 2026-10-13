@@ -1,4 +1,5 @@
 import 'package:afrimarket_mobile/app/app.dart';
+import 'package:afrimarket_mobile/app/font_licenses.dart';
 import 'package:afrimarket_mobile/core/config/app_config.dart';
 import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
 import 'package:afrimarket_mobile/core/config/firebase_config.dart';
@@ -16,6 +17,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// 4. Lance l'application.
 Future<void> bootstrap(Flavor flavor) async {
   WidgetsFlutterBinding.ensureInitialized();
+  FontLicenses.register();
 
   final config = AppConfig.fromEnvironment(expected: flavor);
   final attestation = await initAppAttestation(

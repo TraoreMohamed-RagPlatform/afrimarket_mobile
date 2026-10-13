@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_round_action.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -6,8 +7,8 @@ import '../../helpers/l10n.dart';
 
 Widget _action({bool active = false, VoidCallback? onTap}) => Center(
   child: AppRoundAction(
-    icon: Icons.bookmark_border,
-    activeIcon: Icons.bookmark,
+    icon: AppIcons.bookmarkSimple,
+    activeIcon: AppIconsFill.bookmarkSimple,
     label: 'Enregistrer',
     activeLabel: 'Enregistré',
     active: active,
@@ -32,7 +33,7 @@ void main() {
       await tester.pumpWidget(localizedApp(_action(active: true)));
 
       expect(find.text('Enregistré'), findsOneWidget);
-      expect(find.byIcon(Icons.bookmark), findsOneWidget);
+      expect(find.byIcon(AppIconsFill.bookmarkSimple), findsOneWidget);
     });
 
     testWidgets('annoncé comme interrupteur aux lecteurs d’écran', (
@@ -59,7 +60,7 @@ void main() {
         localizedApp(
           Center(
             child: AppRoundAction(
-              icon: Icons.circle_outlined,
+              icon: AppIcons.heart,
               label: 'Un libellé beaucoup trop long pour un bouton',
               onTap: () {},
             ),
@@ -109,7 +110,7 @@ void main() {
                         'Enregistrer',
                       ])
                         AppRoundAction(
-                          icon: Icons.circle_outlined,
+                          icon: AppIcons.heart,
                           label: label,
                           onTap: () {},
                         ),
@@ -135,7 +136,7 @@ void main() {
                 actions: [
                   for (final label in ['A', 'B', 'C'])
                     AppRoundAction(
-                      icon: Icons.circle_outlined,
+                      icon: AppIcons.heart,
                       label: label,
                       onTap: () {},
                     ),

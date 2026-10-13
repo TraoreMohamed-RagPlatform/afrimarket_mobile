@@ -2,6 +2,7 @@ import 'package:afrimarket_mobile/app/dev/gallery_page.dart';
 import 'package:afrimarket_mobile/app/pages/not_found_page.dart';
 import 'package:afrimarket_mobile/app/pages/splash_page.dart';
 import 'package:afrimarket_mobile/app/router/route_guard.dart';
+import 'package:afrimarket_mobile/app/router/splash_intro.dart';
 import 'package:afrimarket_mobile/app/shell/app_shell.dart';
 import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
 import 'package:afrimarket_mobile/core/config/dev_tools.dart';
@@ -37,20 +38,29 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   final config = ref.watch(appConfigProvider);
 
   // Relais entre Riverpod et go_router : notifie le routeur à chaque
-  // changement de session.
+  // changement de session, et à la fin de l'animation de démarrage.
   final session = ValueNotifier<SessionStatus>(ref.read(sessionProvider));
+  final intro = ValueNotifier<bool>(ref.read(splashIntroFinishedProvider));
   ref
     ..listen<SessionStatus>(
       sessionProvider,
       (previous, next) => session.value = next,
     )
-    ..onDispose(session.dispose);
+    ..listen<bool>(
+      splashIntroFinishedProvider,
+      (previous, next) => intro.value = next,
+    )
+    ..onDispose(session.dispose)
+    ..onDispose(intro.dispose);
 
   final router = GoRouter(
     initialLocation: AppRoutes.splash,
-    refreshListenable: session,
-    redirect: (context, state) =>
-        resolveRedirect(status: session.value, location: state.uri),
+    refreshListenable: Listenable.merge([session, intro]),
+    redirect: (context, state) => resolveRedirect(
+      status: session.value,
+      location: state.uri,
+      introFinished: intro.value,
+    ),
     routes: [
       GoRoute(
         path: AppRoutes.splash,

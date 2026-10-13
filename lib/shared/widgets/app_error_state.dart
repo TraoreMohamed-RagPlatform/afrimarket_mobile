@@ -1,5 +1,6 @@
 import 'package:afrimarket_mobile/core/error/failure.dart';
 import 'package:afrimarket_mobile/core/l10n/failure_messages.dart';
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/core/theme/app_spacing.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:afrimarket_mobile/shared/extensions/theme_extension.dart';
@@ -31,8 +32,8 @@ class AppErrorState extends StatelessWidget {
 
   /// Icône adaptée : coupure réseau ou erreur générale.
   IconData get _icon => switch (failure) {
-    NetworkFailure() || TimeoutFailure() => Icons.wifi_off_rounded,
-    _ => Icons.error_outline_rounded,
+    NetworkFailure() || TimeoutFailure() => AppIcons.wifiSlash,
+    _ => AppIcons.warningCircle,
   };
 
   @override
@@ -86,7 +87,7 @@ class AppErrorState extends StatelessWidget {
                       const SizedBox(height: AppSpacing.xl),
                       ElevatedButton.icon(
                         onPressed: retry,
-                        icon: const Icon(Icons.refresh_rounded),
+                        icon: const Icon(AppIcons.arrowClockwise),
                         label: Text(l10n.retry),
                       ),
                     ],

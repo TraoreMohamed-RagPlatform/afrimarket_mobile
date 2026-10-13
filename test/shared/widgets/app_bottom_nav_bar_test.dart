@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,29 +20,29 @@ Widget _bar({
         onSelect: onSelect ?? (_) {},
         items: [
           AppNavItem(
-            icon: Icons.home_outlined,
-            selectedIcon: Icons.home,
+            icon: AppIcons.house,
+            selectedIcon: AppIconsFill.house,
             label: fr.navHome,
           ),
           AppNavItem(
-            icon: Icons.star_border,
-            selectedIcon: Icons.star,
+            icon: AppIcons.star,
+            selectedIcon: AppIconsFill.star,
             label: fr.navFavorites,
           ),
           AppNavItem(
-            icon: Icons.chat_bubble_outline,
-            selectedIcon: Icons.chat_bubble,
+            icon: AppIcons.chatCircle,
+            selectedIcon: AppIconsFill.chatCircle,
             label: fr.navMessages,
             badgeCount: messages,
           ),
           AppNavItem(
-            icon: Icons.notifications_none,
-            selectedIcon: Icons.notifications,
+            icon: AppIcons.bell,
+            selectedIcon: AppIconsFill.bell,
             label: fr.navNotifications,
           ),
         ],
         centerAction: AppNavAction(
-          icon: Icons.add,
+          icon: AppIcons.plusCircle,
           label: fr.navPublish,
           onTap: onPublish ?? () {},
         ),
@@ -111,8 +112,8 @@ void main() {
   ) async {
     await tester.pumpWidget(localizedApp(_bar(currentIndex: 1)));
 
-    expect(find.byIcon(Icons.star), findsOneWidget);
-    expect(find.byIcon(Icons.home_outlined), findsOneWidget);
+    expect(find.byIcon(AppIconsFill.star), findsOneWidget);
+    expect(find.byIcon(AppIcons.house), findsOneWidget);
     expect(
       tester.getSemantics(find.bySemanticsLabel(fr.navFavorites)),
       isSemantics(isSelected: true),

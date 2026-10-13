@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:afrimarket_mobile/shared/extensions/theme_extension.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_network_image.dart';
@@ -88,7 +89,7 @@ class UserAvatar extends StatelessWidget {
                     border: Border.all(color: colors.background, width: 2),
                   ),
                   child: Icon(
-                    Icons.check,
+                    AppIcons.check,
                     size: badgeSize * 0.62,
                     color: colors.onBrand,
                   ),

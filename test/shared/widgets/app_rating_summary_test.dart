@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_rating_summary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,7 +12,7 @@ void main() {
     );
 
     expect(find.text(fr.sellerNew), findsOneWidget);
-    expect(find.byIcon(Icons.star_rounded), findsNothing);
+    expect(find.byIcon(AppIconsFill.star), findsNothing);
   });
 
   testWidgets('avec avis : note et nombre', (tester) async {

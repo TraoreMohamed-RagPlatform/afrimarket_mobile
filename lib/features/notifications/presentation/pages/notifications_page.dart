@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:afrimarket_mobile/shared/widgets/auth_gate.dart';
 import 'package:afrimarket_mobile/shared/widgets/sign_in_prompt_view.dart';
@@ -17,7 +18,7 @@ class NotificationsPage extends StatelessWidget {
       appBar: AppBar(title: Text(l10n.navNotifications)),
       body: AuthGate(
         signInPrompt: SignInPromptView(
-          icon: Icons.notifications_none,
+          icon: AppIcons.bell,
           title: l10n.signInNotificationsTitle,
           message: l10n.signInNotificationsMessage,
         ),

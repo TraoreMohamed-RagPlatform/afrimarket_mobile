@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -36,7 +37,7 @@ void main() {
       ),
     );
 
-    expect(find.byIcon(Icons.image_outlined), findsOneWidget);
+    expect(find.byIcon(AppIcons.image), findsOneWidget);
   });
 
   testWidgets('adresse refusée : fond neutre, aucun chargement', (
@@ -52,6 +53,6 @@ void main() {
       ),
     );
 
-    expect(find.byIcon(Icons.image_outlined), findsOneWidget);
+    expect(find.byIcon(AppIcons.image), findsOneWidget);
   });
 }

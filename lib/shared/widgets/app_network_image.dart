@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/extensions/theme_extension.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class AppNetworkImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final imageUrl = url;
     if (imageUrl == null || !isAllowedUrl(imageUrl)) {
-      return const _Placeholder(icon: Icons.image_outlined);
+      return const _Placeholder(icon: AppIcons.image);
     }
 
     return LayoutBuilder(
@@ -49,7 +50,7 @@ class AppNetworkImage extends StatelessWidget {
               Image(image: provider, fit: fit, semanticLabel: semanticLabel),
           placeholder: (context, _) => const _Placeholder(),
           errorWidget: (context, _, _) =>
-              const _Placeholder(icon: Icons.broken_image_outlined),
+              const _Placeholder(icon: AppIcons.imageBroken),
         );
       },
     );

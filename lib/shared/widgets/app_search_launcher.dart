@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/core/theme/app_spacing.dart';
 import 'package:afrimarket_mobile/shared/extensions/theme_extension.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class AppSearchLauncher extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.search, color: colors.textSecondary),
+                  Icon(AppIcons.magnifyingGlass, color: colors.textSecondary),
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: Text(

@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_empty_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../helpers/l10n.dart';
 
 Widget _empty({VoidCallback? onAction}) => AppEmptyState(
-  icon: Icons.inventory_2_outlined,
+  icon: AppIcons.package,
   title: 'Publiez votre première annonce',
   message: 'Vendez ce dont vous n’avez plus besoin.',
   actionLabel: 'Publier',

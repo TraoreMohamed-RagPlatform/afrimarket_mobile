@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/core/theme/app_spacing.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:afrimarket_mobile/shared/extensions/theme_extension.dart';
@@ -44,7 +45,7 @@ class AppBadge extends StatelessWidget {
         l10n.badgeVerified,
         colors.brandSoft,
         colors.onBrandSoft,
-        Icons.verified_outlined,
+        AppIcons.sealCheck,
       ),
       AppBadgeType.reserved => (
         l10n.listingStatusReserved,
