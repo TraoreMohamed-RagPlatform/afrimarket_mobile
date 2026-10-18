@@ -2,6 +2,7 @@ import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/extensions/theme_extension.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/l10n.dart';
@@ -176,13 +177,16 @@ void main() {
           ),
         );
 
-        const tabWidth = 360 / 5;
         for (final text in tester.widgetList<Text>(find.byType(Text))) {
           expect(text.overflow, isNot(TextOverflow.ellipsis));
         }
-        for (final element in find.byType(FittedBox).evaluate()) {
-          final box = element.renderObject! as RenderBox;
-          expect(box.size.width, lessThanOrEqualTo(tabWidth));
+        // Chaque libellé tient en entier dans la largeur qui lui est donnée.
+        for (final element in find.byType(RichText).evaluate()) {
+          final paragraph = element.renderObject! as RenderParagraph;
+          expect(
+            paragraph.getMaxIntrinsicWidth(double.infinity),
+            lessThanOrEqualTo(paragraph.size.width + 0.5),
+          );
         }
         expect(tester.takeException(), isNull);
       }

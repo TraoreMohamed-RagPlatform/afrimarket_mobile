@@ -219,7 +219,11 @@ class _NavActionButton extends StatelessWidget {
   }
 }
 
-/// Libellé d'onglet sur une ligne : réduit pour tenir plutôt que coupé.
+/// Libellé d'onglet sur une ligne, réduit pour tenir plutôt que coupé.
+///
+/// La taille de police elle-même est diminuée (pas de mise à l'échelle
+/// graphique) : le texte reste net et les contrôles d'accessibilité
+/// mesurent le contraste là où il est réellement dessiné.
 class _NavLabel extends StatelessWidget {
   const new(this.text, {required this.style});
 
@@ -228,11 +232,46 @@ class _NavLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final base = DefaultTextStyle.of(context).style.merge(style);
+    final textScaler = MediaQuery.textScalerOf(context);
+    final textDirection = Directionality.of(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: Text(text, maxLines: 1, softWrap: false, style: style),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final available = constraints.maxWidth;
+          var fitted = base;
+          // L'espacement des lettres ne suit pas la taille de police : on
+          // réduit les deux ensemble et on vérifie la mesure (2 passes au
+          // plus suffisent).
+          for (var pass = 0; pass < 3 && available.isFinite; pass++) {
+            final painter = TextPainter(
+              text: TextSpan(text: text, style: fitted),
+              textDirection: textDirection,
+              textScaler: textScaler,
+              maxLines: 1,
+            )..layout();
+            final width = painter.width;
+            painter.dispose();
+
+            final fontSize = fitted.fontSize;
+            if (fontSize == null || width <= available) break;
+            final factor = available / width * 0.98;
+            fitted = fitted.copyWith(
+              fontSize: fontSize * factor,
+              letterSpacing: (fitted.letterSpacing ?? 0) * factor,
+            );
+          }
+          return Text(
+            text,
+            maxLines: 1,
+            softWrap: false,
+            overflow: TextOverflow.clip,
+            textAlign: TextAlign.center,
+            style: fitted,
+          );
+        },
       ),
     );
   }
