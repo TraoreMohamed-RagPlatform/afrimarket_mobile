@@ -17,9 +17,16 @@ enum AppBadgeType {
 
   /// Annonce réservée par un acheteur.
   reserved,
+
+  /// Prix à débattre avec le vendeur.
+  negotiable,
+
+  /// Article vendu.
+  sold,
 }
 
-/// Petite pastille d'information (« Récent », « ✓ Vérifié », « Réservé »).
+/// Petite pastille d'information (« Récent », « ✓ Vérifié », « Réservé »,
+/// « Négociable », « Vendu »).
 ///
 /// - couleurs issues du thème : contraste WCAG AA en clair et en sombre ;
 /// - s'adapte à la place disponible : le texte est tronqué plutôt que de
@@ -51,6 +58,18 @@ class AppBadge extends StatelessWidget {
         l10n.listingStatusReserved,
         colors.brandSoft,
         colors.onBrandSoft,
+        null,
+      ),
+      AppBadgeType.negotiable => (
+        l10n.badgeNegotiable,
+        colors.surfaceMuted,
+        colors.textPrimary,
+        null,
+      ),
+      AppBadgeType.sold => (
+        l10n.listingStatusSold,
+        colors.textPrimary,
+        colors.background,
         null,
       ),
     };

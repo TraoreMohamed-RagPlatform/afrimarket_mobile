@@ -10,6 +10,7 @@ final class ListingSummary {
     required this.title,
     required this.price,
     required this.createdAt,
+    this.previousPrice,
     this.imageUrl,
     this.isSold = false,
   });
@@ -24,6 +25,10 @@ final class ListingSummary {
 
   /// Prix en dirhams (0 = gratuit).
   final num price;
+
+  /// Prix avant la dernière baisse, barré sur la carte (toujours supérieur
+  /// à [price] quand il est présent).
+  final num? previousPrice;
 
   final DateTime createdAt;
 
@@ -47,11 +52,12 @@ final class ListingSummary {
       other.id == id &&
       other.title == title &&
       other.price == price &&
+      other.previousPrice == previousPrice &&
       other.createdAt == createdAt &&
       other.imageUrl == imageUrl &&
       other.isSold == isSold;
 
   @override
   int get hashCode =>
-      Object.hash(id, title, price, createdAt, imageUrl, isSold);
+      Object.hash(id, title, price, previousPrice, createdAt, imageUrl, isSold);
 }

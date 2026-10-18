@@ -228,6 +228,7 @@ class _FeedCard extends StatelessWidget {
       key: ValueKey(listing.id),
       title: listing.title,
       price: listing.price,
+      oldPrice: listing.previousPrice,
       imageUrl: listing.imageUrl,
       badges: [if (listing.isRecentAt(now)) AppBadgeType.recent],
       status: listing.isSold

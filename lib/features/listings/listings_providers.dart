@@ -4,6 +4,11 @@ import 'package:afrimarket_mobile/features/listings/data/repositories/listings_r
 import 'package:afrimarket_mobile/features/listings/domain/repositories/listings_repository.dart';
 import 'package:afrimarket_mobile/features/listings/domain/usecases/get_categories_usecase.dart';
 import 'package:afrimarket_mobile/features/listings/domain/usecases/get_feed_usecase.dart';
+import 'package:afrimarket_mobile/features/listings/domain/usecases/get_listing_detail_usecase.dart';
+import 'package:afrimarket_mobile/features/listings/domain/usecases/get_listing_locations_usecase.dart';
+import 'package:afrimarket_mobile/features/listings/domain/usecases/get_seller_contact_usecase.dart';
+import 'package:afrimarket_mobile/features/listings/domain/usecases/get_similar_listings_usecase.dart';
+import 'package:afrimarket_mobile/features/listings/domain/usecases/report_listing_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Injection de la fonctionnalité « listings ».
@@ -25,4 +30,24 @@ final getFeedUseCaseProvider = Provider<GetFeedUseCase>(
 
 final getCategoriesUseCaseProvider = Provider<GetCategoriesUseCase>(
   (ref) => GetCategoriesUseCase(ref.watch(listingsRepositoryProvider)),
+);
+
+final getListingDetailUseCaseProvider = Provider<GetListingDetailUseCase>(
+  (ref) => GetListingDetailUseCase(ref.watch(listingsRepositoryProvider)),
+);
+
+final getSimilarListingsUseCaseProvider = Provider<GetSimilarListingsUseCase>(
+  (ref) => GetSimilarListingsUseCase(ref.watch(listingsRepositoryProvider)),
+);
+
+final getListingLocationsUseCaseProvider = Provider<GetListingLocationsUseCase>(
+  (ref) => GetListingLocationsUseCase(ref.watch(listingsRepositoryProvider)),
+);
+
+final getSellerContactUseCaseProvider = Provider<GetSellerContactUseCase>(
+  (ref) => GetSellerContactUseCase(ref.watch(listingsRepositoryProvider)),
+);
+
+final reportListingUseCaseProvider = Provider<ReportListingUseCase>(
+  (ref) => ReportListingUseCase(ref.watch(listingsRepositoryProvider)),
 );
