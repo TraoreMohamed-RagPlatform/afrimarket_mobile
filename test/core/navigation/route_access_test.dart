@@ -14,6 +14,8 @@ void main() {
       AppRoutes.seller('42'),
       AppRoutes.diagnostics,
       AppRoutes.gallery,
+      AppRoutes.settings,
+      AppRoutes.help,
     ]) {
       test(path, () {
         expect(RouteAccessPolicy.of(path), RouteAccess.public);
@@ -37,6 +39,13 @@ void main() {
     test('Publier exige une connexion', () {
       expect(
         RouteAccessPolicy.of(AppRoutes.publish),
+        RouteAccess.authenticated,
+      );
+    });
+
+    test('Mon profil exige une connexion', () {
+      expect(
+        RouteAccessPolicy.of(AppRoutes.profile),
         RouteAccess.authenticated,
       );
     });

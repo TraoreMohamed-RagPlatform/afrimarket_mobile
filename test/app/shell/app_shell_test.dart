@@ -12,7 +12,7 @@ void main() {
       await pumpAfriMarketApp(tester, hasSession: false);
 
       expect(find.byType(AppBottomNavBar), findsOneWidget);
-      expect(find.text(fr.homeComingSoon), findsOneWidget);
+      expect(find.text(fr.feedEmptyTitle), findsOneWidget);
     });
 
     testWidgets('ordre : Accueil, Notifications, Publier, Messages, Favoris', (

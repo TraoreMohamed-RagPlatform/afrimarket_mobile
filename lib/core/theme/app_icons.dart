@@ -132,6 +132,21 @@ abstract final class AppIcons {
 
   /// Profil.
   static const user = IconData(0xe4c2, fontFamily: _family);
+
+  /// Menu ☰ du fil.
+  static const list = IconData(0xe2f0, fontFamily: _family);
+
+  /// Catégories.
+  static const squaresFour = IconData(0xe464, fontFamily: _family);
+
+  /// Paramètres.
+  static const gear = IconData(0xe270, fontFamily: _family);
+
+  /// Aide et support.
+  static const question = IconData(0xe3e8, fontFamily: _family);
+
+  /// Se connecter.
+  static const signIn = IconData(0xe428, fontFamily: _family);
 }
 
 /// Versions pleines des icônes de [AppIcons] (état actif).

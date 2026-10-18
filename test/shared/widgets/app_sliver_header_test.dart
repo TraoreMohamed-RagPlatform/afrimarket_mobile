@@ -49,6 +49,29 @@ void main() {
     expect(semantics.flagsCollection.isHeader, isTrue);
   });
 
+  testWidgets('titleWidget : affiché à la place du texte, titre annoncé', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      localizedApp(
+        const CustomScrollView(
+          slivers: [
+            AppSliverHeader(
+              title: 'AfriMarket',
+              titleWidget: SizedBox(key: Key('logo'), width: 40, height: 20),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    expect(find.byKey(const Key('logo')), findsOneWidget);
+    expect(find.text('AfriMarket'), findsNothing);
+    final semantics = tester.getSemantics(find.byKey(const Key('logo')));
+    expect(semantics.label, 'AfriMarket');
+    expect(semantics.flagsCollection.isHeader, isTrue);
+  });
+
   testWidgets('se masque en descendant, réapparaît en remontant', (
     tester,
   ) async {

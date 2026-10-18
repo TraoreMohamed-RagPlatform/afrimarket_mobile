@@ -35,10 +35,14 @@ abstract final class RouteAccessPolicy {
     (RegExp('^/sellers/$_id\$'), RouteAccess.public),
     (RegExp(r'^/dev/diagnostics$'), RouteAccess.public),
     (RegExp(r'^/dev/gallery$'), RouteAccess.public),
+    // Langue, thème et aide : utiles avant même de créer un compte.
+    (RegExp(r'^/settings$'), RouteAccess.public),
+    (RegExp(r'^/help$'), RouteAccess.public),
     (RegExp(r'^/favorites$'), RouteAccess.signInPrompt),
     (RegExp(r'^/messages$'), RouteAccess.signInPrompt),
     (RegExp(r'^/notifications$'), RouteAccess.signInPrompt),
-    // Toute autre page (dont /publish) : authenticated, par défaut.
+    // Toute autre page (dont /publish et /profile) : authenticated, par
+    // défaut.
   ];
 
   /// Niveau d'accès de [path] (chemin seul, sans paramètres).

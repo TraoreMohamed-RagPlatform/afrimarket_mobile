@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/fake_listings_repository.dart';
 import '../helpers/l10n.dart';
 
 class _MockTokenStorage extends Mock implements TokenStorage;
@@ -50,6 +51,7 @@ void main() {
       overrides: [
         appConfigProvider.overrideWithValue(_config(flavor)),
         tokenStorageProvider.overrideWithValue(tokens),
+        ...listingsOverrides(),
       ],
     );
     addTearDown(container.dispose);
@@ -70,14 +72,14 @@ void main() {
     ) async {
       await startApp(tester, hasSession: false);
 
-      expect(find.text(fr.homeComingSoon), findsOneWidget);
+      expect(find.text(fr.feedEmptyTitle), findsOneWidget);
       expect(find.byType(LoginPage), findsNothing);
     });
 
     testWidgets('avec session : le fil', (tester) async {
       await startApp(tester, hasSession: true);
 
-      expect(find.text(fr.homeComingSoon), findsOneWidget);
+      expect(find.text(fr.feedEmptyTitle), findsOneWidget);
     });
 
     testWidgets('visiteur qui ouvre Publier : connexion', (tester) async {
@@ -99,7 +101,7 @@ void main() {
       container.read(sessionExpiryProvider.notifier).notify();
       await tester.pumpAndSettle();
 
-      expect(find.text(fr.homeComingSoon), findsOneWidget);
+      expect(find.text(fr.feedEmptyTitle), findsOneWidget);
     });
 
     testWidgets('sur une page protégée : sortie immédiate vers la connexion', (

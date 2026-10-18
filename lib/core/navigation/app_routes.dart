@@ -36,6 +36,11 @@ abstract final class AppRoutes {
   /// Publication d'une annonce (plein écran, hors onglets).
   static const publish = '/publish';
 
+  // Menu ☰ du fil (plein écran, hors onglets).
+  static const profile = '/profile';
+  static const settings = '/settings';
+  static const help = '/help';
+
   /// Détail d'une annonce : modèle de route et constructeur d'adresse.
   static const listingPattern = '/listings/:id';
   static String listing(String id) => '/listings/${Uri.encodeComponent(id)}';

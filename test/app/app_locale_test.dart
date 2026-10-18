@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../helpers/fake_listings_repository.dart';
 import '../helpers/l10n.dart';
 
 class _MockTokenStorage extends Mock implements TokenStorage;
@@ -38,6 +39,7 @@ void main() {
           ),
         ),
         tokenStorageProvider.overrideWithValue(tokens),
+        ...listingsOverrides(),
       ],
     );
     addTearDown(container.dispose);
@@ -56,7 +58,7 @@ void main() {
     useFrenchDevice(tester);
     await startApp(tester);
 
-    expect(find.text(fr.homeComingSoon), findsOneWidget);
+    expect(find.text(fr.feedEmptyTitle), findsOneWidget);
   });
 
   testWidgets('passe en arabe instantanément (droite à gauche)', (
@@ -68,7 +70,7 @@ void main() {
     container.read(localeProvider.notifier).setLocale(const Locale('ar'));
     await tester.pumpAndSettle();
 
-    final text = find.text(ar.homeComingSoon);
+    final text = find.text(ar.feedEmptyTitle);
     expect(text, findsOneWidget);
     expect(Directionality.of(tester.element(text)), TextDirection.rtl);
   });
@@ -80,6 +82,6 @@ void main() {
     container.read(localeProvider.notifier).setLocale(const Locale('en'));
     await tester.pumpAndSettle();
 
-    expect(find.text(en.homeComingSoon), findsOneWidget);
+    expect(find.text(en.feedEmptyTitle), findsOneWidget);
   });
 }

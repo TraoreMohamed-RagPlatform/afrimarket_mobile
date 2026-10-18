@@ -249,6 +249,30 @@ Parcours :
 - **Déconnexion** : les pages protégées sont masquées, la session locale est
   effacée, puis le serveur révoque le jeton (au mieux, même hors ligne).
 
+## Éléments ajoutés en phase F4 (fil d'annonces)
+
+| Emplacement | Contenu |
+|---|---|
+| `lib/features/listings/domain/` | `ListingSummary` (badge « Récent » < 24 h), `ListingPage`, `ListingCategory`, contrat `ListingsRepository`, cas d'usage `GetFeedUseCase`, `GetCategoriesUseCase` |
+| `lib/features/listings/data/` | `ListingsRemoteDataSource` (`GET /api/listings`, `GET /api/filters`), modèles JSON validés : annonce mal formée ignorée, identifiant sûr pour une adresse, photos http(s) uniquement (adresse relative complétée avec le serveur) |
+| `lib/features/listings/presentation/` | `FeedController` (première page, défilement infini, actualisation, catégorie ; réponses tardives ignorées), `HomePage`, menu ☰ `HomeDrawer`, liste des catégories `CategorySheet` |
+| `lib/shared/widgets/app_sliver_header.dart` | `titleWidget` : le logo à la place du texte, le titre reste annoncé |
+| `lib/core/navigation/` | `/profile` (connexion requise), `/settings` et `/help` (publics) |
+| `lib/features/{search,profile,settings,support}/`, `listing_detail_page.dart` | Pages provisoires « … arrive bientôt », atteignables depuis le fil |
+| `test/helpers/fake_listings_repository.dart` | Faux dépôt d'annonces : aucun test n'appelle le vrai serveur |
+
+Comportement du fil :
+
+- **Premier chargement** : squelettes ; erreur plein écran avec « Réessayer ».
+- **Défilement infini** : la page suivante (20 annonces) est demandée à
+  600 px du bas ; une erreur s'affiche en bas sans masquer le fil.
+- **Tirer pour actualiser** : les annonces restent visibles ; un échec est
+  signalé par un message.
+- **Fil vide** : invitation à publier (ou à voir toutes les annonces quand
+  une catégorie est choisie).
+- **Lieu (« Maârif · 5 km »)** : pas encore affiché, l'API des annonces n'a
+  pas de champ de localisation.
+
 ## Identité visuelle (ADR 0011)
 
 | Emplacement | Contenu |
