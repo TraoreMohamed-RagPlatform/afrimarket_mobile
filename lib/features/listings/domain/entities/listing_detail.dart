@@ -22,6 +22,7 @@ final class ListingDetail {
     this.previousPrice,
     this.isNegotiable = false,
     this.isSold = false,
+    this.isReserved = false,
     this.condition,
     this.categoryName,
     this.city,
@@ -47,6 +48,9 @@ final class ListingDetail {
 
   final bool isNegotiable;
   final bool isSold;
+
+  /// Promise à un acheteur : badge « Réservé », messages toujours possibles.
+  final bool isReserved;
 
   /// État de l'article ; null si inconnu.
   final ListingCondition? condition;
@@ -77,6 +81,7 @@ final class ListingDetail {
       other.previousPrice == previousPrice &&
       other.isNegotiable == isNegotiable &&
       other.isSold == isSold &&
+      other.isReserved == isReserved &&
       other.condition == condition &&
       other.categoryName == categoryName &&
       other.city == city &&
@@ -95,6 +100,7 @@ final class ListingDetail {
     previousPrice,
     isNegotiable,
     isSold,
+    isReserved,
     condition,
     categoryName,
     city,

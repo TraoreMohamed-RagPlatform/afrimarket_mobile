@@ -83,7 +83,8 @@ abstract final class ListingJson {
       previousPrice: previousPrice(json['previousPrice'], amount),
       createdAt: createdAt,
       imageUrl: images.isEmpty ? null : images.first,
-      isSold: json['isSold'] == true,
+      isSold: json['isSold'] == true || json['status'] == 'SOLD',
+      isReserved: json['status'] == 'RESERVED',
     );
   }
 

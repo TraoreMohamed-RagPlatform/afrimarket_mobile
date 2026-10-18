@@ -13,6 +13,7 @@ final class ListingSummary {
     this.previousPrice,
     this.imageUrl,
     this.isSold = false,
+    this.isReserved = false,
   });
 
   /// Durée pendant laquelle une annonce est « Récente » (badge ambre).
@@ -37,6 +38,9 @@ final class ListingSummary {
 
   final bool isSold;
 
+  /// Promise à un acheteur, toujours visible (badge « Réservé »).
+  final bool isReserved;
+
   /// Vrai si l'annonce a été publiée il y a moins de [recentWindow].
   ///
   /// Une date dans le futur (horloge du téléphone en retard) n'est pas
@@ -55,9 +59,18 @@ final class ListingSummary {
       other.previousPrice == previousPrice &&
       other.createdAt == createdAt &&
       other.imageUrl == imageUrl &&
-      other.isSold == isSold;
+      other.isSold == isSold &&
+      other.isReserved == isReserved;
 
   @override
-  int get hashCode =>
-      Object.hash(id, title, price, previousPrice, createdAt, imageUrl, isSold);
+  int get hashCode => Object.hash(
+    id,
+    title,
+    price,
+    previousPrice,
+    createdAt,
+    imageUrl,
+    isSold,
+    isReserved,
+  );
 }

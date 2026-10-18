@@ -72,6 +72,7 @@ abstract final class ListingDetailModel {
       previousPrice: ListingJson.previousPrice(listing['previousPrice'], price),
       isNegotiable: listing['isNegotiable'] == true,
       isSold: listing['isSold'] == true || listing['status'] == 'SOLD',
+      isReserved: listing['status'] == 'RESERVED',
       condition: _conditions[listing['condition']],
       categoryName: category is Map<String, dynamic>
           ? ListingJson.nonEmptyText(category['name'])

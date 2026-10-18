@@ -221,6 +221,17 @@ void main() {
       expect(find.text(fr.listingActionSave), findsOneWidget);
     });
 
+    testWidgets('réservée : badge et explication, message toujours possible', (
+      tester,
+    ) async {
+      listings.detail = Ok(sampleDetail(isReserved: true));
+      await pump(tester);
+
+      expect(find.text(fr.listingStatusReserved), findsOneWidget);
+      expect(find.text(fr.listingReservedHint), findsOneWidget);
+      expect(find.text(fr.listingMessageTitle), findsOneWidget);
+    });
+
     testWidgets('numéro non partagé : ni WhatsApp ni Appeler', (tester) async {
       listings.detail = Ok(
         sampleDetail(seller: sampleSeller(canCall: false, canWhatsapp: false)),
@@ -469,6 +480,25 @@ void main() {
       // Nouvelle page par-dessus la première (retour possible).
       expect(listings.detailCalls, ['listing-1', 'l2']);
       expect(router.canPop(), isTrue);
+    });
+
+    testWidgets('annonce similaire réservée : badge sur la carte', (
+      tester,
+    ) async {
+      listings.similar = Ok(<ListingSummary>[
+        sampleListing(2, isReserved: true),
+      ]);
+      await pump(tester);
+
+      await scrollTo(tester, find.byType(ListingCard));
+
+      expect(
+        find.descendant(
+          of: find.byType(ListingCard),
+          matching: find.text(fr.listingStatusReserved),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('aucune : section masquée', (tester) async {

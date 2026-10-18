@@ -318,3 +318,32 @@ Comportement de la page :
   attendant les liens vérifiés (backlog C3) ; la conversation créée n'est pas
   encore rattachée à l'annonce côté serveur.
 
+
+## Éléments ajoutés en phase B (filtres du fil, réservé, non-lus)
+
+| Emplacement | Contenu |
+|---|---|
+| `lib/features/listings/domain/` | `FeedFilters` (ville, quartier, tri, prix min et max) et `FeedSort` (mêmes valeurs que le serveur) ; prix incohérents ignorés par `GetFeedUseCase` ; `isReserved` sur les annonces ; `ListingCategory.slug` et `icon` |
+| `lib/features/listings/data/` | `GET /api/listings` reçoit `city`, `district`, `sort` (absent pour « plus récentes »), `minPrice`, `maxPrice` ; statut `RESERVED` lu, `SOLD` compris comme vendu ; identifiant et icône de catégorie acceptés seulement s'ils sont sûrs |
+| `lib/features/listings/presentation/` | `FeedController.applyFilters` / `clearFilters` (catégorie et filtres indépendants), feuille « Filtres », icônes de catégorie (`categoryIcon`, liste fermée), `listingCardStatusOf` (« Vendu » l'emporte sur « Réservé ») |
+| `lib/features/inbox/` | `UnreadCounts`, `GET /api/messages/unread-count` et `/api/notifications/unread-count` (en parallèle, plafonnés), `UnreadCountsController` |
+| `lib/app/shell/app_shell.dart` | Pastilles sur Notifications et Messages ; relues toutes les minutes, au retour dans l'app et à chaque changement d'onglet |
+| `test/helpers/` | `FakeUnreadCountsRepository`, filtres mémorisés par le faux dépôt d'annonces |
+
+Comportement :
+
+- **Fil** : pastilles « Vendre · Pour vous · Catégories ▾ · Filtres ▾ ». La
+  pastille « Filtres » prend le nom du quartier quand c'est le seul filtre,
+  sinon « Filtres · n ». « Pour vous » retire catégorie et filtres.
+- **Feuille « Filtres »** : quartier (« Tout Casablanca » puis la liste du
+  serveur), tri, prix ; rien n'est appliqué avant « Afficher les annonces » ;
+  maximum inférieur au minimum = message et bouton inactif.
+- **Fil vide filtré** : « Aucune annonce avec ces filtres », puis « Voir
+  toutes les annonces ».
+- **Réservé** : badge sur les cartes (fil, annonces similaires) et sur la page
+  de détail, avec une explication ; écrire au vendeur reste possible.
+- **Non-lus** : visiteur = aucune pastille et aucun appel ; un échec garde les
+  derniers compteurs ; déconnexion = retour à zéro. « 99+ » au-delà de 99.
+- **Limites connues** : une seule ville (Casablanca) proposée dans les
+  filtres ; les compteurs ne sont pas encore poussés en temps réel
+  (Socket.io, backlog S5).

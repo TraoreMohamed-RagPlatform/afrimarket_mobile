@@ -3,7 +3,7 @@ import 'package:afrimarket_mobile/features/listings/domain/entities/listing_cate
 /// DTO : catégories de la réponse `GET /api/filters`.
 ///
 /// ```json
-/// { "data": { "categories": [ { "id", "name" } ], ... } }
+/// { "data": { "categories": [ { "id", "name", "slug", "icon" } ], ... } }
 /// ```
 ///
 /// Une réponse sans liste de catégories lève une [FormatException] ; une
@@ -27,6 +27,17 @@ abstract final class ListingCategoriesModel {
     final name = json['name'];
     if (id is! String || id.isEmpty) return null;
     if (name is! String || name.trim().isEmpty) return null;
-    return ListingCategory(id: id, name: name.trim());
+    return ListingCategory(
+      id: id,
+      name: name.trim(),
+      slug: _token(json['slug']),
+      icon: _token(json['icon']),
+    );
+  }
+
+  /// Identifiant court sûr (lettres, chiffres, tirets), sinon null.
+  static String? _token(Object? value) {
+    if (value is! String) return null;
+    return RegExp(r'^[A-Za-z0-9-]{1,40}$').hasMatch(value) ? value : null;
   }
 }

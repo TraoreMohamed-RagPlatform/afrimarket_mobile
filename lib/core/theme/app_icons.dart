@@ -163,6 +163,9 @@ abstract final class AppIcons {
 
   /// Conseils de sécurité.
   static const shieldCheck = IconData(0xe40c, fontFamily: _family);
+
+  /// Filtres du fil.
+  static const fadersHorizontal = IconData(0xe22a, fontFamily: _family);
 }
 
 /// Versions pleines des icônes de [AppIcons] (état actif).

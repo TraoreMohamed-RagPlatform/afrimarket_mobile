@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:afrimarket_mobile/core/error/failure.dart';
 import 'package:afrimarket_mobile/core/error/result.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/feed_filters.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_category.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_page.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/controllers/feed_controller.dart';
@@ -241,6 +242,88 @@ void main() {
 
       expect(state().category, _housing);
       expect(state().items, hasLength(3));
+    });
+  });
+
+  group('Filtres', () {
+    const maarif = FeedFilters(city: 'casablanca', district: 'maarif');
+
+    test(
+      'appliquer : rechargement depuis la page 1 avec les filtres',
+      () async {
+        repository.feed = (page, _) => Ok(samplePage(page));
+        await start();
+
+        final apply = feed().applyFilters(maarif);
+        expect(state().phase, FeedPhase.loading);
+        await apply;
+
+        expect(state().filters, maarif);
+        expect(state().isFiltered, isTrue);
+        expect(repository.feedCalls.last, (1, null));
+        expect(repository.feedFilters.last, maarif);
+      },
+    );
+
+    test('la catégorie est gardée quand on change les filtres', () async {
+      await start();
+      await feed().selectCategory(_housing);
+
+      await feed().applyFilters(maarif);
+
+      expect(state().category, _housing);
+      expect(repository.feedCalls.last, (1, 'c1'));
+    });
+
+    test('les filtres sont gardés quand on change de catégorie', () async {
+      await start();
+      await feed().applyFilters(maarif);
+
+      await feed().selectCategory(_housing);
+
+      expect(state().filters, maarif);
+      expect(repository.feedFilters.last, maarif);
+    });
+
+    test('page suivante et actualisation gardent les filtres', () async {
+      repository.feed = (page, _) => Ok(samplePage(page, hasMore: page < 2));
+      await start();
+      await feed().applyFilters(maarif);
+
+      await feed().loadMore();
+      await feed().refresh();
+
+      expect(repository.feedFilters.skip(1), everyElement(maarif));
+    });
+
+    test('mêmes filtres : aucun rechargement', () async {
+      await start();
+
+      await feed().applyFilters(FeedFilters.none);
+
+      expect(repository.feedCalls, hasLength(1));
+    });
+
+    test('« Voir toutes les annonces » retire catégorie et filtres', () async {
+      await start();
+      await feed().selectCategory(_housing);
+      await feed().applyFilters(maarif);
+
+      await feed().clearFilters();
+
+      expect(state().category, isNull);
+      expect(state().filters, FeedFilters.none);
+      expect(state().isFiltered, isFalse);
+      expect(repository.feedCalls.last, (1, null));
+      expect(repository.feedFilters.last, FeedFilters.none);
+    });
+
+    test('rien à retirer : aucun rechargement', () async {
+      await start();
+
+      await feed().clearFilters();
+
+      expect(repository.feedCalls, hasLength(1));
     });
   });
 }

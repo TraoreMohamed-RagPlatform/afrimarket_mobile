@@ -5,6 +5,7 @@ import 'package:afrimarket_mobile/core/error/failure.dart';
 import 'package:afrimarket_mobile/core/error/result.dart';
 import 'package:afrimarket_mobile/features/listings/data/datasources/listings_remote_datasource.dart';
 import 'package:afrimarket_mobile/features/listings/data/repositories/listings_repository_impl.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/feed_filters.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_category.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_detail.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_locations.dart';
@@ -99,6 +100,67 @@ void main() {
       );
     });
 
+    test('filtres : quartier, tri et prix envoyés au serveur', () async {
+      server.body = {'listings': <Object>[], 'pagination': <String, dynamic>{}};
+
+      await repository.fetchFeed(
+        page: 1,
+        filters: const FeedFilters(
+          city: 'casablanca',
+          district: 'maarif',
+          sort: FeedSort.priceAsc,
+          minPrice: 100,
+          maxPrice: 900,
+        ),
+      );
+
+      expect(server.lastRequest!.queryParameters, {
+        'page': 1,
+        'limit': ListingsRepositoryImpl.pageSize,
+        'city': 'casablanca',
+        'district': 'maarif',
+        'sort': 'price_asc',
+        'minPrice': 100,
+        'maxPrice': 900,
+      });
+    });
+
+    test('tri par défaut (plus récentes) : paramètre absent', () async {
+      server.body = {'listings': <Object>[], 'pagination': <String, dynamic>{}};
+
+      await repository.fetchFeed(page: 1);
+
+      expect(server.lastRequest!.queryParameters.containsKey('sort'), isFalse);
+    });
+
+    test('statuts « réservée » et « vendue »', () async {
+      server.body = {
+        'listings': [
+          {
+            'id': 'l1',
+            'title': 'Vélo',
+            'price': 900,
+            'createdAt': '2026-10-18T08:00:00Z',
+            'status': 'RESERVED',
+          },
+          {
+            'id': 'l2',
+            'title': 'Table',
+            'price': 300,
+            'createdAt': '2026-10-18T08:00:00Z',
+            'status': 'SOLD',
+          },
+        ],
+        'pagination': {'page': 1, 'pages': 1},
+      };
+
+      final result = await repository.fetchFeed(page: 1);
+
+      final [reserved, sold] = (result as Ok<ListingPage>).value.items;
+      expect((reserved.isReserved, reserved.isSold), (true, false));
+      expect((sold.isReserved, sold.isSold), (false, true));
+    });
+
     test('erreur serveur : ServerFailure', () async {
       server
         ..status = 500
@@ -136,6 +198,39 @@ void main() {
       expect(server.lastRequest!.path, '/api/filters');
       expect((result as Ok<List<ListingCategory>>).value, const [
         ListingCategory(id: 'c1', name: 'Logement'),
+      ]);
+    });
+
+    test('identifiant et icône lus ; valeurs invalides ignorées', () async {
+      server.body = {
+        'data': {
+          'categories': [
+            {
+              'id': 'c1',
+              'name': 'Logement',
+              'slug': 'logement',
+              'icon': 'house',
+            },
+            {
+              'id': 'c2',
+              'name': 'Autres',
+              'slug': '<b>autres</b>',
+              'icon': 'javascript:alert(1)',
+            },
+          ],
+        },
+      };
+
+      final result = await repository.fetchCategories();
+
+      expect((result as Ok<List<ListingCategory>>).value, const [
+        ListingCategory(
+          id: 'c1',
+          name: 'Logement',
+          slug: 'logement',
+          icon: 'house',
+        ),
+        ListingCategory(id: 'c2', name: 'Autres'),
       ]);
     });
 

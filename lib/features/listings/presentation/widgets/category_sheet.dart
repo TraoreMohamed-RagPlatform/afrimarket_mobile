@@ -4,6 +4,7 @@ import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/core/theme/app_spacing.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_category.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/controllers/feed_controller.dart';
+import 'package:afrimarket_mobile/features/listings/presentation/widgets/category_icon.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:afrimarket_mobile/shared/extensions/theme_extension.dart';
 import 'package:afrimarket_mobile/shared/formatters/user_text.dart';
@@ -107,12 +108,14 @@ class _CategoryList extends StatelessWidget {
       children: [
         _CategoryTile(
           label: context.l10n.categoriesAll,
+          icon: AppIcons.squaresFour,
           selected: selectedId == null,
           onTap: () => Navigator.of(context).pop(const _CategoryChoice(null)),
         ),
         for (final category in categories)
           _CategoryTile(
             label: userText(category.name),
+            icon: categoryIcon(category.icon),
             selected: category.id == selectedId,
             onTap: () => Navigator.of(context).pop(_CategoryChoice(category)),
           ),
@@ -122,9 +125,15 @@ class _CategoryList extends StatelessWidget {
 }
 
 class _CategoryTile extends StatelessWidget {
-  const new({required this.label, required this.selected, required this.onTap});
+  const new({
+    required this.label,
+    required this.icon,
+    required this.selected,
+    required this.onTap,
+  });
 
   final String label;
+  final IconData icon;
   final bool selected;
   final VoidCallback onTap;
 
@@ -135,6 +144,9 @@ class _CategoryTile extends StatelessWidget {
     return Semantics(
       selected: selected,
       child: ListTile(
+        leading: ExcludeSemantics(
+          child: Icon(icon, color: selected ? colors.brand : null),
+        ),
         title: Text(
           label,
           style: selected ? TextStyle(color: colors.brand) : null,

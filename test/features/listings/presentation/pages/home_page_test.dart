@@ -6,6 +6,7 @@ import 'package:afrimarket_mobile/core/error/result.dart';
 import 'package:afrimarket_mobile/core/session/session_provider.dart';
 import 'package:afrimarket_mobile/core/storage/storage_providers.dart';
 import 'package:afrimarket_mobile/core/storage/token_storage.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/feed_filters.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_category.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_page.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/controllers/feed_controller.dart';
@@ -99,6 +100,7 @@ void main() {
       expect(find.text(fr.feedChipSell), findsOneWidget);
       expect(find.text(fr.feedChipForYou), findsOneWidget);
       expect(find.text(fr.categoriesTitle), findsOneWidget);
+      expect(find.text(fr.feedFiltersTitle), findsOneWidget);
     });
   });
 
@@ -131,6 +133,20 @@ void main() {
 
       expect(find.text(fr.badgeRecent), findsOneWidget);
       expect(find.text(fr.listingStatusSold), findsOneWidget);
+    });
+
+    testWidgets('badge « Réservé » sur la carte', (tester) async {
+      repository.feed = (page, _) => Ok(
+        ListingPage(
+          items: [sampleListing(1, isReserved: true), sampleListing(2)],
+          page: 1,
+          hasMore: false,
+        ),
+      );
+
+      await pump(tester);
+
+      expect(find.text(fr.listingStatusReserved), findsOneWidget);
     });
 
     testWidgets('fil vide : invitation à publier', (tester) async {
@@ -264,6 +280,176 @@ void main() {
 
       expect(find.text('Logement'), findsNothing);
       expect(find.textContaining('Logement'), findsOneWidget);
+    });
+  });
+
+  group('Filtres', () {
+    setUp(() => repository.locations = const Ok(sampleLocations));
+
+    /// Écran de téléphone : la feuille des filtres tient en entier.
+    void phoneSurface(WidgetTester tester) {
+      tester.view
+        ..physicalSize = const Size(1170, 2532)
+        ..devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+    }
+
+    /// Ouvre la feuille depuis la pastille (libellé [label], « Filtres »
+    /// par défaut).
+    Future<void> openFilters(WidgetTester tester, {String? label}) async {
+      final chip = find.text(label ?? fr.feedFiltersTitle);
+      await tester.ensureVisible(chip);
+      await tester.pumpAndSettle();
+      await tester.tap(chip);
+      await tester.pumpAndSettle();
+    }
+
+    Finder applyButton() =>
+        find.widgetWithText(FilledButton, fr.feedFiltersApply);
+
+    testWidgets('choisir un quartier filtre le fil', (tester) async {
+      phoneSurface(tester);
+      repository.feed = (page, _) => Ok(samplePage(page, hasMore: false));
+      await pump(tester);
+
+      await openFilters(tester);
+      expect(find.text(fr.feedFiltersAllCity('Casablanca')), findsOneWidget);
+      expect(find.text(fr.feedSortNewest), findsOneWidget);
+
+      await tester.tap(find.text('Maârif'));
+      await tester.pump();
+      await tester.tap(applyButton());
+      await tester.pumpAndSettle();
+
+      expect(
+        repository.feedFilters.last,
+        const FeedFilters(city: 'casablanca', district: 'maarif'),
+      );
+      // La pastille prend le nom du quartier.
+      expect(find.text('Maârif'), findsOneWidget);
+      expect(find.text(fr.feedFiltersTitle), findsNothing);
+    });
+
+    testWidgets('tri et prix : pastille « Filtres · 2 »', (tester) async {
+      phoneSurface(tester);
+      await pump(tester);
+
+      await openFilters(tester);
+      await tester.tap(find.text(fr.feedSortPriceAsc));
+      await tester.enterText(
+        find.byKey(const Key('feed-filter-max-price')),
+        '2000',
+      );
+      await tester.pump();
+      await tester.tap(applyButton());
+      await tester.pumpAndSettle();
+
+      expect(
+        repository.feedFilters.last,
+        const FeedFilters(sort: FeedSort.priceAsc, maxPrice: 2000),
+      );
+      expect(find.text(fr.feedFiltersCount(2)), findsOneWidget);
+    });
+
+    testWidgets('maximum inférieur au minimum : erreur, bouton inactif', (
+      tester,
+    ) async {
+      phoneSurface(tester);
+      await pump(tester);
+
+      await openFilters(tester);
+      await tester.enterText(
+        find.byKey(const Key('feed-filter-min-price')),
+        '500',
+      );
+      await tester.enterText(
+        find.byKey(const Key('feed-filter-max-price')),
+        '100',
+      );
+      await tester.pump();
+
+      expect(find.text(fr.feedFiltersPriceError), findsOneWidget);
+      expect(tester.widget<FilledButton>(applyButton()).onPressed, isNull);
+    });
+
+    testWidgets('« Réinitialiser » retire les choix de la feuille', (
+      tester,
+    ) async {
+      phoneSurface(tester);
+      final container = await pump(tester);
+      await container
+          .read(feedControllerProvider.notifier)
+          .applyFilters(
+            const FeedFilters(
+              city: 'casablanca',
+              district: 'maarif',
+              sort: FeedSort.priceDesc,
+            ),
+          );
+      await tester.pumpAndSettle();
+
+      await openFilters(tester, label: fr.feedFiltersCount(2));
+      expect(find.text(fr.feedSortPriceDesc), findsOneWidget);
+      await tester.tap(find.text(fr.feedFiltersReset));
+      await tester.pump();
+      await tester.tap(applyButton());
+      await tester.pumpAndSettle();
+
+      expect(repository.feedFilters.last, FeedFilters.none);
+    });
+
+    testWidgets('fermer la feuille garde les filtres', (tester) async {
+      phoneSurface(tester);
+      await pump(tester);
+      final calls = repository.feedCalls.length;
+
+      await openFilters(tester);
+      await tester.tap(find.text('Maârif'));
+      await tester.pump();
+      // Toucher en dehors de la feuille la ferme sans rien appliquer.
+      await tester.tapAt(const Offset(20, 20));
+      await tester.pumpAndSettle();
+
+      expect(repository.feedCalls, hasLength(calls));
+    });
+
+    testWidgets('aucun résultat : message, puis « Voir toutes les annonces »', (
+      tester,
+    ) async {
+      phoneSurface(tester);
+      repository.feed = (page, _) => repository.feedFilters.last.isActive
+          ? const Ok(ListingPage(items: [], page: 1, hasMore: false))
+          : Ok(samplePage(page, hasMore: false));
+      final container = await pump(tester);
+
+      await container
+          .read(feedControllerProvider.notifier)
+          .applyFilters(
+            const FeedFilters(city: 'casablanca', district: 'maarif'),
+          );
+      await tester.pumpAndSettle();
+      expect(find.text(fr.feedEmptyFiltersTitle), findsOneWidget);
+      expect(find.text(fr.feedEmptyFiltersMessage), findsOneWidget);
+
+      await tester.tap(find.text(fr.feedShowAll));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(ListingCard), findsWidgets);
+      expect(repository.feedFilters.last, FeedFilters.none);
+    });
+
+    testWidgets('« Pour vous » retire aussi les filtres', (tester) async {
+      phoneSurface(tester);
+      final container = await pump(tester);
+      await container
+          .read(feedControllerProvider.notifier)
+          .applyFilters(const FeedFilters(sort: FeedSort.priceAsc));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text(fr.feedChipForYou));
+      await tester.pumpAndSettle();
+
+      expect(repository.feedFilters.last, FeedFilters.none);
     });
   });
 

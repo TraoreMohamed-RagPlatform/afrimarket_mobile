@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:afrimarket_mobile/core/error/failure.dart';
 import 'package:afrimarket_mobile/core/error/result.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/feed_filters.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_category.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_page.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_summary.dart';
@@ -10,7 +11,7 @@ import 'package:afrimarket_mobile/features/listings/presentation/controllers/fee
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Pilote le fil d'annonces : premier chargement, défilement infini,
-/// actualisation et filtre par catégorie.
+/// actualisation, catégorie et filtres (quartier, tri, prix).
 ///
 /// Une réponse qui arrive après un changement (nouvelle catégorie,
 /// actualisation) est ignorée : le fil n'affiche jamais un mélange.
@@ -24,7 +25,7 @@ class FeedController extends Notifier<FeedState> {
   @override
   FeedState build() {
     final generation = ++_generation;
-    unawaited(_loadFirstPage(generation, null));
+    unawaited(_loadFirstPage(generation, null, FeedFilters.none));
     return const FeedState();
   }
 
@@ -35,17 +36,35 @@ class FeedController extends Notifier<FeedState> {
     final generation = ++_generation;
     final current = state;
     if (current.phase != FeedPhase.ready) {
-      state = FeedState(category: current.category);
+      state = FeedState(category: current.category, filters: current.filters);
     }
-    return _loadFirstPage(generation, current.category);
+    return _loadFirstPage(generation, current.category, current.filters);
   }
 
   /// Limite le fil à [category] ; `null` = toutes les annonces.
   Future<void> selectCategory(ListingCategory? category) async {
     if (category?.id == state.category?.id) return;
+    final filters = state.filters;
     final generation = ++_generation;
-    state = FeedState(category: category);
-    await _loadFirstPage(generation, category);
+    state = FeedState(category: category, filters: filters);
+    await _loadFirstPage(generation, category, filters);
+  }
+
+  /// Applique quartier, tri et prix (la catégorie est conservée).
+  Future<void> applyFilters(FeedFilters filters) async {
+    if (filters == state.filters) return;
+    final category = state.category;
+    final generation = ++_generation;
+    state = FeedState(category: category, filters: filters);
+    await _loadFirstPage(generation, category, filters);
+  }
+
+  /// Retire catégorie et filtres : tout le fil (« Voir toutes les annonces »).
+  Future<void> clearFilters() async {
+    if (!state.isFiltered) return;
+    final generation = ++_generation;
+    state = const FeedState();
+    await _loadFirstPage(generation, null, FeedFilters.none);
   }
 
   /// Charge la page suivante (bas du fil). Sans effet si rien à charger
@@ -59,6 +78,7 @@ class FeedController extends Notifier<FeedState> {
     final result = await ref.read(getFeedUseCaseProvider)(
       page: _page + 1,
       categoryId: current.category?.id,
+      filters: current.filters,
     );
     if (!ref.mounted || generation != _generation) return;
 
@@ -94,16 +114,21 @@ class FeedController extends Notifier<FeedState> {
     state = _copy(state, clearRefreshFailure: true);
   }
 
-  Future<void> _loadFirstPage(int generation, ListingCategory? category) async {
+  Future<void> _loadFirstPage(
+    int generation,
+    ListingCategory? category,
+    FeedFilters filters,
+  ) async {
     final result = await ref.read(getFeedUseCaseProvider)(
       categoryId: category?.id,
+      filters: filters,
     );
     if (!ref.mounted || generation != _generation) return;
 
     switch (result) {
       case Ok(:final value):
         _page = value.page;
-        state = _ready(value, category);
+        state = _ready(value, category, filters);
       case Err(:final failure):
         final current = state;
         state = current.phase == FeedPhase.ready && current.items.isNotEmpty
@@ -112,16 +137,22 @@ class FeedController extends Notifier<FeedState> {
             : FeedState(
                 phase: FeedPhase.failed,
                 category: category,
+                filters: filters,
                 failure: failure,
               );
     }
   }
 
-  static FeedState _ready(ListingPage page, ListingCategory? category) {
+  static FeedState _ready(
+    ListingPage page,
+    ListingCategory? category,
+    FeedFilters filters,
+  ) {
     return FeedState(
       phase: FeedPhase.ready,
       items: page.items,
       category: category,
+      filters: filters,
       hasMore: page.hasMore,
     );
   }
@@ -140,6 +171,7 @@ class FeedController extends Notifier<FeedState> {
       phase: state.phase,
       items: items ?? state.items,
       category: state.category,
+      filters: state.filters,
       failure: state.failure,
       hasMore: hasMore ?? state.hasMore,
       isLoadingMore: isLoadingMore ?? state.isLoadingMore,

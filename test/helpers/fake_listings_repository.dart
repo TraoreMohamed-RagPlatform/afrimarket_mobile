@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:afrimarket_mobile/core/error/failure.dart';
 import 'package:afrimarket_mobile/core/error/result.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/feed_filters.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_category.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_detail.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_locations.dart';
@@ -50,12 +51,17 @@ class FakeListingsRepository implements ListingsRepository {
   /// Appels à `fetchFeed`, dans l'ordre : (page, catégorie).
   final feedCalls = <(int, String?)>[];
 
+  /// Filtres reçus par `fetchFeed`, dans le même ordre que [feedCalls].
+  final feedFilters = <FeedFilters>[];
+
   @override
   Future<Result<ListingPage>> fetchFeed({
     required int page,
     String? categoryId,
+    FeedFilters filters = FeedFilters.none,
   }) {
     feedCalls.add((page, categoryId));
+    feedFilters.add(filters);
     return Future.value(feed(page, categoryId));
   }
 
@@ -105,6 +111,7 @@ ListingSummary sampleListing(
   int index, {
   DateTime? createdAt,
   bool isSold = false,
+  bool isReserved = false,
 }) {
   return ListingSummary(
     id: 'l$index',
@@ -112,6 +119,7 @@ ListingSummary sampleListing(
     price: 100 * index,
     createdAt: createdAt ?? DateTime.now().subtract(const Duration(days: 3)),
     isSold: isSold,
+    isReserved: isReserved,
   );
 }
 
@@ -150,6 +158,7 @@ ListingSeller sampleSeller({
 ListingDetail sampleDetail({
   String id = 'listing-1',
   bool isSold = false,
+  bool isReserved = false,
   bool isNegotiable = true,
   num? previousPrice = 1500,
   String description =
@@ -166,6 +175,7 @@ ListingDetail sampleDetail({
     previousPrice: previousPrice,
     isNegotiable: isNegotiable,
     isSold: isSold,
+    isReserved: isReserved,
     condition: ListingCondition.good,
     categoryName: 'Mobilier',
     city: 'casablanca',
@@ -176,7 +186,10 @@ ListingDetail sampleDetail({
   );
 }
 
-/// Villes et quartiers de test : Casablanca, Maârif.
+/// Villes et quartiers de test : Casablanca (Maârif, Ain Diab).
 const sampleLocations = ListingLocations({
-  'casablanca': (name: 'Casablanca', districts: {'maarif': 'Maârif'}),
+  'casablanca': (
+    name: 'Casablanca',
+    districts: {'maarif': 'Maârif', 'ain-diab': 'Ain Diab'},
+  ),
 });
