@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../helpers/l10n.dart';
 
 Widget _bar({
+  double width = 360,
   int currentIndex = 0,
   int messages = 0,
   ValueChanged<int>? onSelect,
@@ -16,7 +17,7 @@ Widget _bar({
   return Align(
     alignment: Alignment.bottomCenter,
     child: SizedBox(
-      width: 360,
+      width: width,
       child: AppBottomNavBar(
         currentIndex: currentIndex,
         onSelect: onSelect ?? (_) {},
@@ -165,8 +166,15 @@ void main() {
     );
   });
 
+  /// Libellés de la barre (les icônes sont aussi du texte, en Phosphor).
+  Iterable<RenderParagraph> labels(WidgetTester tester) => find
+      .byType(RichText)
+      .evaluate()
+      .map((element) => element.renderObject! as RenderParagraph)
+      .where((p) => !(p.text.style?.fontFamily ?? '').startsWith('Phosphor'));
+
   for (final scale in [1.0, 1.5, 2.0]) {
-    testWidgets('libellés jamais coupés (texte ×$scale, 360 px)', (
+    testWidgets('libellés lisibles : jamais sous 11 px (texte ×$scale)', (
       tester,
     ) async {
       for (final locale in const [Locale('fr'), Locale('en'), Locale('ar')]) {
@@ -177,21 +185,41 @@ void main() {
           ),
         );
 
-        for (final text in tester.widgetList<Text>(find.byType(Text))) {
-          expect(text.overflow, isNot(TextOverflow.ellipsis));
-        }
-        // Chaque libellé tient en entier dans la largeur qui lui est donnée.
-        for (final element in find.byType(RichText).evaluate()) {
-          final paragraph = element.renderObject! as RenderParagraph;
+        for (final paragraph in labels(tester)) {
+          final size = paragraph.textScaler.scale(
+            paragraph.text.style!.fontSize!,
+          );
           expect(
-            paragraph.getMaxIntrinsicWidth(double.infinity),
-            lessThanOrEqualTo(paragraph.size.width + 0.5),
+            size,
+            greaterThanOrEqualTo(AppBottomNavBar.minLabelSize - 0.01),
           );
         }
         expect(tester.takeException(), isNull);
       }
     });
   }
+
+  testWidgets('libellé trop long : réduit pour tenir, pas coupé', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MediaQuery(
+        data: const MediaQueryData(textScaler: TextScaler.linear(1.5)),
+        child: localizedApp(_bar(width: 600)),
+      ),
+    );
+
+    final messages = labels(tester)
+        .firstWhere((p) => p.text.toPlainText() == fr.navMessages);
+    expect(
+      messages.textScaler.scale(messages.text.style!.fontSize!),
+      lessThan(12 * AppBottomNavBar.maxTextScale),
+    );
+    expect(
+      messages.getMaxIntrinsicWidth(double.infinity),
+      lessThanOrEqualTo(messages.size.width + 0.5),
+    );
+  });
 
   testWidgets('arabe, mode sombre et texte doublé', (tester) async {
     await tester.pumpWidget(

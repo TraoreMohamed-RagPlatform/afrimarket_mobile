@@ -44,9 +44,10 @@ class AppNavAction {
 /// - pastilles de non-lus (« 99+ » au-delà de 99), lues par les
 ///   lecteurs d'écran (« Messages, 3 non lus ») ;
 /// - onglet actif annoncé « sélectionné » ;
-/// - libellés sur une seule ligne, jamais coupés : la taille du texte est
-///   plafonnée à [maxTextScale] et un libellé trop long (« Notifications »
-///   en arabe, texte agrandi…) est réduit pour tenir dans son onglet ;
+/// - libellés sur une seule ligne : la taille du texte est plafonnée à
+///   [maxTextScale] et un libellé trop long (texte agrandi, petit écran) est
+///   réduit pour tenir dans son onglet, jusqu'à [minLabelSize] ; au-delà
+///   seulement, il se termine par « … » ;
 /// - l'action centrale a le même poids visuel que les onglets (icône au
 ///   trait, couleur de la marque), comme sur Facebook Marketplace : ce sont
 ///   les annonces qui attirent l'œil, pas la barre.
@@ -71,6 +72,10 @@ class AppBottomNavBar extends StatelessWidget {
   /// ne tiennent plus côte à côte sur un téléphone ; le reste de l'app suit
   /// le réglage du système sans limite.
   static const double maxTextScale = 1.5;
+
+  /// Taille réelle minimale d'un libellé : plus petit, il ne serait plus
+  /// lisible (et son contraste plus mesurable de façon fiable).
+  static const double minLabelSize = 11;
 
   final List<AppNavItem> items;
   final int currentIndex;
@@ -241,6 +246,10 @@ class _NavLabel extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final available = constraints.maxWidth;
+          // Taille de police (avant agrandissement du système) qui donne
+          // [AppBottomNavBar.minLabelSize] à l'écran.
+          final minFontSize =
+              AppBottomNavBar.minLabelSize / textScaler.scale(1);
           var fitted = base;
           // L'espacement des lettres ne suit pas la taille de police : on
           // réduit les deux ensemble et on vérifie la mesure (2 passes au
@@ -256,8 +265,14 @@ class _NavLabel extends StatelessWidget {
             painter.dispose();
 
             final fontSize = fitted.fontSize;
-            if (fontSize == null || width <= available) break;
-            final factor = available / width * 0.98;
+            if (fontSize == null ||
+                width <= available ||
+                fontSize <= minFontSize) {
+              break;
+            }
+            final target = fontSize * available / width * 0.98;
+            final factor =
+                (target < minFontSize ? minFontSize : target) / fontSize;
             fitted = fitted.copyWith(
               fontSize: fontSize * factor,
               letterSpacing: (fitted.letterSpacing ?? 0) * factor,
@@ -267,7 +282,7 @@ class _NavLabel extends StatelessWidget {
             text,
             maxLines: 1,
             softWrap: false,
-            overflow: TextOverflow.clip,
+            overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
             style: fitted,
           );
