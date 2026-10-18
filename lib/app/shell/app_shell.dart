@@ -39,9 +39,9 @@ class AppShell extends StatelessWidget {
             label: l10n.navHome,
           ),
           AppNavItem(
-            icon: AppIcons.star,
-            selectedIcon: AppIconsFill.star,
-            label: l10n.navFavorites,
+            icon: AppIcons.bell,
+            selectedIcon: AppIconsFill.bell,
+            label: l10n.navNotifications,
           ),
           AppNavItem(
             icon: AppIcons.chatCircle,
@@ -49,9 +49,9 @@ class AppShell extends StatelessWidget {
             label: l10n.navMessages,
           ),
           AppNavItem(
-            icon: AppIcons.bell,
-            selectedIcon: AppIconsFill.bell,
-            label: l10n.navNotifications,
+            icon: AppIcons.star,
+            selectedIcon: AppIconsFill.star,
+            label: l10n.navFavorites,
           ),
         ],
         centerAction: AppNavAction(

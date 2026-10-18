@@ -5,8 +5,10 @@
 
 ## Contexte
 
-L'app s'organise autour d'une barre du bas validée : Accueil, Favoris,
-Publier (action centrale), Messages, Notifications. Les annonces seront
+L'app s'organise autour d'une barre du bas validée : Accueil,
+Notifications, Publier (action centrale), Messages, Favoris (ordre revu
+le 2026-10-18 : les notifications, consultées souvent, passent près de
+l'accueil ; les favoris vont en bout de barre). Les annonces seront
 partagées par lien (WhatsApp notamment), et ces liens doivent ouvrir
 l'annonce directement dans l'app.
 

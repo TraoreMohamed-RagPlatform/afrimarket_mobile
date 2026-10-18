@@ -100,8 +100,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: AppRoutes.favorites,
-                builder: (context, state) => const FavoritesPage(),
+                path: AppRoutes.notifications,
+                builder: (context, state) => const NotificationsPage(),
               ),
             ],
           ),
@@ -116,8 +116,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: AppRoutes.notifications,
-                builder: (context, state) => const NotificationsPage(),
+                path: AppRoutes.favorites,
+                builder: (context, state) => const FavoritesPage(),
               ),
             ],
           ),
