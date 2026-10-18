@@ -1,0 +1,32 @@
+import 'package:afrimarket_mobile/core/network/api_endpoints.dart';
+import 'package:dio/dio.dart';
+
+/// Source distante : `/api/messages` (connexion requise).
+class MessagingRemoteDataSource {
+  const new(this._dio);
+
+  /// Identifiant de conversation accepté (cuid du serveur).
+  static final RegExp _safeId = RegExp(r'^[A-Za-z0-9_-]{1,64}$');
+
+  final Dio _dio;
+
+  /// `POST /api/messages/conversations` puis `POST /api/messages`.
+  Future<void> messageSeller({
+    required String sellerId,
+    required String message,
+  }) async {
+    final conversation = await _dio.post<Map<String, dynamic>>(
+      ApiEndpoints.conversations,
+      data: {'recipientId': sellerId},
+    );
+    final id = conversation.data?['id'];
+    if (id is! String || !_safeId.hasMatch(id)) {
+      throw const FormatException('Conversation invalide');
+    }
+
+    await _dio.post<void>(
+      ApiEndpoints.messages,
+      data: {'conversationId': id, 'content': message},
+    );
+  }
+}

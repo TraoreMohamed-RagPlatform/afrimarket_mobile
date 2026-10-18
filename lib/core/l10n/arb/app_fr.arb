@@ -633,11 +633,6 @@
     "description": "Titre de la page de détail d'une annonce."
   },
 
-  "listingDetailComingSoon": "Le détail des annonces arrive bientôt.",
-  "@listingDetailComingSoon": {
-    "description": "Texte provisoire de la page de détail d'une annonce."
-  },
-
   "profileComingSoon": "Votre profil arrive bientôt.",
   "@profileComingSoon": {
     "description": "Texte provisoire de la page Mon profil."
@@ -651,5 +646,394 @@
   "helpComingSoon": "L'aide arrive bientôt.",
   "@helpComingSoon": {
     "description": "Texte provisoire de la page d'aide."
+  },
+
+  "badgeNegotiable": "Négociable",
+  "@badgeNegotiable": {
+    "description": "Badge : le prix peut être discuté."
+  },
+
+  "listingPublishedJustNow": "Publiée à l'instant",
+  "@listingPublishedJustNow": {
+    "description": "Date de publication d'une annonce : moins d'une minute."
+  },
+
+  "listingPublishedMinutes": "Publiée il y a {count} min",
+  "@listingPublishedMinutes": {
+    "description": "Date de publication : moins d'une heure.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "listingPublishedHours": "Publiée il y a {count} h",
+  "@listingPublishedHours": {
+    "description": "Date de publication : moins d'un jour.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "listingPublishedDays": "{count, plural, =1{Publiée hier} other{Publiée il y a {count} jours}}",
+  "@listingPublishedDays": {
+    "description": "Date de publication : moins d'un mois.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "listingPublishedOn": "Publiée le {date}",
+  "@listingPublishedOn": {
+    "description": "Date de publication : plus d'un mois (date formatée).",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+
+  "listingMessageTitle": "Envoyer un message au vendeur",
+  "@listingMessageTitle": {
+    "description": "Titre du bloc de message de la page détail."
+  },
+
+  "listingMessageDefault": "Bonjour, est-ce toujours disponible ?",
+  "@listingMessageDefault": {
+    "description": "Message proposé par défaut au vendeur."
+  },
+
+  "listingMessageFieldLabel": "Votre message",
+  "@listingMessageFieldLabel": {
+    "description": "Libellé du champ de message (lecteurs d'écran)."
+  },
+
+  "listingMessageSend": "Envoyer",
+  "@listingMessageSend": {
+    "description": "Bouton d'envoi du message au vendeur."
+  },
+
+  "listingMessageSent": "Message envoyé. Retrouvez la conversation dans Messages.",
+  "@listingMessageSent": {
+    "description": "Confirmation après l'envoi d'un message au vendeur."
+  },
+
+  "listingMessageEmpty": "Écrivez votre message avant de l’envoyer.",
+  "@listingMessageEmpty": {
+    "description": "Message vide (ou trop long)."
+  },
+
+  "listingOwnListingError": "Cette action n’est pas possible sur votre propre annonce.",
+  "@listingOwnListingError": {
+    "description": "Refus du serveur : message ou signalement sur sa propre annonce."
+  },
+
+  "listingActionWhatsapp": "WhatsApp",
+  "@listingActionWhatsapp": {
+    "description": "Bouton : écrire au vendeur sur WhatsApp."
+  },
+
+  "listingActionCall": "Appeler",
+  "@listingActionCall": {
+    "description": "Bouton : appeler le vendeur."
+  },
+
+  "listingActionSave": "Enregistrer",
+  "@listingActionSave": {
+    "description": "Bouton : enregistrer l'annonce dans les favoris."
+  },
+
+  "listingActionSaved": "Enregistrée",
+  "@listingActionSaved": {
+    "description": "Bouton : annonce déjà enregistrée (appuyer pour la retirer)."
+  },
+
+  "listingActionShare": "Partager",
+  "@listingActionShare": {
+    "description": "Bouton : partager l'annonce."
+  },
+
+  "listingSavedMessage": "Annonce enregistrée dans vos favoris",
+  "@listingSavedMessage": {
+    "description": "Confirmation : annonce ajoutée aux favoris."
+  },
+
+  "listingUnsavedMessage": "Annonce retirée de vos favoris",
+  "@listingUnsavedMessage": {
+    "description": "Confirmation : annonce retirée des favoris."
+  },
+
+  "listingContactUnavailable": "Le vendeur ne partage plus son numéro. Écrivez-lui un message.",
+  "@listingContactUnavailable": {
+    "description": "Numéro du vendeur indisponible."
+  },
+
+  "listingCallFailed": "Impossible d’ouvrir le téléphone sur cet appareil.",
+  "@listingCallFailed": {
+    "description": "Aucune application de téléphone."
+  },
+
+  "listingWhatsappFailed": "WhatsApp n’est pas installé sur cet appareil.",
+  "@listingWhatsappFailed": {
+    "description": "WhatsApp absent."
+  },
+
+  "listingWhatsappMessage": "Bonjour, je vous contacte pour votre annonce « {title} » sur AfriMarket.",
+  "@listingWhatsappMessage": {
+    "description": "Message prérempli dans WhatsApp.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+
+  "listingShareText": "{title} – {price}, sur AfriMarket",
+  "@listingShareText": {
+    "description": "Texte partagé avec une annonce.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+
+  "listingDetailsTitle": "Détails",
+  "@listingDetailsTitle": {
+    "description": "Titre de la section des caractéristiques."
+  },
+
+  "listingConditionLabel": "État",
+  "@listingConditionLabel": {
+    "description": "Libellé : état de l'article."
+  },
+
+  "listingCategoryLabel": "Catégorie",
+  "@listingCategoryLabel": {
+    "description": "Libellé : catégorie de l'annonce."
+  },
+
+  "listingDeliveryLabel": "Remise",
+  "@listingDeliveryLabel": {
+    "description": "Libellé : mode de remise de l'article."
+  },
+
+  "conditionNew": "Neuf",
+  "@conditionNew": {
+    "description": "État : neuf."
+  },
+
+  "conditionLikeNew": "Comme neuf",
+  "@conditionLikeNew": {
+    "description": "État : comme neuf."
+  },
+
+  "conditionGood": "Bon état",
+  "@conditionGood": {
+    "description": "État : bon état."
+  },
+
+  "conditionFair": "État correct",
+  "@conditionFair": {
+    "description": "État : correct."
+  },
+
+  "conditionPoor": "Usé",
+  "@conditionPoor": {
+    "description": "État : usé."
+  },
+
+  "deliveryPickup": "En main propre",
+  "@deliveryPickup": {
+    "description": "Remise : en main propre."
+  },
+
+  "deliveryDelivery": "Livraison possible",
+  "@deliveryDelivery": {
+    "description": "Remise : livraison."
+  },
+
+  "deliveryBoth": "En main propre ou livraison",
+  "@deliveryBoth": {
+    "description": "Remise : les deux."
+  },
+
+  "listingSeeMore": "Voir plus",
+  "@listingSeeMore": {
+    "description": "Déplier la description."
+  },
+
+  "listingSeeLess": "Voir moins",
+  "@listingSeeLess": {
+    "description": "Replier la description."
+  },
+
+  "listingSellerTitle": "Vendeur",
+  "@listingSellerTitle": {
+    "description": "Titre de la section vendeur."
+  },
+
+  "sellerMemberSince": "Membre depuis {year}",
+  "@sellerMemberSince": {
+    "description": "Ancienneté du vendeur.",
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+
+  "sellerResponseWithinHour": "Répond en général en moins d’une heure",
+  "@sellerResponseWithinHour": {
+    "description": "Temps de réponse : moins d'une heure."
+  },
+
+  "sellerResponseWithinHours": "Répond en général en quelques heures",
+  "@sellerResponseWithinHours": {
+    "description": "Temps de réponse : quelques heures."
+  },
+
+  "sellerResponseWithinDay": "Répond en général dans la journée",
+  "@sellerResponseWithinDay": {
+    "description": "Temps de réponse : moins d'un jour."
+  },
+
+  "sellerResponseWithinDays": "Répond en général en quelques jours",
+  "@sellerResponseWithinDays": {
+    "description": "Temps de réponse : plus d'un jour."
+  },
+
+  "listingSafetyTitle": "Conseils de sécurité",
+  "@listingSafetyTitle": {
+    "description": "Titre de l'encadré de sécurité."
+  },
+
+  "listingSafetyText": "Rencontrez le vendeur dans un lieu public et vérifiez l’article avant de payer. Ne versez jamais d’acompte à l’avance.",
+  "@listingSafetyText": {
+    "description": "Texte de l'encadré de sécurité."
+  },
+
+  "listingReportAction": "Signaler cette annonce",
+  "@listingReportAction": {
+    "description": "Lien et titre : signaler l'annonce."
+  },
+
+  "reportSheetQuestion": "Pourquoi signalez-vous cette annonce ?",
+  "@reportSheetQuestion": {
+    "description": "Question de la feuille de signalement."
+  },
+
+  "reportReasonScam": "Arnaque ou fraude",
+  "@reportReasonScam": {
+    "description": "Motif de signalement."
+  },
+
+  "reportReasonProhibited": "Article interdit",
+  "@reportReasonProhibited": {
+    "description": "Motif de signalement."
+  },
+
+  "reportReasonOffensive": "Contenu choquant ou inapproprié",
+  "@reportReasonOffensive": {
+    "description": "Motif de signalement."
+  },
+
+  "reportReasonMisleading": "Annonce trompeuse ou mal classée",
+  "@reportReasonMisleading": {
+    "description": "Motif de signalement."
+  },
+
+  "reportReasonSpam": "Doublon ou spam",
+  "@reportReasonSpam": {
+    "description": "Motif de signalement."
+  },
+
+  "reportReasonSold": "Article déjà vendu",
+  "@reportReasonSold": {
+    "description": "Motif de signalement."
+  },
+
+  "reportReasonOther": "Autre raison",
+  "@reportReasonOther": {
+    "description": "Motif de signalement."
+  },
+
+  "reportDetailsLabel": "Précisez (facultatif)",
+  "@reportDetailsLabel": {
+    "description": "Champ de détail du signalement."
+  },
+
+  "reportSubmit": "Envoyer le signalement",
+  "@reportSubmit": {
+    "description": "Bouton d'envoi du signalement."
+  },
+
+  "reportSent": "Merci. Notre équipe va examiner cette annonce.",
+  "@reportSent": {
+    "description": "Confirmation après un signalement."
+  },
+
+  "listingSimilarTitle": "Annonces similaires",
+  "@listingSimilarTitle": {
+    "description": "Titre de la section des annonces similaires."
+  },
+
+  "listingNotFoundTitle": "Cette annonce n’est plus disponible",
+  "@listingNotFoundTitle": {
+    "description": "Annonce introuvable (supprimée ou retirée)."
+  },
+
+  "listingNotFoundMessage": "Elle a peut-être été vendue ou retirée par le vendeur.",
+  "@listingNotFoundMessage": {
+    "description": "Texte de l'annonce introuvable."
+  },
+
+  "listingNotFoundAction": "Voir d’autres annonces",
+  "@listingNotFoundAction": {
+    "description": "Bouton de l'annonce introuvable."
+  },
+
+  "listingBackTooltip": "Retour",
+  "@listingBackTooltip": {
+    "description": "Bouton retour de la page détail."
+  },
+
+  "listingMoreTooltip": "Plus d’options",
+  "@listingMoreTooltip": {
+    "description": "Menu ⋯ de la page détail."
+  },
+
+  "listingPhotoCounter": "{current} / {total}",
+  "@listingPhotoCounter": {
+    "description": "Numéro de la photo affichée.",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+
+  "listingPhotoLabel": "Photo {current} sur {total}",
+  "@listingPhotoLabel": {
+    "description": "Photo affichée (lecteurs d'écran).",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
   }
 }

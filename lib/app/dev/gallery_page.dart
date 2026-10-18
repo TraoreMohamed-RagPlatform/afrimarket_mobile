@@ -243,6 +243,8 @@ class GalleryCatalog extends StatelessWidget {
               AppBadge(AppBadgeType.recent),
               AppBadge(AppBadgeType.verified),
               AppBadge(AppBadgeType.reserved),
+              AppBadge(AppBadgeType.negotiable),
+              AppBadge(AppBadgeType.sold),
             ],
           ),
         ),

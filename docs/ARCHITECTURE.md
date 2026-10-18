@@ -258,7 +258,7 @@ Parcours :
 | `lib/features/listings/presentation/` | `FeedController` (première page, défilement infini, actualisation, catégorie ; réponses tardives ignorées), `HomePage`, menu ☰ `HomeDrawer`, liste des catégories `CategorySheet` |
 | `lib/shared/widgets/app_sliver_header.dart` | `titleWidget` : le logo à la place du texte, le titre reste annoncé |
 | `lib/core/navigation/` | `/profile` (connexion requise), `/settings` et `/help` (publics) |
-| `lib/features/{search,profile,settings,support}/`, `listing_detail_page.dart` | Pages provisoires « … arrive bientôt », atteignables depuis le fil |
+| `lib/features/{search,profile,settings,support}/` | Pages provisoires « … arrive bientôt », atteignables depuis le fil |
 | `test/helpers/fake_listings_repository.dart` | Faux dépôt d'annonces : aucun test n'appelle le vrai serveur |
 
 Comportement du fil :
@@ -288,3 +288,33 @@ Comportement du fil :
 | `android/app/src/{main,dev,staging}/res`, `ios/Runner/Assets.xcassets`, `web/` | Icônes de l'app (pastille DEV / STG), écrans de lancement natifs |
 
 Règles de travail : voir [Definition of Done](DEFINITION_OF_DONE.md).
+
+## Éléments ajoutés en phase F5 (détail d'une annonce)
+
+| Emplacement | Contenu |
+|---|---|
+| `lib/features/listings/domain/` | `ListingDetail`, `ListingSeller` (jamais de numéro), `SellerContact`, `ListingLocations`, `ReportReason` ; cas d'usage détail, similaires, lieux, contact, signalement (détail nettoyé et limité à 500 caractères) |
+| `lib/features/listings/data/` | `GET /api/listings/:id`, `/similar`, `/contact`, `POST /report` (409 = déjà signalé, réussi), lieux de `GET /api/filters` ; `ListingJson` (lecture prudente commune au fil et au détail) ; numéro réduit à des chiffres avant toute adresse `tel:` ou `wa.me` |
+| `lib/features/favorites/` | Contrat `FavoritesRepository` et `/api/favorites` (déjà enregistrée ou déjà retirée = réussi) |
+| `lib/features/messaging/` | `MessageSellerUseCase` : conversation créée si besoin, puis message (vide ou > 1 000 caractères refusé sans appel) |
+| `lib/core/platform/external_actions.dart` | Composeur, WhatsApp et partage derrière une interface (`ExternalActions`) : les tests n'ouvrent jamais d'application |
+| `lib/features/listings/presentation/` | `ListingDetailPage` et ses widgets (photos, message, vendeur, détails, signalement), `FavoriteController` (affichage optimiste, rétabli en cas d'échec) |
+| `lib/shared/` | Badges « Négociable » et « Vendu », `formatListingAge` (« il y a 2 h », « hier », date au-delà d'un mois) |
+| `test/helpers/` | `FakeHttpServer` (Dio), faux favoris, messagerie et actions externes, annonce et vendeur de démonstration |
+
+Comportement de la page :
+
+- **Publique** (ADR 0002) ; écrire, appeler, WhatsApp, enregistrer et signaler
+  demandent une connexion, puis ramènent à l'annonce.
+- **Numéro du vendeur** : demandé seulement au moment d'appeler, jamais
+  conservé ; boutons affichés seulement si le vendeur le partage.
+- **Article vendu** : photos en noir et blanc, badge « Vendu », ni message ni
+  appel.
+- **Introuvable** : invitation à voir d'autres annonces ; **erreur** : message
+  et « Réessayer » ; **chargement** : squelette avec le bouton retour.
+- **Lieu** : nom du quartier lu dans la liste fixe du serveur ; jamais
+  l'identifiant brut.
+- **Limites connues** : le partage envoie un texte (titre et prix) en
+  attendant les liens vérifiés (backlog C3) ; la conversation créée n'est pas
+  encore rattachée à l'annonce côté serveur.
+

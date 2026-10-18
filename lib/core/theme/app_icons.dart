@@ -147,6 +147,22 @@ abstract final class AppIcons {
 
   /// Se connecter.
   static const signIn = IconData(0xe428, fontFamily: _family);
+
+  /// Retour (miroir automatique en arabe).
+  static const arrowLeft = IconData(
+    0xe058,
+    fontFamily: _family,
+    matchTextDirection: true,
+  );
+
+  /// Plus d'options.
+  static const dotsThree = IconData(0xe1fe, fontFamily: _family);
+
+  /// Signaler une annonce.
+  static const flag = IconData(0xe244, fontFamily: _family);
+
+  /// Conseils de sécurité.
+  static const shieldCheck = IconData(0xe40c, fontFamily: _family);
 }
 
 /// Versions pleines des icônes de [AppIcons] (état actif).

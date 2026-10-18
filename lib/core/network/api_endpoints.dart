@@ -22,6 +22,29 @@ abstract final class ApiEndpoints {
   // Annonces (lecture publique)
   static const listings = '/api/listings';
 
+  /// Une annonce. [id] est encodé pour l'adresse.
+  static String listing(String id) => '$listings/${Uri.encodeComponent(id)}';
+
+  /// Annonces similaires à une annonce.
+  static String similarListings(String id) => '${listing(id)}/similar';
+
+  /// Numéro du vendeur d'une annonce (connexion requise).
+  static String listingContact(String id) => '${listing(id)}/contact';
+
+  /// Signaler une annonce (connexion requise).
+  static String reportListing(String id) => '${listing(id)}/report';
+
+  // Favoris (connexion requise)
+  static const favorites = '/api/favorites';
+  static String favorite(String listingId) =>
+      '$favorites/${Uri.encodeComponent(listingId)}';
+  static String favoriteCheck(String listingId) =>
+      '$favorites/check/${Uri.encodeComponent(listingId)}';
+
+  // Messagerie (connexion requise)
+  static const messages = '/api/messages';
+  static const conversations = '/api/messages/conversations';
+
   /// Options de filtre, dont les catégories.
   static const filters = '/api/filters';
 
