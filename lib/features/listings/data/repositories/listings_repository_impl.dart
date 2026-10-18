@@ -1,6 +1,7 @@
 import 'package:afrimarket_mobile/core/error/result.dart';
 import 'package:afrimarket_mobile/core/network/api_guard.dart';
 import 'package:afrimarket_mobile/features/listings/data/datasources/listings_remote_datasource.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/feed_filters.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_category.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_detail.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_locations.dart';
@@ -24,12 +25,14 @@ class ListingsRepositoryImpl implements ListingsRepository {
   Future<Result<ListingPage>> fetchFeed({
     required int page,
     String? categoryId,
+    FeedFilters filters = FeedFilters.none,
   }) {
     return guardApiCall(
       () => _remote.fetchFeed(
         page: page,
         limit: pageSize,
         categoryId: categoryId,
+        filters: filters,
       ),
     );
   }

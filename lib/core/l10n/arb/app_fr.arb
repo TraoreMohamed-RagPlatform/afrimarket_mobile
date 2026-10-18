@@ -1035,5 +1035,110 @@
         "type": "int"
       }
     }
+  },
+
+  "feedFiltersTitle": "Filtres",
+  "@feedFiltersTitle": {
+    "description": "Pastille du fil et titre de la feuille des filtres."
+  },
+
+  "feedFiltersCount": "Filtres · {count}",
+  "@feedFiltersCount": {
+    "description": "Pastille du fil quand plusieurs filtres sont actifs.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "feedFiltersDistrict": "Quartier",
+  "@feedFiltersDistrict": {
+    "description": "Section « quartier » de la feuille des filtres."
+  },
+
+  "feedFiltersAllDistricts": "Tous les quartiers",
+  "@feedFiltersAllDistricts": {
+    "description": "Choix « aucun quartier » quand la ville est inconnue."
+  },
+
+  "feedFiltersAllCity": "Tout {city}",
+  "@feedFiltersAllCity": {
+    "description": "Choix « aucun quartier » : toute la ville.",
+    "placeholders": {
+      "city": {
+        "type": "String"
+      }
+    }
+  },
+
+  "feedFiltersSort": "Trier par",
+  "@feedFiltersSort": {
+    "description": "Section « tri » de la feuille des filtres."
+  },
+
+  "feedSortNewest": "Plus récentes",
+  "@feedSortNewest": {
+    "description": "Tri : les annonces les plus récentes d'abord."
+  },
+
+  "feedSortPriceAsc": "Prix croissant",
+  "@feedSortPriceAsc": {
+    "description": "Tri : les moins chères d'abord."
+  },
+
+  "feedSortPriceDesc": "Prix décroissant",
+  "@feedSortPriceDesc": {
+    "description": "Tri : les plus chères d'abord."
+  },
+
+  "feedFiltersPrice": "Prix",
+  "@feedFiltersPrice": {
+    "description": "Section « prix » de la feuille des filtres."
+  },
+
+  "feedFiltersPriceMin": "Minimum",
+  "@feedFiltersPriceMin": {
+    "description": "Champ prix minimum."
+  },
+
+  "feedFiltersPriceMax": "Maximum",
+  "@feedFiltersPriceMax": {
+    "description": "Champ prix maximum."
+  },
+
+  "feedFiltersPriceError": "Le maximum doit être supérieur au minimum.",
+  "@feedFiltersPriceError": {
+    "description": "Erreur : prix maximum inférieur au minimum."
+  },
+
+  "feedFiltersCurrency": "DH",
+  "@feedFiltersCurrency": {
+    "description": "Unité affichée dans les champs de prix."
+  },
+
+  "feedFiltersReset": "Réinitialiser",
+  "@feedFiltersReset": {
+    "description": "Bouton qui retire tous les filtres de la feuille."
+  },
+
+  "feedFiltersApply": "Afficher les annonces",
+  "@feedFiltersApply": {
+    "description": "Bouton qui applique les filtres."
+  },
+
+  "feedEmptyFiltersTitle": "Aucune annonce avec ces filtres",
+  "@feedEmptyFiltersTitle": {
+    "description": "Titre de l'écran vide quand des filtres sont actifs."
+  },
+
+  "feedEmptyFiltersMessage": "Élargissez la zone ou modifiez les filtres.",
+  "@feedEmptyFiltersMessage": {
+    "description": "Texte de l'écran vide quand des filtres sont actifs."
+  },
+
+  "listingReservedHint": "Le vendeur a mis cet article de côté. Vous pouvez quand même lui écrire.",
+  "@listingReservedHint": {
+    "description": "Page de détail : explication sous le badge « Réservé »."
   }
 }

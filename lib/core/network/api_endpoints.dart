@@ -44,6 +44,10 @@ abstract final class ApiEndpoints {
   // Messagerie (connexion requise)
   static const messages = '/api/messages';
   static const conversations = '/api/messages/conversations';
+  static const unreadMessages = '/api/messages/unread-count';
+
+  // Notifications (connexion requise)
+  static const unreadNotifications = '/api/notifications/unread-count';
 
   /// Options de filtre, dont les catégories.
   static const filters = '/api/filters';

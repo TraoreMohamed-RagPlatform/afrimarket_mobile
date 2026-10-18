@@ -1,5 +1,6 @@
 import 'package:afrimarket_mobile/core/error/failure.dart' show NotFoundFailure;
 import 'package:afrimarket_mobile/core/error/result.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/feed_filters.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_category.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_detail.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_locations.dart';
@@ -15,10 +16,12 @@ import 'package:afrimarket_mobile/features/listings/domain/entities/seller_conta
 abstract interface class ListingsRepository {
   /// Annonces actives, des plus récentes aux plus anciennes.
   ///
-  /// [page] commence à 1. [categoryId] limite le fil à une catégorie.
+  /// [page] commence à 1. [categoryId] limite le fil à une catégorie ;
+  /// [filters] ajoute quartier, tri et prix.
   Future<Result<ListingPage>> fetchFeed({
     required int page,
     String? categoryId,
+    FeedFilters filters = FeedFilters.none,
   });
 
   /// Catégories proposées dans le menu et la pastille « Catégories ».

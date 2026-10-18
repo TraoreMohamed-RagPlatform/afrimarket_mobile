@@ -13,6 +13,7 @@ import 'package:afrimarket_mobile/features/listings/domain/entities/listing_deta
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_summary.dart';
 import 'package:afrimarket_mobile/features/listings/listings_providers.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/controllers/listing_detail_controller.dart';
+import 'package:afrimarket_mobile/features/listings/presentation/widgets/listing_card_status_of.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/widgets/listing_detail_skeleton.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/widgets/listing_details_section.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/widgets/listing_message_box.dart';
@@ -32,7 +33,6 @@ import 'package:afrimarket_mobile/shared/widgets/app_error_state.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_round_action.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_section_header.dart';
 import 'package:afrimarket_mobile/shared/widgets/listing_card.dart';
-import 'package:afrimarket_mobile/shared/widgets/listing_card_status.dart';
 import 'package:afrimarket_mobile/shared/widgets/sliver_listing_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -412,8 +412,14 @@ class _Summary extends ConsumerWidget {
             if (listing.isNegotiable && !listing.isSold)
               const AppBadge(AppBadgeType.negotiable),
             if (listing.isSold) const AppBadge(AppBadgeType.sold),
+            if (listing.isReserved && !listing.isSold)
+              const AppBadge(AppBadgeType.reserved),
           ],
         ),
+        if (listing.isReserved && !listing.isSold) ...[
+          const SizedBox(height: AppSpacing.xs),
+          Text(l10n.listingReservedHint, style: styles.bodySmall),
+        ],
         const SizedBox(height: AppSpacing.xs),
         Text(
           [formatListingAge(listing.createdAt, l10n), ?location].join(' · '),
@@ -546,9 +552,10 @@ class _SimilarListings extends ConsumerWidget {
               oldPrice: item.previousPrice,
               imageUrl: item.imageUrl,
               badges: [if (item.isRecentAt(now)) AppBadgeType.recent],
-              status: item.isSold
-                  ? ListingCardStatus.sold
-                  : ListingCardStatus.available,
+              status: listingCardStatusOf(
+                isSold: item.isSold,
+                isReserved: item.isReserved,
+              ),
               onTap: () => unawaited(context.push(AppRoutes.listing(item.id))),
             );
           },

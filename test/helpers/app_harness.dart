@@ -10,6 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'fake_listings_repository.dart';
+import 'fake_unread_counts_repository.dart';
 import 'l10n.dart';
 
 class _MockTokenStorage extends Mock implements TokenStorage;
@@ -17,13 +18,14 @@ class _MockTokenStorage extends Mock implements TokenStorage;
 /// Démarre l'application complète (routeur, thèmes, traductions), en
 /// français, avec ou sans session, et attend la fin du démarrage.
 ///
-/// Le fil est servi par [listings] (vide par défaut) : jamais le vrai
-/// serveur.
+/// Le fil est servi par [listings] (vide par défaut) et les pastilles de
+/// non-lus par [unread] (zéro par défaut) : jamais le vrai serveur.
 Future<ProviderContainer> pumpAfriMarketApp(
   WidgetTester tester, {
   required bool hasSession,
   Flavor flavor = Flavor.dev,
   FakeListingsRepository? listings,
+  FakeUnreadCountsRepository? unread,
 }) async {
   useFrenchDevice(tester);
 
@@ -49,6 +51,7 @@ Future<ProviderContainer> pumpAfriMarketApp(
       ),
       tokenStorageProvider.overrideWithValue(tokens),
       ...listingsOverrides(listings),
+      ...unreadOverrides(unread),
     ],
   );
   addTearDown(container.dispose);

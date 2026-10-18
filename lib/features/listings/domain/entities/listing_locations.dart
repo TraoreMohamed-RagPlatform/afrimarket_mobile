@@ -24,6 +24,21 @@ final class ListingLocations {
     return districtName == null ? known.name : '$districtName, ${known.name}';
   }
 
+  /// Identifiants des villes connues.
+  Iterable<String> get cities => _cities.keys;
+
+  /// Nom d'une ville, ou null si elle est inconnue.
+  String? cityName(String city) => _cities[city]?.name;
+
+  /// Quartiers d'une ville, triés par nom : (identifiant, nom).
+  List<({String slug, String name})> districtsOf(String city) {
+    final districts = _cities[city]?.districts ?? const <String, String>{};
+    return [
+      for (final entry in districts.entries)
+        (slug: entry.key, name: entry.value),
+    ]..sort((a, b) => a.name.compareTo(b.name));
+  }
+
   @override
   bool operator ==(Object other) =>
       other is ListingLocations && _sameCities(other._cities, _cities);

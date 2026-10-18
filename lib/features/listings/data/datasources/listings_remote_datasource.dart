@@ -5,6 +5,7 @@ import 'package:afrimarket_mobile/features/listings/data/models/listing_json.dar
 import 'package:afrimarket_mobile/features/listings/data/models/listing_locations_model.dart';
 import 'package:afrimarket_mobile/features/listings/data/models/listing_page_model.dart';
 import 'package:afrimarket_mobile/features/listings/data/models/seller_contact_model.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/feed_filters.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_category.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_detail.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_locations.dart';
@@ -20,11 +21,13 @@ class ListingsRemoteDataSource {
 
   final Dio _dio;
 
-  /// `GET /api/listings?page=&limit=&categoryId=`.
+  /// `GET /api/listings?page=&limit=&categoryId=&city=&district=&sort=`
+  /// `&minPrice=&maxPrice=` (seuls les filtres choisis sont envoyés).
   Future<ListingPage> fetchFeed({
     required int page,
     required int limit,
     String? categoryId,
+    FeedFilters filters = FeedFilters.none,
   }) async {
     final response = await _dio.get<Map<String, dynamic>>(
       ApiEndpoints.listings,
@@ -32,6 +35,11 @@ class ListingsRemoteDataSource {
         'page': page,
         'limit': limit,
         'categoryId': ?categoryId,
+        'city': ?filters.city,
+        'district': ?filters.district,
+        if (filters.sort != FeedSort.newest) 'sort': filters.sort.apiValue,
+        'minPrice': ?filters.minPrice,
+        'maxPrice': ?filters.maxPrice,
       },
     );
     return ListingPageModel.fromJson(_body(response), baseUrl: _baseUrl);

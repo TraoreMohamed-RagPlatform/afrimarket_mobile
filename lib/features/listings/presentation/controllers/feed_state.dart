@@ -1,4 +1,5 @@
 import 'package:afrimarket_mobile/core/error/failure.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/feed_filters.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_category.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_summary.dart';
 import 'package:flutter/foundation.dart';
@@ -22,6 +23,7 @@ final class FeedState {
     this.phase = FeedPhase.loading,
     this.items = const [],
     this.category,
+    this.filters = FeedFilters.none,
     this.failure,
     this.hasMore = false,
     this.isLoadingMore = false,
@@ -34,6 +36,12 @@ final class FeedState {
 
   /// Catégorie choisie ; `null` = toutes les annonces (« Pour vous »).
   final ListingCategory? category;
+
+  /// Quartier, tri et prix choisis.
+  final FeedFilters filters;
+
+  /// Vrai si une catégorie ou un filtre limite le fil.
+  bool get isFiltered => category != null || filters.isActive;
 
   /// Erreur du premier chargement ([FeedPhase.failed]).
   final Failure? failure;

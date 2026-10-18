@@ -5,11 +5,15 @@ import 'package:afrimarket_mobile/core/l10n/failure_messages.dart';
 import 'package:afrimarket_mobile/core/navigation/app_routes.dart';
 import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/core/theme/app_spacing.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/listing_locations.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_summary.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/controllers/feed_controller.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/controllers/feed_state.dart';
+import 'package:afrimarket_mobile/features/listings/presentation/controllers/listing_detail_controller.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/widgets/category_sheet.dart';
+import 'package:afrimarket_mobile/features/listings/presentation/widgets/feed_filter_sheet.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/widgets/home_drawer.dart';
+import 'package:afrimarket_mobile/features/listings/presentation/widgets/listing_card_status_of.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:afrimarket_mobile/shared/extensions/snackbar_extension.dart';
 import 'package:afrimarket_mobile/shared/formatters/user_text.dart';
@@ -24,7 +28,6 @@ import 'package:afrimarket_mobile/shared/widgets/app_section_header.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_skeleton.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_sliver_header.dart';
 import 'package:afrimarket_mobile/shared/widgets/listing_card.dart';
-import 'package:afrimarket_mobile/shared/widgets/listing_card_status.dart';
 import 'package:afrimarket_mobile/shared/widgets/sliver_listing_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,7 +36,7 @@ import 'package:go_router/go_router.dart';
 /// Le fil d'annonces (maquette page 1, style Facebook Marketplace).
 ///
 /// - en-tête qui se masque en descendant : menu ☰, logo, profil,
-///   recherche, pastilles « Vendre · Pour vous · Catégories » ;
+///   recherche, pastilles « Vendre · Pour vous · Catégories · Filtres » ;
 /// - grille 2 colonnes, défilement infini, tirer pour actualiser ;
 /// - états : squelettes, fil vide, erreur, erreur de page suivante.
 ///
@@ -80,6 +83,8 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   void _openCategories() => unawaited(showCategorySheet(context, ref));
 
+  void _openFilters() => unawaited(showFeedFilterSheet(context, ref));
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -101,6 +106,8 @@ class _HomePageState extends ConsumerState<HomePage> {
     }
 
     final category = state.category;
+    final locations =
+        ref.watch(listingLocationsProvider).value ?? ListingLocations.empty;
 
     return Scaffold(
       body: RefreshIndicator(
@@ -140,8 +147,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                     ),
                     AppChipItem(
                       label: l10n.feedChipForYou,
-                      selected: category == null,
-                      onTap: () => unawaited(_feed.selectCategory(null)),
+                      selected: !state.isFiltered,
+                      onTap: () => unawaited(_feed.clearFilters()),
                     ),
                     AppChipItem(
                       label: category == null
@@ -150,6 +157,16 @@ class _HomePageState extends ConsumerState<HomePage> {
                       selected: category != null,
                       hasDropdown: true,
                       onTap: _openCategories,
+                    ),
+                    AppChipItem(
+                      label: feedFilterChipLabel(
+                        state.filters,
+                        locations,
+                        l10n,
+                      ),
+                      selected: state.filters.isActive,
+                      hasDropdown: true,
+                      onTap: _openFilters,
                     ),
                   ],
                 ),
@@ -194,8 +211,12 @@ class _HomePageState extends ConsumerState<HomePage> {
           SliverFillRemaining(
             hasScrollBody: false,
             child: _EmptyFeed(
-              filtered: state.category != null,
-              onShowAll: () => unawaited(_feed.selectCategory(null)),
+              reason: state.filters.isActive
+                  ? _EmptyReason.filters
+                  : state.category != null
+                  ? _EmptyReason.category
+                  : _EmptyReason.none,
+              onShowAll: () => unawaited(_feed.clearFilters()),
             ),
           ),
         ];
@@ -231,9 +252,10 @@ class _FeedCard extends StatelessWidget {
       oldPrice: listing.previousPrice,
       imageUrl: listing.imageUrl,
       badges: [if (listing.isRecentAt(now)) AppBadgeType.recent],
-      status: listing.isSold
-          ? ListingCardStatus.sold
-          : ListingCardStatus.available,
+      status: listingCardStatusOf(
+        isSold: listing.isSold,
+        isReserved: listing.isReserved,
+      ),
       onTap: () => unawaited(context.push(AppRoutes.listing(listing.id))),
     );
   }
@@ -261,26 +283,50 @@ class _FeedFooter extends StatelessWidget {
   }
 }
 
+/// Pourquoi le fil est vide.
+enum _EmptyReason {
+  /// Aucune annonce du tout.
+  none,
+
+  /// Aucune annonce dans la catégorie choisie.
+  category,
+
+  /// Aucune annonce avec ces filtres (quartier, prix...).
+  filters,
+}
+
 /// Fil vide : une invitation à agir, jamais un simple « Aucun résultat ».
 class _EmptyFeed extends StatelessWidget {
-  const new({required this.filtered, required this.onShowAll});
+  const new({required this.reason, required this.onShowAll});
 
-  /// Vrai si une catégorie est choisie.
-  final bool filtered;
+  final _EmptyReason reason;
+
+  /// Retire catégorie et filtres.
   final VoidCallback onShowAll;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    if (filtered) {
-      return AppEmptyState(
-        icon: AppIcons.squaresFour,
-        title: l10n.feedEmptyCategoryTitle,
-        message: l10n.feedEmptyCategoryMessage,
-        actionLabel: l10n.feedShowAll,
-        onAction: onShowAll,
-      );
+    switch (reason) {
+      case _EmptyReason.filters:
+        return AppEmptyState(
+          icon: AppIcons.mapPin,
+          title: l10n.feedEmptyFiltersTitle,
+          message: l10n.feedEmptyFiltersMessage,
+          actionLabel: l10n.feedShowAll,
+          onAction: onShowAll,
+        );
+      case _EmptyReason.category:
+        return AppEmptyState(
+          icon: AppIcons.squaresFour,
+          title: l10n.feedEmptyCategoryTitle,
+          message: l10n.feedEmptyCategoryMessage,
+          actionLabel: l10n.feedShowAll,
+          onAction: onShowAll,
+        );
+      case _EmptyReason.none:
+        break;
     }
     return AppEmptyState(
       icon: AppIcons.shoppingBag,

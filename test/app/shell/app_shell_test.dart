@@ -1,9 +1,14 @@
+import 'package:afrimarket_mobile/app/shell/app_shell.dart';
+import 'package:afrimarket_mobile/core/error/failure.dart';
+import 'package:afrimarket_mobile/core/error/result.dart';
 import 'package:afrimarket_mobile/core/session/session_provider.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/pages/login_page.dart';
+import 'package:afrimarket_mobile/features/inbox/domain/entities/unread_counts.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_bottom_nav_bar.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/app_harness.dart';
+import '../../helpers/fake_unread_counts_repository.dart';
 import '../../helpers/l10n.dart';
 
 void main() {
@@ -108,6 +113,79 @@ void main() {
 
       expect(find.text(fr.signInFavoritesTitle), findsOneWidget);
       expect(find.text(fr.favoritesComingSoon), findsNothing);
+    });
+  });
+
+  group('Pastilles de non-lus', () {
+    late FakeUnreadCountsRepository unread;
+
+    setUp(() {
+      unread = FakeUnreadCountsRepository()
+        ..answer = const Ok(UnreadCounts(messages: 3, notifications: 120));
+    });
+
+    testWidgets('connecté : messages et notifications non lus', (tester) async {
+      await pumpAfriMarketApp(tester, hasSession: true, unread: unread);
+
+      expect(find.text('3'), findsOneWidget);
+      expect(find.text('99+'), findsOneWidget);
+      expect(
+        find.bySemanticsLabel('${fr.navMessages}, ${fr.unreadCount(3)}'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('visiteur : aucune pastille, aucun appel', (tester) async {
+      await pumpAfriMarketApp(tester, hasSession: false, unread: unread);
+
+      expect(find.text('3'), findsNothing);
+      expect(unread.calls, 0);
+    });
+
+    testWidgets('changement d’onglet : compteurs relus', (tester) async {
+      await pumpAfriMarketApp(tester, hasSession: true, unread: unread);
+      final before = unread.calls;
+
+      unread.answer = const Ok(UnreadCounts.zero);
+      await tester.tap(find.text(fr.navMessages));
+      await tester.pumpAndSettle();
+
+      expect(unread.calls, before + 1);
+      expect(find.text('3'), findsNothing);
+    });
+
+    testWidgets('toutes les minutes : compteurs relus', (tester) async {
+      await pumpAfriMarketApp(tester, hasSession: true, unread: unread);
+      final before = unread.calls;
+
+      await tester.pump(AppShell.unreadRefreshInterval);
+      await tester.pumpAndSettle();
+
+      expect(unread.calls, before + 1);
+    });
+
+    testWidgets('échec : les pastilles restent', (tester) async {
+      await pumpAfriMarketApp(tester, hasSession: true, unread: unread);
+
+      unread.answer = const Err(NetworkFailure());
+      await tester.tap(find.text(fr.navFavorites));
+      await tester.pumpAndSettle();
+
+      expect(find.text('3'), findsOneWidget);
+    });
+
+    testWidgets('déconnexion : les pastilles disparaissent', (tester) async {
+      final container = await pumpAfriMarketApp(
+        tester,
+        hasSession: true,
+        unread: unread,
+      );
+
+      await container.read(sessionProvider.notifier).logout();
+      await tester.pumpAndSettle();
+
+      expect(find.text('3'), findsNothing);
+      expect(find.text('99+'), findsNothing);
     });
   });
 }
