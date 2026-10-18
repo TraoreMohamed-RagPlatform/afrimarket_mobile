@@ -43,7 +43,13 @@ class AppNavAction {
 /// - [centerAction] est placée au milieu des onglets ;
 /// - pastilles de non-lus (« 99+ » au-delà de 99), lues par les
 ///   lecteurs d'écran (« Messages, 3 non lus ») ;
-/// - onglet actif annoncé « sélectionné ».
+/// - onglet actif annoncé « sélectionné » ;
+/// - libellés sur une seule ligne, jamais coupés : la taille du texte est
+///   plafonnée à [maxTextScale] et un libellé trop long (« Notifications »
+///   en arabe, texte agrandi…) est réduit pour tenir dans son onglet ;
+/// - l'action centrale a le même poids visuel que les onglets (icône au
+///   trait, couleur de la marque), comme sur Facebook Marketplace : ce sont
+///   les annonces qui attirent l'œil, pas la barre.
 ///
 /// Widget autonome : fournit sa propre surface Material.
 class AppBottomNavBar extends StatelessWidget {
@@ -60,6 +66,11 @@ class AppBottomNavBar extends StatelessWidget {
 
   /// Hauteur minimale de chaque zone tactile.
   static const double minTouchHeight = 48;
+
+  /// Agrandissement maximal du texte dans la barre. Au-delà, cinq libellés
+  /// ne tiennent plus côte à côte sur un téléphone ; le reste de l'app suit
+  /// le réglage du système sans limite.
+  static const double maxTextScale = 1.5;
 
   final List<AppNavItem> items;
   final int currentIndex;
@@ -91,11 +102,14 @@ class AppBottomNavBar extends StatelessWidget {
         ),
         child: SafeArea(
           top: false,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [for (final tab in tabs) Expanded(child: tab)],
+          child: MediaQuery.withClampedTextScaling(
+            maxScaleFactor: maxTextScale,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [for (final tab in tabs) Expanded(child: tab)],
+              ),
             ),
           ),
         ),
@@ -151,10 +165,8 @@ class _NavTab extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
+              _NavLabel(
                 item.label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
                 style: context.textStyles.labelSmall?.copyWith(
                   color: color,
                   fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
@@ -170,9 +182,6 @@ class _NavTab extends StatelessWidget {
 
 class _NavActionButton extends StatelessWidget {
   const new({required this.action});
-
-  static const double _circleSize = 32;
-  static const double _iconSize = 20;
 
   final AppNavAction action;
 
@@ -194,24 +203,10 @@ class _NavActionButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(
-                width: _circleSize,
-                height: _circleSize,
-                decoration: BoxDecoration(
-                  color: colors.brand,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  action.icon,
-                  size: _iconSize,
-                  color: colors.onBrand,
-                ),
-              ),
+              Icon(action.icon, color: colors.brand),
               const SizedBox(height: 2),
-              Text(
+              _NavLabel(
                 action.label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
                 style: context.textStyles.labelSmall?.copyWith(
                   color: colors.textSecondary,
                 ),
@@ -219,6 +214,25 @@ class _NavActionButton extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Libellé d'onglet sur une ligne : réduit pour tenir plutôt que coupé.
+class _NavLabel extends StatelessWidget {
+  const new(this.text, {required this.style});
+
+  final String text;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(text, maxLines: 1, softWrap: false, style: style),
       ),
     );
   }

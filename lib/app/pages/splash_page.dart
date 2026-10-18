@@ -93,7 +93,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
                 child: FadeTransition(
                   opacity: _motif,
                   child: BogolanStrip(
-                    color: colors.cloth.withValues(alpha: 0.5),
+                    color: colors.cloth.withValues(alpha: 0.7),
                   ),
                 ),
               ),

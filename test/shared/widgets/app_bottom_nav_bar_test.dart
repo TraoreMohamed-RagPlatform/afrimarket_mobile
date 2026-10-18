@@ -1,4 +1,5 @@
 import 'package:afrimarket_mobile/core/theme/app_icons.dart';
+import 'package:afrimarket_mobile/shared/extensions/theme_extension.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -144,6 +145,49 @@ void main() {
     final size = tester.getSize(find.bySemanticsLabel(fr.navHome));
     expect(size.height, greaterThanOrEqualTo(AppBottomNavBar.minTouchHeight));
   });
+
+  testWidgets('« Publier » : icône au trait de la couleur de la marque', (
+    tester,
+  ) async {
+    await tester.pumpWidget(localizedApp(_bar()));
+
+    final context = tester.element(find.text(fr.navPublish));
+    final icon = tester.widget<Icon>(find.byIcon(AppIcons.plusCircle));
+    expect(icon.color, context.colors.brand);
+    // Pas de rond plein : le bouton ne domine plus la barre.
+    expect(
+      find.descendant(
+        of: find.bySemanticsLabel(fr.navPublish),
+        matching: find.byType(Container),
+      ),
+      findsNothing,
+    );
+  });
+
+  for (final scale in [1.0, 1.5, 2.0]) {
+    testWidgets('libellés jamais coupés (texte ×$scale, 360 px)', (
+      tester,
+    ) async {
+      for (final locale in const [Locale('fr'), Locale('en'), Locale('ar')]) {
+        await tester.pumpWidget(
+          MediaQuery(
+            data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+            child: localizedApp(_bar(), locale: locale),
+          ),
+        );
+
+        const tabWidth = 360 / 5;
+        for (final text in tester.widgetList<Text>(find.byType(Text))) {
+          expect(text.overflow, isNot(TextOverflow.ellipsis));
+        }
+        for (final element in find.byType(FittedBox).evaluate()) {
+          final box = element.renderObject! as RenderBox;
+          expect(box.size.width, lessThanOrEqualTo(tabWidth));
+        }
+        expect(tester.takeException(), isNull);
+      }
+    });
+  }
 
   testWidgets('arabe, mode sombre et texte doublé', (tester) async {
     await tester.pumpWidget(
