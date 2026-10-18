@@ -1,4 +1,5 @@
 import 'package:afrimarket_mobile/core/l10n/generated/app_localizations.dart';
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -34,7 +35,7 @@ void main() {
       ),
     );
 
-    expect(find.byIcon(Icons.check), findsOneWidget);
+    expect(find.byIcon(AppIcons.check), findsOneWidget);
     expect(
       find.bySemanticsLabel(fr.avatarVerified('Fatou H.')),
       findsOneWidget,

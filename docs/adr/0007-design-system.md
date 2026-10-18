@@ -19,7 +19,7 @@ Marketplace (captures de référence), avec une identité propre : aucun
 - Couleur principale **terre cuite** `#993C1D`, accent ambre `#EF9F27`.
   En sombre : terre cuite claire avec texte foncé (Material 3).
 - Espacements (multiples de 4), arrondis, typographie (police du
-  système), durées d'animation (`AppMotion`, respect de « Réduire les
+  système, puis police de marque : ADR 0011), durées d'animation (`AppMotion`, respect de « Réduire les
   animations »).
 
 ### Accessibilité vérifiée par les tests
@@ -44,7 +44,7 @@ Marketplace (captures de référence), avec une identité propre : aucun
 
 | Option | Raison du rejet |
 |---|---|
-| Police personnalisée | Intégration et poids supplémentaires ; reportée |
+| Police personnalisée | Reportée en F2, adoptée ensuite (ADR 0011) |
 | Kit d'interface tiers | Identité moins maîtrisée, dépendance de plus |
 | Widgetbook | Outil externe ; une page de galerie suffit à ce stade |
 

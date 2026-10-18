@@ -1,10 +1,14 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
+import 'package:afrimarket_mobile/shared/extensions/theme_extension.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/l10n.dart';
 
 Widget _bar({
+  double width = 360,
   int currentIndex = 0,
   int messages = 0,
   ValueChanged<int>? onSelect,
@@ -13,35 +17,35 @@ Widget _bar({
   return Align(
     alignment: Alignment.bottomCenter,
     child: SizedBox(
-      width: 360,
+      width: width,
       child: AppBottomNavBar(
         currentIndex: currentIndex,
         onSelect: onSelect ?? (_) {},
         items: [
           AppNavItem(
-            icon: Icons.home_outlined,
-            selectedIcon: Icons.home,
+            icon: AppIcons.house,
+            selectedIcon: AppIconsFill.house,
             label: fr.navHome,
           ),
           AppNavItem(
-            icon: Icons.star_border,
-            selectedIcon: Icons.star,
+            icon: AppIcons.star,
+            selectedIcon: AppIconsFill.star,
             label: fr.navFavorites,
           ),
           AppNavItem(
-            icon: Icons.chat_bubble_outline,
-            selectedIcon: Icons.chat_bubble,
+            icon: AppIcons.chatCircle,
+            selectedIcon: AppIconsFill.chatCircle,
             label: fr.navMessages,
             badgeCount: messages,
           ),
           AppNavItem(
-            icon: Icons.notifications_none,
-            selectedIcon: Icons.notifications,
+            icon: AppIcons.bell,
+            selectedIcon: AppIconsFill.bell,
             label: fr.navNotifications,
           ),
         ],
         centerAction: AppNavAction(
-          icon: Icons.add,
+          icon: AppIcons.plusCircle,
           label: fr.navPublish,
           onTap: onPublish ?? () {},
         ),
@@ -111,8 +115,8 @@ void main() {
   ) async {
     await tester.pumpWidget(localizedApp(_bar(currentIndex: 1)));
 
-    expect(find.byIcon(Icons.star), findsOneWidget);
-    expect(find.byIcon(Icons.home_outlined), findsOneWidget);
+    expect(find.byIcon(AppIconsFill.star), findsOneWidget);
+    expect(find.byIcon(AppIcons.house), findsOneWidget);
     expect(
       tester.getSemantics(find.bySemanticsLabel(fr.navFavorites)),
       isSemantics(isSelected: true),
@@ -142,6 +146,79 @@ void main() {
 
     final size = tester.getSize(find.bySemanticsLabel(fr.navHome));
     expect(size.height, greaterThanOrEqualTo(AppBottomNavBar.minTouchHeight));
+  });
+
+  testWidgets('« Publier » : icône au trait de la couleur de la marque', (
+    tester,
+  ) async {
+    await tester.pumpWidget(localizedApp(_bar()));
+
+    final context = tester.element(find.text(fr.navPublish));
+    final icon = tester.widget<Icon>(find.byIcon(AppIcons.plusCircle));
+    expect(icon.color, context.colors.brand);
+    // Pas de rond plein : le bouton ne domine plus la barre.
+    expect(
+      find.descendant(
+        of: find.bySemanticsLabel(fr.navPublish),
+        matching: find.byType(Container),
+      ),
+      findsNothing,
+    );
+  });
+
+  /// Libellés de la barre (les icônes sont aussi du texte, en Phosphor).
+  Iterable<RenderParagraph> labels(WidgetTester tester) => find
+      .byType(RichText)
+      .evaluate()
+      .map((element) => element.renderObject! as RenderParagraph)
+      .where((p) => !(p.text.style?.fontFamily ?? '').startsWith('Phosphor'));
+
+  for (final scale in [1.0, 1.5, 2.0]) {
+    testWidgets('libellés lisibles : jamais sous 11 px (texte ×$scale)', (
+      tester,
+    ) async {
+      for (final locale in const [Locale('fr'), Locale('en'), Locale('ar')]) {
+        await tester.pumpWidget(
+          MediaQuery(
+            data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+            child: localizedApp(_bar(), locale: locale),
+          ),
+        );
+
+        for (final paragraph in labels(tester)) {
+          final size = paragraph.textScaler.scale(
+            paragraph.text.style!.fontSize!,
+          );
+          expect(
+            size,
+            greaterThanOrEqualTo(AppBottomNavBar.minLabelSize - 0.01),
+          );
+        }
+        expect(tester.takeException(), isNull);
+      }
+    });
+  }
+
+  testWidgets('libellé trop long : réduit pour tenir, pas coupé', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MediaQuery(
+        data: const MediaQueryData(textScaler: TextScaler.linear(1.5)),
+        child: localizedApp(_bar(width: 600)),
+      ),
+    );
+
+    final messages = labels(tester)
+        .firstWhere((p) => p.text.toPlainText() == fr.navMessages);
+    expect(
+      messages.textScaler.scale(messages.text.style!.fontSize!),
+      lessThan(12 * AppBottomNavBar.maxTextScale),
+    );
+    expect(
+      messages.getMaxIntrinsicWidth(double.infinity),
+      lessThanOrEqualTo(messages.size.width + 0.5),
+    );
   });
 
   testWidgets('arabe, mode sombre et texte doublé', (tester) async {

@@ -213,6 +213,7 @@ Tout nouvel outil de développement DOIT passer par cette règle.
 | [0008](adr/0008-outils-dev-hors-production.md) | Outils de dev retirés du binaire de production |
 | [0009](adr/0009-textes-utilisateur-bidi.md) | Affichage des textes saisis par les utilisateurs |
 | [0010](adr/0010-app-check-anti-robots.md) | App Check : preuve anti-robots sur les routes sensibles |
+| [0011](adr/0011-identite-visuelle.md) | Identité visuelle : logo, police, icônes, démarrage animé |
 
 ## Éléments ajoutés en phase F2
 
@@ -247,5 +248,19 @@ Parcours :
   reconnecte.
 - **Déconnexion** : les pages protégées sont masquées, la session locale est
   effacée, puis le serveur révoque le jeton (au mieux, même hors ligne).
+
+## Identité visuelle (ADR 0011)
+
+| Emplacement | Contenu |
+|---|---|
+| `lib/core/theme/app_icons.dart` | Icônes Phosphor : `AppIcons` (au repos), `AppIconsFill` (actif) |
+| `lib/core/theme/app_logo_colors.dart` | Couleurs du logo selon le thème |
+| `lib/shared/widgets/app_logo.dart` | `AppLogo` (logo horizontal), `AppLogoMark` (symbole), dessin `AppLogoPainter` |
+| `lib/shared/widgets/app_logo_intro.dart` | Animation du logo (1,2 s) |
+| `lib/shared/widgets/bogolan_strip.dart` | Motif signature |
+| `lib/app/pages/splash_page.dart`, `lib/app/router/splash_intro.dart` | Écran de démarrage animé ; le routeur attend la fin de l'animation |
+| `lib/app/font_licenses.dart` | Licences des polices dans la page « Licences » |
+| `assets/fonts/` | Bricolage Grotesque (OFL), Phosphor (MIT) |
+| `android/app/src/{main,dev,staging}/res`, `ios/Runner/Assets.xcassets`, `web/` | Icônes de l'app (pastille DEV / STG), écrans de lancement natifs |
 
 Règles de travail : voir [Definition of Done](DEFINITION_OF_DONE.md).

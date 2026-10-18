@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_section_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -38,7 +39,7 @@ void main() {
       ),
     );
 
-    expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+    expect(find.byIcon(AppIcons.caretRight), findsOneWidget);
     await tester.tap(find.text('Vendeur'));
     expect(tapped, isTrue);
   });

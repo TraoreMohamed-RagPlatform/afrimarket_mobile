@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:afrimarket_mobile/core/navigation/app_routes.dart';
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
@@ -33,28 +34,28 @@ class AppShell extends StatelessWidget {
         // les notifications.
         items: [
           AppNavItem(
-            icon: Icons.home_outlined,
-            selectedIcon: Icons.home,
+            icon: AppIcons.house,
+            selectedIcon: AppIconsFill.house,
             label: l10n.navHome,
           ),
           AppNavItem(
-            icon: Icons.star_border,
-            selectedIcon: Icons.star,
-            label: l10n.navFavorites,
+            icon: AppIcons.bell,
+            selectedIcon: AppIconsFill.bell,
+            label: l10n.navNotifications,
           ),
           AppNavItem(
-            icon: Icons.chat_bubble_outline,
-            selectedIcon: Icons.chat_bubble,
+            icon: AppIcons.chatCircle,
+            selectedIcon: AppIconsFill.chatCircle,
             label: l10n.navMessages,
           ),
           AppNavItem(
-            icon: Icons.notifications_none,
-            selectedIcon: Icons.notifications,
-            label: l10n.navNotifications,
+            icon: AppIcons.star,
+            selectedIcon: AppIconsFill.star,
+            label: l10n.navFavorites,
           ),
         ],
         centerAction: AppNavAction(
-          icon: Icons.add,
+          icon: AppIcons.plusCircle,
           label: l10n.navPublish,
           onTap: () => unawaited(context.push(AppRoutes.publish)),
         ),

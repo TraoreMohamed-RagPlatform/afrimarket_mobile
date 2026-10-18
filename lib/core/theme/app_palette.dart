@@ -20,6 +20,10 @@ abstract final class AppPalette {
   static const amber200 = Color(0xFFEF9F27);
   static const amber900 = Color(0xFF412402);
 
+  // Logo (ADR 0011) : trait du chariot et fond crème de l'icône.
+  static const ink = Color(0xFF222220);
+  static const cream = Color(0xFFFFF6F0);
+
   // Neutres.
   static const white = Color(0xFFFFFFFF);
   static const neutral50 = Color(0xFFF7F7F6);

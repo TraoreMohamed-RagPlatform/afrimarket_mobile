@@ -15,6 +15,23 @@ void main() {
       expect(find.text(fr.homeComingSoon), findsOneWidget);
     });
 
+    testWidgets('ordre : Accueil, Notifications, Publier, Messages, Favoris', (
+      tester,
+    ) async {
+      await pumpAfriMarketApp(tester, hasSession: false);
+
+      final xs = [
+        fr.navHome,
+        fr.navNotifications,
+        fr.navPublish,
+        fr.navMessages,
+        fr.navFavorites,
+      ].map((label) => tester.getCenter(find.text(label)).dx).toList();
+      for (var i = 1; i < xs.length; i++) {
+        expect(xs[i], greaterThan(xs[i - 1]));
+      }
+    });
+
     testWidgets('onglet Favoris : invitation à se connecter', (tester) async {
       await pumpAfriMarketApp(tester, hasSession: false);
 

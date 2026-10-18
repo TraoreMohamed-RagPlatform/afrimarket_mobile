@@ -43,7 +43,14 @@ class AppNavAction {
 /// - [centerAction] est placée au milieu des onglets ;
 /// - pastilles de non-lus (« 99+ » au-delà de 99), lues par les
 ///   lecteurs d'écran (« Messages, 3 non lus ») ;
-/// - onglet actif annoncé « sélectionné ».
+/// - onglet actif annoncé « sélectionné » ;
+/// - libellés sur une seule ligne : la taille du texte est plafonnée à
+///   [maxTextScale] et un libellé trop long (texte agrandi, petit écran) est
+///   réduit pour tenir dans son onglet, jusqu'à [minLabelSize] ; au-delà
+///   seulement, il se termine par « … » ;
+/// - l'action centrale a le même poids visuel que les onglets (icône au
+///   trait, couleur de la marque), comme sur Facebook Marketplace : ce sont
+///   les annonces qui attirent l'œil, pas la barre.
 ///
 /// Widget autonome : fournit sa propre surface Material.
 class AppBottomNavBar extends StatelessWidget {
@@ -60,6 +67,15 @@ class AppBottomNavBar extends StatelessWidget {
 
   /// Hauteur minimale de chaque zone tactile.
   static const double minTouchHeight = 48;
+
+  /// Agrandissement maximal du texte dans la barre. Au-delà, cinq libellés
+  /// ne tiennent plus côte à côte sur un téléphone ; le reste de l'app suit
+  /// le réglage du système sans limite.
+  static const double maxTextScale = 1.5;
+
+  /// Taille réelle minimale d'un libellé : plus petit, il ne serait plus
+  /// lisible (et son contraste plus mesurable de façon fiable).
+  static const double minLabelSize = 11;
 
   final List<AppNavItem> items;
   final int currentIndex;
@@ -91,11 +107,14 @@ class AppBottomNavBar extends StatelessWidget {
         ),
         child: SafeArea(
           top: false,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [for (final tab in tabs) Expanded(child: tab)],
+          child: MediaQuery.withClampedTextScaling(
+            maxScaleFactor: maxTextScale,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [for (final tab in tabs) Expanded(child: tab)],
+              ),
             ),
           ),
         ),
@@ -151,10 +170,8 @@ class _NavTab extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
+              _NavLabel(
                 item.label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
                 style: context.textStyles.labelSmall?.copyWith(
                   color: color,
                   fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
@@ -170,9 +187,6 @@ class _NavTab extends StatelessWidget {
 
 class _NavActionButton extends StatelessWidget {
   const new({required this.action});
-
-  static const double _circleSize = 32;
-  static const double _iconSize = 20;
 
   final AppNavAction action;
 
@@ -194,24 +208,10 @@ class _NavActionButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(
-                width: _circleSize,
-                height: _circleSize,
-                decoration: BoxDecoration(
-                  color: colors.brand,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  action.icon,
-                  size: _iconSize,
-                  color: colors.onBrand,
-                ),
-              ),
+              Icon(action.icon, color: colors.brand),
               const SizedBox(height: 2),
-              Text(
+              _NavLabel(
                 action.label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
                 style: context.textStyles.labelSmall?.copyWith(
                   color: colors.textSecondary,
                 ),
@@ -219,6 +219,74 @@ class _NavActionButton extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Libellé d'onglet sur une ligne, réduit pour tenir plutôt que coupé.
+///
+/// La taille de police elle-même est diminuée (pas de mise à l'échelle
+/// graphique) : le texte reste net et les contrôles d'accessibilité
+/// mesurent le contraste là où il est réellement dessiné.
+class _NavLabel extends StatelessWidget {
+  const new(this.text, {required this.style});
+
+  final String text;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    final base = DefaultTextStyle.of(context).style.merge(style);
+    final textScaler = MediaQuery.textScalerOf(context);
+    final textDirection = Directionality.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final available = constraints.maxWidth;
+          // Taille de police (avant agrandissement du système) qui donne
+          // [AppBottomNavBar.minLabelSize] à l'écran.
+          final minFontSize =
+              AppBottomNavBar.minLabelSize / textScaler.scale(1);
+          var fitted = base;
+          // L'espacement des lettres ne suit pas la taille de police : on
+          // réduit les deux ensemble et on vérifie la mesure (2 passes au
+          // plus suffisent).
+          for (var pass = 0; pass < 3 && available.isFinite; pass++) {
+            final painter = TextPainter(
+              text: TextSpan(text: text, style: fitted),
+              textDirection: textDirection,
+              textScaler: textScaler,
+              maxLines: 1,
+            )..layout();
+            final width = painter.width;
+            painter.dispose();
+
+            final fontSize = fitted.fontSize;
+            if (fontSize == null ||
+                width <= available ||
+                fontSize <= minFontSize) {
+              break;
+            }
+            final target = fontSize * available / width * 0.98;
+            final factor =
+                (target < minFontSize ? minFontSize : target) / fontSize;
+            fitted = fitted.copyWith(
+              fontSize: fontSize * factor,
+              letterSpacing: (fitted.letterSpacing ?? 0) * factor,
+            );
+          }
+          return Text(
+            text,
+            maxLines: 1,
+            softWrap: false,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: fitted,
+          );
+        },
       ),
     );
   }

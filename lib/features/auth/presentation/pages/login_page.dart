@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
 import 'package:afrimarket_mobile/core/config/dev_tools.dart';
 import 'package:afrimarket_mobile/core/navigation/app_routes.dart';
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/core/theme/app_spacing.dart';
 import 'package:afrimarket_mobile/features/auth/domain/validation/auth_validators.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/controllers/auth_form_state.dart';
@@ -142,7 +143,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 const SizedBox(height: AppSpacing.lg),
                 OutlinedButton.icon(
                   onPressed: () => context.go(AppRoutes.diagnostics),
-                  icon: const Icon(Icons.build_outlined),
+                  icon: const Icon(AppIcons.wrench),
                   label: Text(l10n.devDiagnosticsButton),
                 ),
               ],
