@@ -9,22 +9,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
+import 'fake_listings_repository.dart';
 import 'l10n.dart';
 
 class _MockTokenStorage extends Mock implements TokenStorage;
 
 /// Démarre l'application complète (routeur, thèmes, traductions), en
 /// français, avec ou sans session, et attend la fin du démarrage.
+///
+/// Le fil est servi par [listings] (vide par défaut) : jamais le vrai
+/// serveur.
 Future<ProviderContainer> pumpAfriMarketApp(
   WidgetTester tester, {
   required bool hasSession,
   Flavor flavor = Flavor.dev,
+  FakeListingsRepository? listings,
 }) async {
   useFrenchDevice(tester);
 
   final tokens = _MockTokenStorage();
   when(tokens.hasTokens).thenAnswer((_) async => Ok<bool>(hasSession));
   when(tokens.clear).thenAnswer((_) async => const Ok<void>(null));
+  // Aucun jeton à révoquer : la déconnexion ne fait aucun appel réseau.
+  when(tokens.readRefreshToken)
+      .thenAnswer((_) async => const Ok<String?>(null));
 
   final container = ProviderContainer(
     overrides: [
@@ -40,6 +48,7 @@ Future<ProviderContainer> pumpAfriMarketApp(
         ),
       ),
       tokenStorageProvider.overrideWithValue(tokens),
+      ...listingsOverrides(listings),
     ],
   );
   addTearDown(container.dispose);

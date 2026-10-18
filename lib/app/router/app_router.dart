@@ -14,9 +14,14 @@ import 'package:afrimarket_mobile/features/auth/presentation/pages/register_page
 import 'package:afrimarket_mobile/features/favorites/presentation/pages/favorites_page.dart';
 import 'package:afrimarket_mobile/features/health/presentation/pages/health_check_page.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/pages/home_page.dart';
+import 'package:afrimarket_mobile/features/listings/presentation/pages/listing_detail_page.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/pages/publish_listing_page.dart';
 import 'package:afrimarket_mobile/features/messaging/presentation/pages/messages_page.dart';
 import 'package:afrimarket_mobile/features/notifications/presentation/pages/notifications_page.dart';
+import 'package:afrimarket_mobile/features/profile/presentation/pages/my_profile_page.dart';
+import 'package:afrimarket_mobile/features/search/presentation/pages/search_page.dart';
+import 'package:afrimarket_mobile/features/settings/presentation/pages/settings_page.dart';
+import 'package:afrimarket_mobile/features/support/presentation/pages/help_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -127,6 +132,27 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.publish,
         builder: (context, state) => const PublishListingPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.search,
+        builder: (context, state) => const SearchPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.listingPattern,
+        builder: (context, state) =>
+            ListingDetailPage(listingId: state.pathParameters['id'] ?? ''),
+      ),
+      GoRoute(
+        path: AppRoutes.profile,
+        builder: (context, state) => const MyProfilePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.settings,
+        builder: (context, state) => const SettingsPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.help,
+        builder: (context, state) => const HelpPage(),
       ),
       // Outils de développement (retirés du binaire en staging et prod).
       if (devToolsVisible(config.flavor)) ...[

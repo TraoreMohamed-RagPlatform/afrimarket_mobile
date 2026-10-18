@@ -160,6 +160,13 @@ abstract final class AppTheme {
         elevation: 0,
         shape: const RoundedRectangleBorder(borderRadius: AppRadius.sm),
       ),
+      // Menu ☰ : plat et à angles droits, comme le reste de l'app.
+      drawerTheme: DrawerThemeData(
+        backgroundColor: c.surface,
+        elevation: 0,
+        shape: const RoundedRectangleBorder(),
+        endShape: const RoundedRectangleBorder(),
+      ),
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: c.surface,
         elevation: 0,

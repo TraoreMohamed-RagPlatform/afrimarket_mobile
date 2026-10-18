@@ -19,6 +19,12 @@ abstract final class ApiEndpoints {
   static const changePassword = '/api/auth/change-password';
   static const logoutAll = '/api/auth/logout-all';
 
+  // Annonces (lecture publique)
+  static const listings = '/api/listings';
+
+  /// Options de filtre, dont les catégories.
+  static const filters = '/api/filters';
+
   // Support
   static const contactForm = '/api/support/contact-form';
 

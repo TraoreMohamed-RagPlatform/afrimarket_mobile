@@ -12,11 +12,6 @@
   },
 
 
-  "homeComingSoon": "Le fil d'annonces arrive bientôt.",
-  "@homeComingSoon": {
-    "description": "Texte provisoire de la page d'accueil."
-  },
-
   "logoutTooltip": "Se déconnecter",
   "@logoutTooltip": {
     "description": "Info-bulle et libellé d'accessibilité du bouton de déconnexion."
@@ -546,5 +541,115 @@
   "resetPasswordDone": "Mot de passe modifié. Connectez-vous avec le nouveau mot de passe.",
   "@resetPasswordDone": {
     "description": "Confirmation après la réinitialisation (toutes les sessions sont fermées)."
+  },
+
+  "menuTooltip": "Menu",
+  "@menuTooltip": {
+    "description": "Info-bulle et libellé d'accessibilité du bouton ☰ du fil."
+  },
+
+  "myProfileTitle": "Mon profil",
+  "@myProfileTitle": {
+    "description": "Titre de la page Mon profil, entrée du menu et bouton profil du fil."
+  },
+
+  "settingsTitle": "Paramètres",
+  "@settingsTitle": {
+    "description": "Titre de la page Paramètres et entrée du menu."
+  },
+
+  "helpTitle": "Aide et support",
+  "@helpTitle": {
+    "description": "Titre de la page d'aide et entrée du menu."
+  },
+
+  "categoriesTitle": "Catégories",
+  "@categoriesTitle": {
+    "description": "Pastille du fil, titre de la liste des catégories et entrée du menu."
+  },
+
+  "categoriesAll": "Toutes les catégories",
+  "@categoriesAll": {
+    "description": "Première ligne de la liste des catégories : retire le filtre."
+  },
+
+  "devToolsSection": "Outils de développement",
+  "@devToolsSection": {
+    "description": "Titre de la section du menu visible uniquement en développement."
+  },
+
+  "feedChipSell": "Vendre",
+  "@feedChipSell": {
+    "description": "Pastille du fil qui ouvre la publication d'une annonce."
+  },
+
+  "feedChipForYou": "Pour vous",
+  "@feedChipForYou": {
+    "description": "Pastille du fil : toutes les annonces, sans filtre."
+  },
+
+  "feedTodaysPicks": "Sélection du jour",
+  "@feedTodaysPicks": {
+    "description": "Titre de section au-dessus de la grille du fil."
+  },
+
+  "feedEmptyTitle": "Aucune annonce pour l'instant",
+  "@feedEmptyTitle": {
+    "description": "Titre de l'écran vide du fil."
+  },
+
+  "feedEmptyMessage": "Soyez le premier à publier : vos voisins verront votre annonce ici.",
+  "@feedEmptyMessage": {
+    "description": "Texte de l'écran vide du fil."
+  },
+
+  "feedEmptyAction": "Publier une annonce",
+  "@feedEmptyAction": {
+    "description": "Bouton de l'écran vide du fil."
+  },
+
+  "feedEmptyCategoryTitle": "Aucune annonce dans cette catégorie",
+  "@feedEmptyCategoryTitle": {
+    "description": "Titre de l'écran vide quand une catégorie est choisie."
+  },
+
+  "feedEmptyCategoryMessage": "Revenez plus tard, ou parcourez toutes les annonces.",
+  "@feedEmptyCategoryMessage": {
+    "description": "Texte de l'écran vide quand une catégorie est choisie."
+  },
+
+  "feedShowAll": "Voir toutes les annonces",
+  "@feedShowAll": {
+    "description": "Bouton de l'écran vide d'une catégorie : retire le filtre."
+  },
+
+  "searchComingSoon": "La recherche arrive bientôt.",
+  "@searchComingSoon": {
+    "description": "Texte provisoire de la page de recherche."
+  },
+
+  "listingDetailTitle": "Annonce",
+  "@listingDetailTitle": {
+    "description": "Titre de la page de détail d'une annonce."
+  },
+
+  "listingDetailComingSoon": "Le détail des annonces arrive bientôt.",
+  "@listingDetailComingSoon": {
+    "description": "Texte provisoire de la page de détail d'une annonce."
+  },
+
+  "profileComingSoon": "Votre profil arrive bientôt.",
+  "@profileComingSoon": {
+    "description": "Texte provisoire de la page Mon profil."
+  },
+
+  "settingsComingSoon": "Les paramètres arrivent bientôt.",
+  "@settingsComingSoon": {
+    "description": "Texte provisoire de la page Paramètres."
+  },
+
+  "helpComingSoon": "L'aide arrive bientôt.",
+  "@helpComingSoon": {
+    "description": "Texte provisoire de la page d'aide."
   }
 }

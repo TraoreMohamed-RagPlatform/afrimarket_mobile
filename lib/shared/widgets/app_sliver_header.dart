@@ -11,10 +11,12 @@ import 'package:flutter/services.dart';
 /// comprise), sans calcul approximatif.
 ///
 /// Points d'extension : [leading] (ex. ☰), [actions] (ex. 👤),
-/// [search] (ex. AppSearchLauncher), [bottom] (ex. AppChipBar).
+/// [search] (ex. AppSearchLauncher), [bottom] (ex. AppChipBar),
+/// [titleWidget] (ex. le logo à la place du texte, sur le fil).
 class AppSliverHeader extends StatelessWidget {
   const new({
     required this.title,
+    this.titleWidget,
     this.leading,
     this.actions = const [],
     this.search,
@@ -22,7 +24,13 @@ class AppSliverHeader extends StatelessWidget {
     super.key,
   });
 
+  /// Titre de la page. Toujours annoncé aux lecteurs d'écran, même quand
+  /// [titleWidget] le remplace à l'écran.
   final String title;
+
+  /// Remplace le texte du titre à l'écran (ex. `AppLogo`).
+  final Widget? titleWidget;
+
   final Widget? leading;
   final List<Widget> actions;
   final Widget? search;
@@ -64,11 +72,19 @@ class AppSliverHeader extends StatelessWidget {
                           ),
                           child: Semantics(
                             header: true,
-                            child: Text(
-                              title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: context.textStyles.displaySmall,
+                            label: title,
+                            excludeSemantics: true,
+                            child: Align(
+                              alignment: AlignmentDirectional.centerStart,
+                              heightFactor: 1,
+                              child:
+                                  titleWidget ??
+                                  Text(
+                                    title,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: context.textStyles.displaySmall,
+                                  ),
                             ),
                           ),
                         ),
