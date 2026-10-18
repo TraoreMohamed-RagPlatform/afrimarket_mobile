@@ -260,104 +260,109 @@ class _ListingDetailViewState extends ConsumerState<_ListingDetailView> {
     final canContact = !listing.isSold;
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: ListingPhotoGallery(
-              imageUrls: listing.imageUrls,
-              greyscale: listing.isSold,
-              leading: ListingPhotoButton(
-                icon: AppIcons.arrowLeft,
-                tooltip: l10n.listingBackTooltip,
-                onPressed: () => _goBack(context),
-              ),
-              actions: [
-                ListingPhotoButton(
-                  icon: AppIcons.shareNetwork,
-                  tooltip: l10n.listingActionShare,
-                  onPressed: () => unawaited(_share()),
+      // Sous la barre d'état : le texte ne passe jamais sous l'heure et la
+      // batterie en faisant défiler la page.
+      body: SafeArea(
+        bottom: false,
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: ListingPhotoGallery(
+                imageUrls: listing.imageUrls,
+                greyscale: listing.isSold,
+                leading: ListingPhotoButton(
+                  icon: AppIcons.arrowLeft,
+                  tooltip: l10n.listingBackTooltip,
+                  onPressed: () => _goBack(context),
                 ),
-                ListingPhotoButton(
-                  icon: AppIcons.dotsThree,
-                  tooltip: l10n.listingMoreTooltip,
-                  onPressed: () => unawaited(_openMoreMenu()),
-                ),
-              ],
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.all(AppSpacing.page),
-            sliver: SliverList.list(
-              children: [
-                _Summary(listing: listing),
-                if (canContact) ...[
-                  const SizedBox(height: AppSpacing.lg),
-                  ListingMessageBox(onSend: _sendMessage),
+                actions: [
+                  ListingPhotoButton(
+                    icon: AppIcons.shareNetwork,
+                    tooltip: l10n.listingActionShare,
+                    onPressed: () => unawaited(_share()),
+                  ),
+                  ListingPhotoButton(
+                    icon: AppIcons.dotsThree,
+                    tooltip: l10n.listingMoreTooltip,
+                    onPressed: () => unawaited(_openMoreMenu()),
+                  ),
                 ],
-                const SizedBox(height: AppSpacing.md),
-                AppRoundActionRow(
-                  actions: [
-                    if (canContact && seller.canWhatsapp)
-                      AppRoundAction(
-                        icon: AppIcons.whatsappLogo,
-                        label: l10n.listingActionWhatsapp,
-                        onTap: () => unawaited(_contact(whatsapp: true)),
-                      ),
-                    if (canContact && seller.canCall)
-                      AppRoundAction(
-                        icon: AppIcons.phone,
-                        label: l10n.listingActionCall,
-                        onTap: () => unawaited(_contact(whatsapp: false)),
-                      ),
-                    AppRoundAction(
-                      icon: AppIcons.bookmarkSimple,
-                      activeIcon: AppIconsFill.bookmarkSimple,
-                      label: l10n.listingActionSave,
-                      activeLabel: l10n.listingActionSaved,
-                      active: saved,
-                      onTap: () => unawaited(_toggleSaved()),
-                    ),
-                    AppRoundAction(
-                      icon: AppIcons.shareNetwork,
-                      label: l10n.listingActionShare,
-                      onTap: () => unawaited(_share()),
-                    ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.all(AppSpacing.page),
+              sliver: SliverList.list(
+                children: [
+                  _Summary(listing: listing),
+                  if (canContact) ...[
+                    const SizedBox(height: AppSpacing.lg),
+                    ListingMessageBox(onSend: _sendMessage),
                   ],
-                ),
-              ],
+                  const SizedBox(height: AppSpacing.md),
+                  AppRoundActionRow(
+                    actions: [
+                      if (canContact && seller.canWhatsapp)
+                        AppRoundAction(
+                          icon: AppIcons.whatsappLogo,
+                          label: l10n.listingActionWhatsapp,
+                          onTap: () => unawaited(_contact(whatsapp: true)),
+                        ),
+                      if (canContact && seller.canCall)
+                        AppRoundAction(
+                          icon: AppIcons.phone,
+                          label: l10n.listingActionCall,
+                          onTap: () => unawaited(_contact(whatsapp: false)),
+                        ),
+                      AppRoundAction(
+                        icon: AppIcons.bookmarkSimple,
+                        activeIcon: AppIconsFill.bookmarkSimple,
+                        label: l10n.listingActionSave,
+                        activeLabel: l10n.listingActionSaved,
+                        active: saved,
+                        onTap: () => unawaited(_toggleSaved()),
+                      ),
+                      AppRoundAction(
+                        icon: AppIcons.shareNetwork,
+                        label: l10n.listingActionShare,
+                        onTap: () => unawaited(_share()),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          const _Band(),
-          SliverPadding(
-            padding: const EdgeInsets.all(AppSpacing.page),
-            sliver: SliverToBoxAdapter(
-              child: ListingDetailsSection(listing: listing),
+            const _Band(),
+            SliverPadding(
+              padding: const EdgeInsets.all(AppSpacing.page),
+              sliver: SliverToBoxAdapter(
+                child: ListingDetailsSection(listing: listing),
+              ),
             ),
-          ),
-          const _Band(),
-          SliverPadding(
-            padding: const EdgeInsets.all(AppSpacing.page),
-            sliver: SliverList.list(
-              children: [
-                AppSectionHeader(title: l10n.listingSellerTitle),
-                ListingSellerTile(seller: seller),
-              ],
+            const _Band(),
+            SliverPadding(
+              padding: const EdgeInsets.all(AppSpacing.page),
+              sliver: SliverList.list(
+                children: [
+                  AppSectionHeader(title: l10n.listingSellerTitle),
+                  ListingSellerTile(seller: seller),
+                ],
+              ),
             ),
-          ),
-          const _Band(),
-          SliverPadding(
-            padding: const EdgeInsets.all(AppSpacing.page),
-            sliver: SliverList.list(
-              children: [
-                const _SafetyTips(),
-                const SizedBox(height: AppSpacing.sm),
-                _ReportLink(onTap: () => unawaited(_report())),
-              ],
+            const _Band(),
+            SliverPadding(
+              padding: const EdgeInsets.all(AppSpacing.page),
+              sliver: SliverList.list(
+                children: [
+                  const _SafetyTips(),
+                  const SizedBox(height: AppSpacing.sm),
+                  _ReportLink(onTap: () => unawaited(_report())),
+                ],
+              ),
             ),
-          ),
-          _SimilarListings(listingId: listing.id),
-          const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xxl)),
-        ],
+            _SimilarListings(listingId: listing.id),
+            const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xxl)),
+          ],
+        ),
       ),
     );
   }
