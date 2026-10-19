@@ -34,6 +34,9 @@ abstract final class ApiEndpoints {
   /// Signaler une annonce (connexion requise).
   static String reportListing(String id) => '${listing(id)}/report';
 
+  /// Photos d'une annonce (envoi, connexion requise).
+  static String listingImages(String id) => '${listing(id)}/images';
+
   // Favoris (connexion requise)
   static const favorites = '/api/favorites';
   static String favorite(String listingId) =>

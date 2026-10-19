@@ -347,3 +347,29 @@ Comportement :
 - **Limites connues** : une seule ville (Casablanca) proposée dans les
   filtres ; les compteurs ne sont pas encore poussés en temps réel
   (Socket.io, backlog S5).
+
+## Éléments ajoutés : écran « Publier »
+
+| Emplacement | Contenu |
+|---|---|
+| `lib/features/listings/domain/` | `ListingDraft` (saisie, limites du serveur, `problems`), `LocalPhoto`, contrat `ListingPublisher`, `PublishListingUseCase` |
+| `lib/features/listings/data/repositories/listing_publisher_impl.dart` | `POST /api/listings` (statut `INACTIVE`), `POST /:id/images` (multipart `images`, noms de fichiers neutres, délai de 90 s), `PUT /:id` (`ACTIVE`), `DELETE /:id` |
+| `lib/core/platform/photo_picker.dart` | `PhotoPicker` (galerie, appareil photo) derrière une interface ; photos réduites à 1600 px et recompressées sur le téléphone, métadonnées non demandées |
+| `lib/features/listings/presentation/` | `PublishController` (libéré à la fermeture), `PublishListingPage` |
+| `ios/Runner/Info.plist` | Textes d'autorisation : appareil photo, photos |
+| `test/helpers/fake_publish.dart` | `FakeListingPublisher`, `FakePhotoPicker` |
+
+Parcours (une seule page, comme Facebook Marketplace) :
+
+- **Photos** (1 à 10) en haut ; la première est la photo principale ; toucher
+  une vignette : « Mettre en photo principale » ou « Retirer ».
+- Titre, prix (0 = gratuit), catégorie, quartier (obligatoire), état,
+  description, négociable, remise.
+- Les champs à compléter ne sont signalés qu'après un premier « Publier ».
+- **Publication** : annonce créée masquée → photos envoyées → mise en ligne.
+  Une étape échoue : l'annonce masquée est supprimée, la saisie reste à
+  l'écran avec un message. Réussite : ouverture de l'annonce, fil actualisé.
+- **Quitter** avec une saisie en cours : confirmation « Abandonner cette
+  annonce ? ».
+- **Limite connue** : pas encore de brouillon (backlog C1) ; une seule ville
+  (Casablanca).
