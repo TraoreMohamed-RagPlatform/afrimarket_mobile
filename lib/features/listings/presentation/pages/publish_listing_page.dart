@@ -5,6 +5,7 @@ import 'package:afrimarket_mobile/core/error/result.dart';
 import 'package:afrimarket_mobile/core/l10n/failure_messages.dart';
 import 'package:afrimarket_mobile/core/l10n/generated/app_localizations.dart';
 import 'package:afrimarket_mobile/core/navigation/app_routes.dart';
+import 'package:afrimarket_mobile/core/text/text_fold.dart';
 import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/core/theme/app_spacing.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_category.dart';
@@ -49,6 +50,15 @@ class _PublishListingPageState extends ConsumerState<PublishListingPage> {
   PublishController get _controller =>
       ref.read(publishControllerProvider.notifier);
 
+  /// Ferme l'écran ; ouvert seul (après une connexion), retour au fil.
+  void _leave() {
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go(AppRoutes.home);
+    }
+  }
+
   Future<void> _confirmLeave() async {
     final l10n = context.l10n;
     final leave = await showDialog<bool>(
@@ -68,7 +78,7 @@ class _PublishListingPageState extends ConsumerState<PublishListingPage> {
         ],
       ),
     );
-    if ((leave ?? false) && mounted) context.pop();
+    if ((leave ?? false) && mounted) _leave();
   }
 
   void _onPublished(String id) {
@@ -110,10 +120,10 @@ class _PublishListingPageState extends ConsumerState<PublishListingPage> {
     final canLeave = state.draft.isEmpty && !state.isPublishing;
 
     return PopScope(
-      canPop: canLeave,
+      canPop: canLeave && context.canPop(),
       onPopInvokedWithResult: (didPop, _) {
         if (didPop || state.isPublishing) return;
-        unawaited(_confirmLeave());
+        canLeave ? _leave() : unawaited(_confirmLeave());
       },
       child: Scaffold(
         appBar: AppBar(
@@ -122,7 +132,7 @@ class _PublishListingPageState extends ConsumerState<PublishListingPage> {
             icon: const Icon(AppIcons.x),
             onPressed: state.isPublishing
                 ? null
-                : () => canLeave ? context.pop() : unawaited(_confirmLeave()),
+                : () => canLeave ? _leave() : unawaited(_confirmLeave()),
           ),
           title: Text(l10n.publishTitle),
         ),
@@ -783,20 +793,36 @@ class _CategoryPicker extends ConsumerWidget {
 }
 
 /// Liste des quartiers de la ville, triés par nom.
-class _DistrictPicker extends ConsumerWidget {
+class _DistrictPicker extends ConsumerStatefulWidget {
   const new({required this.city, required this.selected});
 
   final String city;
   final String? selected;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_DistrictPicker> createState() => _DistrictPickerState();
+}
+
+/// Liste des quartiers avec recherche (sans tenir compte des accents :
+/// « ain » trouve « Aïn Chock »).
+class _DistrictPickerState extends ConsumerState<_DistrictPicker> {
+  String _query = '';
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = context.l10n;
     final colors = context.colors;
     final locations = ref.watch(listingLocationsProvider);
-    final districts =
-        locations.value?.districtsOf(city) ??
+    final all =
+        locations.value?.districtsOf(widget.city) ??
         const <({String slug, String name})>[];
+    final query = foldText(_query);
+    final districts = query.isEmpty
+        ? all
+        : [
+            for (final district in all)
+              if (foldText(district.name).contains(query)) district,
+          ];
 
     final Widget body;
     if (locations.isLoading) {
@@ -804,7 +830,7 @@ class _DistrictPicker extends ConsumerWidget {
         padding: EdgeInsets.all(AppSpacing.xl),
         child: Center(child: CircularProgressIndicator()),
       );
-    } else if (districts.isEmpty) {
+    } else if (all.isEmpty) {
       body = Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
@@ -820,29 +846,66 @@ class _DistrictPicker extends ConsumerWidget {
         ),
       );
     } else {
-      body = ListView(
-        shrinkWrap: true,
+      body = Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (final district in districts)
-            ListTile(
-              title: Text(district.name),
-              selected: district.slug == selected,
-              selectedColor: colors.brand,
-              trailing: district.slug == selected
-                  ? Icon(AppIcons.check, color: colors.brand)
-                  : null,
-              onTap: () => Navigator.of(context).pop(district.slug),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              0,
+              AppSpacing.lg,
+              AppSpacing.sm,
             ),
+            child: TextField(
+              key: const Key('district-search'),
+              textInputAction: TextInputAction.search,
+              decoration: InputDecoration(
+                hintText: l10n.publishSearchDistrict,
+                prefixIcon: const Icon(AppIcons.magnifyingGlass),
+              ),
+              onChanged: (value) => setState(() => _query = value),
+            ),
+          ),
+          Flexible(
+            child: districts.isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    child: Text(
+                      l10n.publishNoDistrictMatch,
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                : ListView(
+                    shrinkWrap: true,
+                    children: [
+                      for (final district in districts)
+                        ListTile(
+                          title: Text(district.name),
+                          selected: district.slug == widget.selected,
+                          selectedColor: colors.brand,
+                          trailing: district.slug == widget.selected
+                              ? Icon(AppIcons.check, color: colors.brand)
+                              : null,
+                          onTap: () => Navigator.of(context).pop(district.slug),
+                        ),
+                    ],
+                  ),
+          ),
         ],
       );
     }
 
-    final cityName = locations.value?.cityName(city);
-    return _PickerSheet(
-      title: cityName == null
-          ? l10n.publishFieldDistrict
-          : '${l10n.publishFieldDistrict} · $cityName',
-      body: body,
+    final cityName = locations.value?.cityName(widget.city);
+    return Padding(
+      // Le clavier de la recherche ne cache pas la liste.
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: _PickerSheet(
+        title: cityName == null
+            ? l10n.publishFieldDistrict
+            : '${l10n.publishFieldDistrict} · $cityName',
+        body: body,
+      ),
     );
   }
 }

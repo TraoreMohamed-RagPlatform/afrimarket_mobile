@@ -18,6 +18,8 @@ import 'package:flutter_riverpod/misc.dart';
 final FutureProviderFamily<Result<ListingDetail>, String>
 listingDetailProvider = FutureProvider.autoDispose
     .family<Result<ListingDetail>, String>(
+      // « isOwner » dépend de la personne connectée : après une connexion
+      // depuis cette page, elle est rouverte, donc relue.
       (ref, id) => ref.watch(getListingDetailUseCaseProvider)(id),
     );
 

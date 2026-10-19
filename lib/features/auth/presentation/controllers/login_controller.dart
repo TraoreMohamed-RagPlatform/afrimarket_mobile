@@ -25,8 +25,10 @@ class LoginController extends Notifier<AuthFormState> {
 
     switch (result) {
       case Ok():
-        state = const AuthFormSucceeded();
+        // Session d'abord : l'écran quitte la connexion en réaction à
+        // AuthFormSucceeded, la page demandée doit déjà être autorisée.
         ref.read(sessionProvider.notifier).markAuthenticated();
+        if (ref.mounted) state = const AuthFormSucceeded();
       case Err(:final failure):
         state = AuthFormFailed(failure);
     }

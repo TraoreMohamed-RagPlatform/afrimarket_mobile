@@ -5,6 +5,7 @@ import 'package:afrimarket_mobile/core/theme/app_spacing.dart';
 import 'package:afrimarket_mobile/features/auth/domain/validation/auth_validators.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/controllers/auth_form_state.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/controllers/register_controller.dart';
+import 'package:afrimarket_mobile/features/auth/presentation/sign_in_navigation.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/widgets/auth_error_banner.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/widgets/auth_form_layout.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/widgets/auth_messages.dart';
@@ -78,7 +79,15 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     final submitting = state is AuthFormSubmitting;
 
     ref.listen(registerControllerProvider, (previous, next) {
-      if (next is AuthFormSucceeded) TextInput.finishAutofillContext();
+      if (next is AuthFormSucceeded && previous is! AuthFormSucceeded) {
+        TextInput.finishAutofillContext();
+        // Ouverte depuis la connexion : celle-ci prend le relais.
+        if (context.canPop()) {
+          context.pop(true);
+        } else {
+          leaveAuthAfterSignIn(context, widget.returnTo);
+        }
+      }
     });
 
     return AuthFormLayout(

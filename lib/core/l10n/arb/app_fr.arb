@@ -1362,5 +1362,80 @@
   "publishErrorDescription": "Décrivez l'article en quelques mots (10 caractères au moins).",
   "@publishErrorDescription": {
     "description": "Erreur : description trop courte."
+  },
+
+  "ownerTitle": "C'est votre annonce",
+  "@ownerTitle": {
+    "description": "Encadré du vendeur sur sa propre annonce."
+  },
+
+  "ownerStatusActive": "En ligne : les acheteurs peuvent vous écrire.",
+  "@ownerStatusActive": {
+    "description": "Statut : annonce en ligne."
+  },
+
+  "ownerStatusReserved": "Réservée : le badge « Réservé » est affiché.",
+  "@ownerStatusReserved": {
+    "description": "Statut : annonce réservée."
+  },
+
+  "ownerStatusSold": "Vendue : l'annonce n'apparaît plus dans le fil.",
+  "@ownerStatusSold": {
+    "description": "Statut : annonce vendue."
+  },
+
+  "ownerMarkReserved": "Marquer comme réservée",
+  "@ownerMarkReserved": {
+    "description": "Bouton : réserver."
+  },
+
+  "ownerMarkAvailable": "Remettre en vente",
+  "@ownerMarkAvailable": {
+    "description": "Bouton : annuler la réservation."
+  },
+
+  "ownerMarkSold": "Marquer comme vendue",
+  "@ownerMarkSold": {
+    "description": "Bouton : vendue."
+  },
+
+  "ownerSoldConfirmTitle": "Marquer comme vendue ?",
+  "@ownerSoldConfirmTitle": {
+    "description": "Confirmation avant « vendue »."
+  },
+
+  "ownerSoldConfirmMessage": "L'annonce sera retirée du fil. Vous ne pourrez plus la remettre en vente.",
+  "@ownerSoldConfirmMessage": {
+    "description": "Texte de la confirmation « vendue »."
+  },
+
+  "ownerCancel": "Annuler",
+  "@ownerCancel": {
+    "description": "Bouton : annuler."
+  },
+
+  "ownerReservedDone": "Annonce marquée comme réservée.",
+  "@ownerReservedDone": {
+    "description": "Message après réservation."
+  },
+
+  "ownerAvailableDone": "Annonce remise en vente.",
+  "@ownerAvailableDone": {
+    "description": "Message après annulation de la réservation."
+  },
+
+  "ownerSoldDone": "Bravo ! Annonce marquée comme vendue.",
+  "@ownerSoldDone": {
+    "description": "Message après « vendue »."
+  },
+
+  "publishSearchDistrict": "Rechercher un quartier",
+  "@publishSearchDistrict": {
+    "description": "Champ de recherche de la liste des quartiers."
+  },
+
+  "publishNoDistrictMatch": "Aucun quartier ne correspond.",
+  "@publishNoDistrictMatch": {
+    "description": "Recherche de quartier sans résultat."
   }
 }

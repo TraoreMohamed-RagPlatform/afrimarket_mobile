@@ -46,12 +46,18 @@ void main() {
     WidgetTester tester, {
     Flavor flavor = Flavor.prod,
     String? returnTo,
+    List<String> stack = const [],
   }) {
     return pumpAuthPage(
       tester,
       initialLocation: AppRoutes.login,
       flavor: flavor,
-      pages: {AppRoutes.login: (_) => LoginPage(returnTo: returnTo)},
+      stack: stack,
+      pages: {
+        AppRoutes.login: (_) => LoginPage(returnTo: returnTo),
+        AppRoutes.publish: (state) => RouteProbe(state.uri.toString()),
+        AppRoutes.favorites: (state) => RouteProbe(state.uri.toString()),
+      },
       overrides: [loginUseCaseProvider.overrideWithValue(login)],
     );
   }
@@ -136,6 +142,63 @@ void main() {
       verify(() => login(email: 'awa@example.com', password: 'Abc-1234'))
           .called(1);
       expect(container.read(sessionProvider), SessionStatus.authenticated);
+    });
+
+    group('après la connexion, la page demandée s’ouvre', () {
+      setUp(() => answer(() async => const Ok(_user)));
+
+      testWidgets('ouverte par-dessus le fil (Publier) : Publier', (
+        tester,
+      ) async {
+        await pump(
+          tester,
+          returnTo: AppRoutes.publish,
+          stack: [AppRoutes.home],
+        );
+
+        await fillAndSubmit(tester);
+
+        expect(findRoute(AppRoutes.publish), findsOneWidget);
+        expect(find.byType(LoginPage), findsNothing);
+      });
+
+      testWidgets('ouverte par-dessus, sans page demandée : retour', (
+        tester,
+      ) async {
+        await pump(tester, stack: [AppRoutes.home]);
+
+        await fillAndSubmit(tester);
+
+        expect(findRoute(AppRoutes.home), findsOneWidget);
+      });
+
+      testWidgets('ouverte seule : la page demandée', (tester) async {
+        await pump(tester, returnTo: AppRoutes.publish);
+
+        await fillAndSubmit(tester);
+
+        expect(findRoute(AppRoutes.publish), findsOneWidget);
+      });
+
+      testWidgets('onglet demandé : l’onglet', (tester) async {
+        await pump(
+          tester,
+          returnTo: AppRoutes.favorites,
+          stack: [AppRoutes.home],
+        );
+
+        await fillAndSubmit(tester);
+
+        expect(findRoute(AppRoutes.favorites), findsOneWidget);
+      });
+
+      testWidgets('adresse extérieure refusée : le fil', (tester) async {
+        await pump(tester, returnTo: 'https://exemple.com/piege');
+
+        await fillAndSubmit(tester);
+
+        expect(findRoute(AppRoutes.home), findsOneWidget);
+      });
     });
 
     testWidgets('pendant l’envoi : bouton désactivé, indicateur affiché', (

@@ -8,6 +8,7 @@ import 'package:afrimarket_mobile/core/theme/app_spacing.dart';
 import 'package:afrimarket_mobile/features/auth/domain/validation/auth_validators.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/controllers/auth_form_state.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/controllers/login_controller.dart';
+import 'package:afrimarket_mobile/features/auth/presentation/sign_in_navigation.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/widgets/auth_error_banner.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/widgets/auth_form_layout.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/widgets/auth_messages.dart';
@@ -54,6 +55,17 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         .submit(email: _email.text, password: _password.text);
   }
 
+  /// Inscription par-dessus la connexion. Compte créé (`true`) : la
+  /// connexion se ferme à son tour vers la page demandée.
+  Future<void> _openRegister() async {
+    final created = await context.push<bool>(
+      AppRoutes.withReturn(AppRoutes.register, widget.returnTo),
+    );
+    if ((created ?? false) && mounted) {
+      leaveAuthAfterSignIn(context, widget.returnTo);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -63,7 +75,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     // Propose au gestionnaire de mots de passe d'enregistrer l'identifiant.
     ref.listen(loginControllerProvider, (previous, next) {
-      if (next is AuthFormSucceeded) TextInput.finishAutofillContext();
+      if (next is AuthFormSucceeded && previous is! AuthFormSucceeded) {
+        TextInput.finishAutofillContext();
+        leaveAuthAfterSignIn(context, widget.returnTo);
+      }
     });
 
     return AuthFormLayout(
@@ -127,14 +142,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   TextButton(
                     onPressed: submitting
                         ? null
-                        : () => unawaited(
-                            context.push(
-                              AppRoutes.withReturn(
-                                AppRoutes.register,
-                                widget.returnTo,
-                              ),
-                            ),
-                          ),
+                        : () => unawaited(_openRegister()),
                     child: Text(l10n.loginCreateAccount),
                   ),
                 ],

@@ -91,8 +91,10 @@ abstract final class AppTheme {
           textStyle: text.labelLarge,
         ),
       ),
+      // Pastilles de choix (état, remise, filtres) : fond gris clair comme
+      // les champs, pour qu'elles se voient avant d'être choisies.
       chipTheme: ChipThemeData(
-        backgroundColor: c.background,
+        backgroundColor: c.surfaceMuted,
         selectedColor: c.brandSoft,
         labelStyle: text.labelLarge,
         side: BorderSide.none,

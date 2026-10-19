@@ -23,6 +23,7 @@ final class ListingDetail {
     this.isNegotiable = false,
     this.isSold = false,
     this.isReserved = false,
+    this.isOwner = false,
     this.condition,
     this.categoryName,
     this.city,
@@ -51,6 +52,10 @@ final class ListingDetail {
 
   /// Promise à un acheteur : badge « Réservé », messages toujours possibles.
   final bool isReserved;
+
+  /// Vrai si la personne connectée est le vendeur : la page montre alors
+  /// ses actions de vendeur au lieu de « Écrire au vendeur ».
+  final bool isOwner;
 
   /// État de l'article ; null si inconnu.
   final ListingCondition? condition;
@@ -82,6 +87,7 @@ final class ListingDetail {
       other.isNegotiable == isNegotiable &&
       other.isSold == isSold &&
       other.isReserved == isReserved &&
+      other.isOwner == isOwner &&
       other.condition == condition &&
       other.categoryName == categoryName &&
       other.city == city &&
@@ -101,6 +107,7 @@ final class ListingDetail {
     isNegotiable,
     isSold,
     isReserved,
+    isOwner,
     condition,
     categoryName,
     city,

@@ -1,6 +1,10 @@
 import 'package:afrimarket_mobile/core/navigation/app_routes.dart';
 import 'package:afrimarket_mobile/core/navigation/route_access.dart';
+import 'package:afrimarket_mobile/core/navigation/safe_internal_path.dart';
 import 'package:afrimarket_mobile/core/session/session_provider.dart';
+
+export 'package:afrimarket_mobile/core/navigation/safe_internal_path.dart'
+    show safeInternalPath;
 
 /// Paramètre qui mémorise la page demandée avant une redirection.
 const String fromParam = AppRoutes.returnParam;
@@ -68,22 +72,4 @@ String _withFrom(String target, Uri location) {
   final from = location.toString();
   if (safeInternalPath(from) == null) return target;
   return Uri(path: target, queryParameters: {fromParam: from}).toString();
-}
-
-/// Renvoie [candidate] seulement s'il s'agit d'un chemin INTERNE sûr.
-///
-/// Sécurité (CWE-601 - Open Redirect) : refuse les URL avec schéma
-/// (`https://...`), les hôtes déguisés (`//site.com`), les antislashs,
-/// et les routes qui provoqueraient une boucle.
-String? safeInternalPath(String? candidate) {
-  if (candidate == null || candidate.isEmpty) return null;
-  if (!candidate.startsWith('/')) return null;
-  if (candidate.startsWith('//')) return null;
-  if (candidate.contains(r'\')) return null;
-
-  final uri = Uri.tryParse(candidate);
-  if (uri == null || uri.hasScheme || uri.hasAuthority) return null;
-  if (AppRoutes.noReturnRoutes.contains(uri.path)) return null;
-
-  return candidate;
 }

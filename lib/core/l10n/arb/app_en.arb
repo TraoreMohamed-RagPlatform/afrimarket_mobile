@@ -248,5 +248,20 @@
   "publishErrorCategory": "Choose a category.",
   "publishErrorDistrict": "Choose the neighbourhood where the item is.",
   "publishErrorCondition": "Choose the item's condition.",
-  "publishErrorDescription": "Describe the item in a few words (at least 10 characters)."
+  "publishErrorDescription": "Describe the item in a few words (at least 10 characters).",
+  "ownerTitle": "This is your listing",
+  "ownerStatusActive": "Live: buyers can message you.",
+  "ownerStatusReserved": "Reserved: the “Reserved” badge is shown.",
+  "ownerStatusSold": "Sold: the listing no longer appears in the feed.",
+  "ownerMarkReserved": "Mark as reserved",
+  "ownerMarkAvailable": "Mark as available",
+  "ownerMarkSold": "Mark as sold",
+  "ownerSoldConfirmTitle": "Mark as sold?",
+  "ownerSoldConfirmMessage": "The listing will be removed from the feed. You won't be able to put it back on sale.",
+  "ownerCancel": "Cancel",
+  "ownerReservedDone": "Listing marked as reserved.",
+  "ownerAvailableDone": "Listing is available again.",
+  "ownerSoldDone": "Congratulations! Listing marked as sold.",
+  "publishSearchDistrict": "Search a neighbourhood",
+  "publishNoDistrictMatch": "No neighbourhood matches."
 }

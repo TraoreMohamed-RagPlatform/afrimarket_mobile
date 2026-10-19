@@ -10,6 +10,7 @@ import 'package:afrimarket_mobile/features/listings/domain/usecases/get_listing_
 import 'package:afrimarket_mobile/features/listings/domain/usecases/get_listing_locations_usecase.dart';
 import 'package:afrimarket_mobile/features/listings/domain/usecases/get_seller_contact_usecase.dart';
 import 'package:afrimarket_mobile/features/listings/domain/usecases/get_similar_listings_usecase.dart';
+import 'package:afrimarket_mobile/features/listings/domain/usecases/manage_own_listing_usecase.dart';
 import 'package:afrimarket_mobile/features/listings/domain/usecases/publish_listing_usecase.dart';
 import 'package:afrimarket_mobile/features/listings/domain/usecases/report_listing_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -61,4 +62,8 @@ final listingPublisherProvider = Provider<ListingPublisher>(
 
 final publishListingUseCaseProvider = Provider<PublishListingUseCase>(
   (ref) => PublishListingUseCase(ref.watch(listingPublisherProvider)),
+);
+
+final manageOwnListingUseCaseProvider = Provider<ManageOwnListingUseCase>(
+  (ref) => ManageOwnListingUseCase(ref.watch(listingPublisherProvider)),
 );

@@ -11,12 +11,15 @@ import 'package:afrimarket_mobile/core/theme/app_spacing.dart';
 import 'package:afrimarket_mobile/core/theme/app_typography.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_detail.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_summary.dart';
+import 'package:afrimarket_mobile/features/listings/domain/usecases/manage_own_listing_usecase.dart';
 import 'package:afrimarket_mobile/features/listings/listings_providers.dart';
+import 'package:afrimarket_mobile/features/listings/presentation/controllers/feed_controller.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/controllers/listing_detail_controller.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/widgets/listing_card_status_of.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/widgets/listing_detail_skeleton.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/widgets/listing_details_section.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/widgets/listing_message_box.dart';
+import 'package:afrimarket_mobile/features/listings/presentation/widgets/listing_owner_panel.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/widgets/listing_photo_gallery.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/widgets/listing_seller_tile.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/widgets/report_listing_sheet.dart';
@@ -99,6 +102,9 @@ class _ListingDetailView extends ConsumerStatefulWidget {
 
 class _ListingDetailViewState extends ConsumerState<_ListingDetailView> {
   ListingDetail get _listing => widget.listing;
+
+  /// Action du vendeur en cours (réserver, vendre).
+  bool _ownerBusy = false;
 
   /// Vrai si connecté ; sinon ouvre la connexion, qui ramènera ici.
   bool _ensureSignedIn() {
@@ -221,6 +227,65 @@ class _ListingDetailViewState extends ConsumerState<_ListingDetailView> {
     }
   }
 
+  /// Réservée ↔ disponible (vendeur).
+  Future<void> _toggleReserved() async {
+    final reserved = !_listing.isReserved;
+    await _ownerAction(
+      (useCase) => useCase.setReserved(_listing.id, reserved: reserved),
+      reserved
+          ? context.l10n.ownerReservedDone
+          : context.l10n.ownerAvailableDone,
+    );
+  }
+
+  /// Vendue, après confirmation (vendeur).
+  Future<void> _markSold() async {
+    final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.ownerSoldConfirmTitle),
+        content: Text(l10n.ownerSoldConfirmMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.ownerCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.ownerMarkSold),
+          ),
+        ],
+      ),
+    );
+    if (!(confirmed ?? false) || !mounted) return;
+    await _ownerAction(
+      (useCase) => useCase.markSold(_listing.id),
+      l10n.ownerSoldDone,
+    );
+  }
+
+  Future<void> _ownerAction(
+    Future<Result<void>> Function(ManageOwnListingUseCase useCase) action,
+    String success,
+  ) async {
+    if (_ownerBusy) return;
+    setState(() => _ownerBusy = true);
+    final result = await action(ref.read(manageOwnListingUseCaseProvider));
+    if (!mounted) return;
+    setState(() => _ownerBusy = false);
+    switch (result) {
+      case Ok():
+        unawaited(HapticFeedback.lightImpact());
+        _show(success);
+        // Page et fil à jour (badge « Réservé », annonce vendue).
+        ref.invalidate(listingDetailProvider(_listing.id));
+        unawaited(ref.read(feedControllerProvider.notifier).refresh());
+      case Err(:final failure):
+        _show(failure.message(context.l10n));
+    }
+  }
+
   Future<void> _openMoreMenu() async {
     final l10n = context.l10n;
     final choice = await showModalBottomSheet<VoidCallback>(
@@ -237,11 +302,12 @@ class _ListingDetailViewState extends ConsumerState<_ListingDetailView> {
               title: Text(l10n.listingActionShare),
               onTap: () => Navigator.of(sheetContext).pop(_share),
             ),
-            ListTile(
-              leading: const Icon(AppIcons.flag),
-              title: Text(l10n.listingReportAction),
-              onTap: () => Navigator.of(sheetContext).pop(_report),
-            ),
+            if (!_listing.isOwner)
+              ListTile(
+                leading: const Icon(AppIcons.flag),
+                title: Text(l10n.listingReportAction),
+                onTap: () => Navigator.of(sheetContext).pop(_report),
+              ),
           ],
         ),
       ),
@@ -257,7 +323,9 @@ class _ListingDetailViewState extends ConsumerState<_ListingDetailView> {
     final saved = ref.watch(
       favoriteControllerProvider(listing.id).select((state) => state.saved),
     );
-    final canContact = !listing.isSold;
+    final isOwner = listing.isOwner;
+    // Le vendeur ne s'écrit pas à lui-même.
+    final canContact = !listing.isSold && !isOwner;
 
     return Scaffold(
       // Sous la barre d'état : le texte ne passe jamais sous l'heure et la
@@ -294,6 +362,15 @@ class _ListingDetailViewState extends ConsumerState<_ListingDetailView> {
               sliver: SliverList.list(
                 children: [
                   _Summary(listing: listing),
+                  if (isOwner) ...[
+                    const SizedBox(height: AppSpacing.lg),
+                    ListingOwnerPanel(
+                      listing: listing,
+                      busy: _ownerBusy,
+                      onToggleReserved: () => unawaited(_toggleReserved()),
+                      onMarkSold: () => unawaited(_markSold()),
+                    ),
+                  ],
                   if (canContact) ...[
                     const SizedBox(height: AppSpacing.lg),
                     ListingMessageBox(onSend: _sendMessage),
@@ -313,14 +390,15 @@ class _ListingDetailViewState extends ConsumerState<_ListingDetailView> {
                           label: l10n.listingActionCall,
                           onTap: () => unawaited(_contact(whatsapp: false)),
                         ),
-                      AppRoundAction(
-                        icon: AppIcons.bookmarkSimple,
-                        activeIcon: AppIconsFill.bookmarkSimple,
-                        label: l10n.listingActionSave,
-                        activeLabel: l10n.listingActionSaved,
-                        active: saved,
-                        onTap: () => unawaited(_toggleSaved()),
-                      ),
+                      if (!isOwner)
+                        AppRoundAction(
+                          icon: AppIcons.bookmarkSimple,
+                          activeIcon: AppIconsFill.bookmarkSimple,
+                          label: l10n.listingActionSave,
+                          activeLabel: l10n.listingActionSaved,
+                          active: saved,
+                          onTap: () => unawaited(_toggleSaved()),
+                        ),
                       AppRoundAction(
                         icon: AppIcons.shareNetwork,
                         label: l10n.listingActionShare,
@@ -354,8 +432,10 @@ class _ListingDetailViewState extends ConsumerState<_ListingDetailView> {
               sliver: SliverList.list(
                 children: [
                   const _SafetyTips(),
-                  const SizedBox(height: AppSpacing.sm),
-                  _ReportLink(onTap: () => unawaited(_report())),
+                  if (!isOwner) ...[
+                    const SizedBox(height: AppSpacing.sm),
+                    _ReportLink(onTap: () => unawaited(_report())),
+                  ],
                 ],
               ),
             ),
@@ -416,7 +496,8 @@ class _Summary extends ConsumerWidget {
               const AppBadge(AppBadgeType.reserved),
           ],
         ),
-        if (listing.isReserved && !listing.isSold) ...[
+        // Explication pour les acheteurs ; le vendeur a son propre encadré.
+        if (listing.isReserved && !listing.isSold && !listing.isOwner) ...[
           const SizedBox(height: AppSpacing.xs),
           Text(l10n.listingReservedHint, style: styles.bodySmall),
         ],

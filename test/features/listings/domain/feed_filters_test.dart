@@ -1,4 +1,5 @@
 import 'package:afrimarket_mobile/features/listings/domain/entities/feed_filters.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/listing_locations.dart';
 import 'package:afrimarket_mobile/features/listings/domain/usecases/get_feed_usecase.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -101,6 +102,27 @@ void main() {
   });
 
   group('ListingLocations', () {
+    test('tri sans accents ni majuscules', () {
+      const locations = ListingLocations({
+        'casablanca': (
+          name: 'Casablanca',
+          districts: {
+            'anfa': 'Anfa',
+            'ain-chock': 'Aïn Chock',
+            'cil': 'CIL',
+            'californie': 'Californie',
+          },
+        ),
+      });
+
+      expect(locations.districtsOf('casablanca').map((d) => d.name), [
+        'Aïn Chock',
+        'Anfa',
+        'Californie',
+        'CIL',
+      ]);
+    });
+
     test('nom de ville et quartiers triés par nom', () {
       expect(sampleLocations.cities, ['casablanca']);
       expect(sampleLocations.cityName('casablanca'), 'Casablanca');

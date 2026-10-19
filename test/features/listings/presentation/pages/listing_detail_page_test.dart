@@ -25,6 +25,7 @@ import 'package:mocktail/mocktail.dart';
 
 import '../../../../helpers/fake_detail_services.dart';
 import '../../../../helpers/fake_listings_repository.dart';
+import '../../../../helpers/fake_publish.dart';
 import '../../../../helpers/l10n.dart';
 
 class _MockTokenStorage extends Mock implements TokenStorage;
@@ -41,6 +42,7 @@ void main() {
   late FakeFavoritesRepository favorites;
   late FakeMessagingRepository messaging;
   late FakeExternalActions actions;
+  late FakeListingPublisher publisher;
 
   setUp(() {
     tokens = _MockTokenStorage();
@@ -51,6 +53,7 @@ void main() {
     favorites = FakeFavoritesRepository();
     messaging = FakeMessagingRepository();
     actions = FakeExternalActions();
+    publisher = FakeListingPublisher();
   });
 
   /// Ouvre `/listings/listing-1` dans un vrai routeur (retour, connexion,
@@ -105,6 +108,7 @@ void main() {
         ...listingsOverrides(listings),
         favoritesRepositoryProvider.overrideWithValue(favorites),
         messagingRepositoryProvider.overrideWithValue(messaging),
+        ...publishOverrides(publisher: publisher),
         externalActionsProvider.overrideWithValue(actions),
       ],
     );
@@ -463,6 +467,105 @@ void main() {
         find.widgetWithText(FilledButton, fr.reportSubmit),
       );
       expect(submit.onPressed, isNull);
+    });
+  });
+
+  group('Votre annonce', () {
+    setUp(() => listings.detail = Ok(sampleDetail(isOwner: true)));
+
+    Future<void> tapVisible(WidgetTester tester, Finder finder) async {
+      await tester.ensureVisible(finder);
+      await tester.pumpAndSettle();
+      await tester.tap(finder);
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('« C’est votre annonce » au lieu d’écrire au vendeur', (
+      tester,
+    ) async {
+      await pump(tester);
+
+      expect(find.text(fr.ownerTitle), findsOneWidget);
+      expect(find.text(fr.ownerStatusActive), findsOneWidget);
+      expect(find.text(fr.listingMessageTitle), findsNothing);
+      expect(find.text(fr.listingActionCall), findsNothing);
+      expect(find.text(fr.listingActionWhatsapp), findsNothing);
+      expect(find.text(fr.listingActionSave), findsNothing);
+      expect(find.text(fr.listingActionShare), findsOneWidget);
+    });
+
+    testWidgets('pas de « Signaler » sur sa propre annonce', (tester) async {
+      await pump(tester);
+
+      await tester.tap(find.byTooltip(fr.listingMoreTooltip));
+      await tester.pumpAndSettle();
+
+      expect(find.text(fr.listingReportAction), findsNothing);
+    });
+
+    testWidgets('marquer comme réservée, puis la page est relue', (
+      tester,
+    ) async {
+      await pump(tester);
+      final reads = listings.detailCalls.length;
+
+      await tapVisible(tester, find.byKey(const Key('owner-toggle-reserved')));
+
+      expect(publisher.calls, ['reserved:listing-1:true']);
+      expect(find.text(fr.ownerReservedDone), findsOneWidget);
+      expect(listings.detailCalls.length, greaterThan(reads));
+    });
+
+    testWidgets('réservée : « Remettre en vente »', (tester) async {
+      listings.detail = Ok(sampleDetail(isOwner: true, isReserved: true));
+      await pump(tester);
+
+      expect(find.text(fr.ownerStatusReserved), findsOneWidget);
+      expect(find.text(fr.listingReservedHint), findsNothing);
+      await tapVisible(tester, find.text(fr.ownerMarkAvailable));
+
+      expect(publisher.calls, ['reserved:listing-1:false']);
+    });
+
+    testWidgets('marquer comme vendue : confirmation demandée', (tester) async {
+      await pump(tester);
+
+      await tapVisible(tester, find.byKey(const Key('owner-mark-sold')));
+      expect(find.text(fr.ownerSoldConfirmTitle), findsOneWidget);
+
+      await tester.tap(find.text(fr.ownerCancel));
+      await tester.pumpAndSettle();
+      expect(publisher.calls, isEmpty);
+
+      await tapVisible(tester, find.byKey(const Key('owner-mark-sold')));
+      await tester.tap(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.text(fr.ownerMarkSold),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(publisher.calls, ['sold:listing-1']);
+      expect(find.text(fr.ownerSoldDone), findsOneWidget);
+    });
+
+    testWidgets('vendue : plus aucune action de vendeur', (tester) async {
+      listings.detail = Ok(sampleDetail(isOwner: true, isSold: true));
+      await pump(tester);
+
+      expect(find.text(fr.ownerStatusSold), findsOneWidget);
+      expect(find.byKey(const Key('owner-mark-sold')), findsNothing);
+    });
+
+    testWidgets('échec : message, rien d’autre ne change', (tester) async {
+      publisher.reserved = const Err(NetworkFailure());
+      await pump(tester);
+
+      await tapVisible(tester, find.byKey(const Key('owner-toggle-reserved')));
+
+      expect(find.text(fr.errorNetwork), findsOneWidget);
+      expect(find.text(fr.ownerMarkReserved), findsOneWidget);
     });
   });
 

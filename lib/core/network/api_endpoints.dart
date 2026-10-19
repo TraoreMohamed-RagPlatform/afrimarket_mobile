@@ -37,6 +37,9 @@ abstract final class ApiEndpoints {
   /// Photos d'une annonce (envoi, connexion requise).
   static String listingImages(String id) => '${listing(id)}/images';
 
+  /// Marquer une annonce comme vendue (vendeur).
+  static String markListingSold(String id) => '${listing(id)}/mark-sold';
+
   // Favoris (connexion requise)
   static const favorites = '/api/favorites';
   static String favorite(String listingId) =>
