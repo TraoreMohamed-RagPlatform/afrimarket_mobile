@@ -5,6 +5,7 @@ import 'package:afrimarket_mobile/core/session/session_provider.dart';
 import 'package:afrimarket_mobile/features/auth/auth_providers.dart';
 import 'package:afrimarket_mobile/features/auth/domain/entities/auth_user.dart';
 import 'package:afrimarket_mobile/features/auth/domain/usecases/register_usecase.dart';
+import 'package:afrimarket_mobile/features/auth/presentation/pages/login_page.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:afrimarket_mobile/features/auth/presentation/widgets/auth_form_layout.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_logo.dart';
@@ -182,6 +183,36 @@ void main() {
         );
       });
     }
+  });
+
+  testWidgets('connexion → inscription → la page demandée (Publier)', (
+    tester,
+  ) async {
+    answer(() async => const Ok(_user));
+    await pumpAuthPage(
+      tester,
+      initialLocation: AppRoutes.withReturn(AppRoutes.login, AppRoutes.publish),
+      stack: [AppRoutes.home],
+      pages: {
+        AppRoutes.login: (state) => LoginPage(
+          returnTo: state.uri.queryParameters[AppRoutes.returnParam],
+        ),
+        AppRoutes.register: (state) => RegisterPage(
+          returnTo: state.uri.queryParameters[AppRoutes.returnParam],
+        ),
+        AppRoutes.publish: (state) => RouteProbe(state.uri.toString()),
+      },
+      overrides: [registerUseCaseProvider.overrideWithValue(register)],
+    );
+
+    await tester.tap(find.text(fr.loginCreateAccount));
+    await tester.pumpAndSettle();
+    await fill(tester);
+    await submit(tester);
+
+    expect(findRoute(AppRoutes.publish), findsOneWidget);
+    expect(find.byType(RegisterPage), findsNothing);
+    expect(find.byType(LoginPage), findsNothing);
   });
 
   group('Retour à la connexion', () {

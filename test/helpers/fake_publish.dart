@@ -13,6 +13,8 @@ class FakeListingPublisher implements ListingPublisher {
   Result<void> uploaded = const Ok(null);
   Result<void> published = const Ok(null);
   Result<void> deleted = const Ok(null);
+  Result<void> reserved = const Ok(null);
+  Result<void> sold = const Ok(null);
 
   /// Appels dans l'ordre : « create », « upload:new-1:2 », « publish:new-1 »...
   final calls = <String>[];
@@ -46,6 +48,21 @@ class FakeListingPublisher implements ListingPublisher {
   Future<Result<void>> delete(String listingId) async {
     calls.add('delete:$listingId');
     return deleted;
+  }
+
+  @override
+  Future<Result<void>> setReserved(
+    String listingId, {
+    required bool reserved,
+  }) async {
+    calls.add('reserved:$listingId:$reserved');
+    return this.reserved;
+  }
+
+  @override
+  Future<Result<void>> markSold(String listingId) async {
+    calls.add('sold:$listingId');
+    return sold;
   }
 }
 

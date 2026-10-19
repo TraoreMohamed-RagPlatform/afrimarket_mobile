@@ -327,6 +327,23 @@ void main() {
     });
   });
 
+  group('Quartier', () {
+    testWidgets('recherche sans accents', (tester) async {
+      await pump(tester);
+      await tapVisible(tester, find.byKey(const Key('publish-district')));
+
+      await tester.enterText(find.byKey(const Key('district-search')), 'maa');
+      await tester.pump();
+
+      expect(find.text('Maârif'), findsOneWidget);
+      expect(find.text('Ain Diab'), findsNothing);
+
+      await tester.enterText(find.byKey(const Key('district-search')), 'zzz');
+      await tester.pump();
+      expect(find.text(fr.publishNoDistrictMatch), findsOneWidget);
+    });
+  });
+
   group('Quitter', () {
     testWidgets('rien saisi : fermeture directe', (tester) async {
       await pump(tester);

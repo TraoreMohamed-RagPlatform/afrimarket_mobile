@@ -159,6 +159,7 @@ ListingDetail sampleDetail({
   String id = 'listing-1',
   bool isSold = false,
   bool isReserved = false,
+  bool isOwner = false,
   bool isNegotiable = true,
   num? previousPrice = 1500,
   String description =
@@ -176,6 +177,7 @@ ListingDetail sampleDetail({
     isNegotiable: isNegotiable,
     isSold: isSold,
     isReserved: isReserved,
+    isOwner: isOwner,
     condition: ListingCondition.good,
     categoryName: 'Mobilier',
     city: 'casablanca',

@@ -11,7 +11,8 @@ import 'package:dio/dio.dart';
 /// - `POST /api/listings` (statut `INACTIVE`) ;
 /// - `POST /api/listings/:id/images` (multipart, champ `images`) ;
 /// - `PUT /api/listings/:id` (`status: ACTIVE`) ;
-/// - `DELETE /api/listings/:id`.
+/// - `DELETE /api/listings/:id` ;
+/// - `PUT /api/listings/:id` (`RESERVED` / `ACTIVE`), `PUT /:id/mark-sold`.
 class ListingPublisherImpl implements ListingPublisher {
   const new(this._dio);
 
@@ -101,6 +102,23 @@ class ListingPublisherImpl implements ListingPublisher {
         ApiEndpoints.listing(listingId),
         data: {'status': 'ACTIVE'},
       );
+    });
+  }
+
+  @override
+  Future<Result<void>> setReserved(String listingId, {required bool reserved}) {
+    return guardApiCall(() async {
+      await _dio.put<void>(
+        ApiEndpoints.listing(listingId),
+        data: {'status': reserved ? 'RESERVED' : 'ACTIVE'},
+      );
+    });
+  }
+
+  @override
+  Future<Result<void>> markSold(String listingId) {
+    return guardApiCall(() async {
+      await _dio.put<void>(ApiEndpoints.markListingSold(listingId));
     });
   }
 

@@ -373,3 +373,20 @@ Parcours (une seule page, comme Facebook Marketplace) :
   annonce ? ».
 - **Limite connue** : pas encore de brouillon (backlog C1) ; une seule ville
   (Casablanca).
+
+## Corrections après le premier essai sur émulateur
+
+- **Retour après connexion** (`features/auth/presentation/sign_in_navigation.dart`) :
+  quand une page protégée est ouverte PAR-DESSUS une autre (« Publier »,
+  « Mon profil »), la redirection du routeur ne concerne que la page du
+  dessous ; l'écran de connexion (ou d'inscription) se ferme donc lui-même
+  vers la page demandée. `safeInternalPath` est désormais dans
+  `core/navigation/`.
+- **Votre annonce** : le serveur indique `isOwner` ; la page de détail
+  affiche alors « C'est votre annonce » (réserver / remettre en vente,
+  marquer comme vendue) au lieu d'« Écrire au vendeur », et sans
+  « Enregistrer » ni « Signaler ».
+- **Pastilles de choix** : fond gris clair (thème), visibles avant d'être
+  choisies.
+- **Quartiers** : tri et recherche sans accents ni majuscules
+  (`core/text/text_fold.dart`).

@@ -248,5 +248,20 @@
   "publishErrorCategory": "اختر فئة.",
   "publishErrorDistrict": "اختر الحي الذي يوجد فيه المنتج.",
   "publishErrorCondition": "اختر حالة المنتج.",
-  "publishErrorDescription": "صِف المنتج ببضع كلمات (10 أحرف على الأقل)."
+  "publishErrorDescription": "صِف المنتج ببضع كلمات (10 أحرف على الأقل).",
+  "ownerTitle": "هذا إعلانك",
+  "ownerStatusActive": "منشور: يمكن للمشترين مراسلتك.",
+  "ownerStatusReserved": "محجوز: تظهر شارة «محجوز».",
+  "ownerStatusSold": "مُباع: لم يعد الإعلان يظهر في الصفحة الرئيسية.",
+  "ownerMarkReserved": "وضع علامة محجوز",
+  "ownerMarkAvailable": "إعادة العرض للبيع",
+  "ownerMarkSold": "وضع علامة مُباع",
+  "ownerSoldConfirmTitle": "وضع علامة مُباع؟",
+  "ownerSoldConfirmMessage": "سيُزال الإعلان من الصفحة الرئيسية ولن تتمكن من إعادة عرضه للبيع.",
+  "ownerCancel": "إلغاء",
+  "ownerReservedDone": "تم وضع علامة محجوز على الإعلان.",
+  "ownerAvailableDone": "الإعلان معروض للبيع من جديد.",
+  "ownerSoldDone": "تهانينا! تم وضع علامة مُباع على الإعلان.",
+  "publishSearchDistrict": "ابحث عن حي",
+  "publishNoDistrictMatch": "لا يوجد حي مطابق."
 }
