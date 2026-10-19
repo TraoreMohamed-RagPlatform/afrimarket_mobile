@@ -323,10 +323,6 @@
   "@publishTitle": {
     "description": "Titre de la page de publication."
   },
-  "publishComingSoon": "La publication d'annonces arrive bientôt.",
-  "@publishComingSoon": {
-    "description": "Texte provisoire de la page de publication."
-  },
   "devGalleryButton": "Galerie (dev)",
   "@devGalleryButton": {
     "description": "Bouton d'accès à la galerie du design system (dev uniquement)."
@@ -1140,5 +1136,231 @@
   "listingReservedHint": "Le vendeur a mis cet article de côté. Vous pouvez quand même lui écrire.",
   "@listingReservedHint": {
     "description": "Page de détail : explication sous le badge « Réservé »."
+  },
+
+  "publishCloseTooltip": "Fermer",
+  "@publishCloseTooltip": {
+    "description": "Bouton qui ferme l'écran de publication."
+  },
+
+  "publishPhotosTitle": "Photos",
+  "@publishPhotosTitle": {
+    "description": "Titre de la section des photos."
+  },
+
+  "publishPhotosCount": "{count}/{max}",
+  "@publishPhotosCount": {
+    "description": "Nombre de photos ajoutées sur le maximum.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+
+  "publishPhotosHelper": "La première photo est celle qu'on voit dans le fil.",
+  "@publishPhotosHelper": {
+    "description": "Aide sous le titre des photos."
+  },
+
+  "publishAddPhotos": "Ajouter des photos",
+  "@publishAddPhotos": {
+    "description": "Case qui ouvre le choix des photos."
+  },
+
+  "publishTakePhoto": "Prendre une photo",
+  "@publishTakePhoto": {
+    "description": "Ouvre l'appareil photo."
+  },
+
+  "publishPickGallery": "Choisir dans la galerie",
+  "@publishPickGallery": {
+    "description": "Ouvre la galerie du téléphone."
+  },
+
+  "publishPhotoMain": "Principale",
+  "@publishPhotoMain": {
+    "description": "Étiquette de la photo principale."
+  },
+
+  "publishPhotoLabel": "Photo {index} sur {total}",
+  "@publishPhotoLabel": {
+    "description": "Vignette de photo (lecteurs d'écran).",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+
+  "publishMakeMain": "Mettre en photo principale",
+  "@publishMakeMain": {
+    "description": "Action sur une photo."
+  },
+
+  "publishRemovePhoto": "Retirer la photo",
+  "@publishRemovePhoto": {
+    "description": "Action sur une photo."
+  },
+
+  "publishPhotosFull": "Vous avez déjà 10 photos, le maximum.",
+  "@publishPhotosFull": {
+    "description": "Message : plus de place pour des photos."
+  },
+
+  "publishPhotosUnavailable": "Impossible d'ouvrir vos photos. Autorisez l'accès dans les réglages du téléphone.",
+  "@publishPhotosUnavailable": {
+    "description": "Message : galerie ou appareil photo inaccessible."
+  },
+
+  "publishFieldTitle": "Titre",
+  "@publishFieldTitle": {
+    "description": "Champ titre."
+  },
+
+  "publishTitleHint": "Ex. : Canapé 3 places, tissu gris",
+  "@publishTitleHint": {
+    "description": "Exemple dans le champ titre."
+  },
+
+  "publishFieldPrice": "Prix",
+  "@publishFieldPrice": {
+    "description": "Champ prix."
+  },
+
+  "publishPriceHelper": "Mettez 0 si c'est gratuit.",
+  "@publishPriceHelper": {
+    "description": "Aide sous le champ prix."
+  },
+
+  "publishFieldDistrict": "Quartier",
+  "@publishFieldDistrict": {
+    "description": "Champ quartier."
+  },
+
+  "publishChoose": "Choisir",
+  "@publishChoose": {
+    "description": "Valeur d'un champ à choisir, encore vide."
+  },
+
+  "publishDistrictsUnavailable": "La liste des quartiers n'a pas pu être chargée.",
+  "@publishDistrictsUnavailable": {
+    "description": "Liste des quartiers indisponible."
+  },
+
+  "publishFieldDescription": "Description",
+  "@publishFieldDescription": {
+    "description": "Champ description."
+  },
+
+  "publishDescriptionHint": "État, dimensions, raison de la vente, disponibilités…",
+  "@publishDescriptionHint": {
+    "description": "Exemple dans le champ description."
+  },
+
+  "publishNegotiable": "Prix négociable",
+  "@publishNegotiable": {
+    "description": "Interrupteur : prix négociable."
+  },
+
+  "publishNegotiableHelper": "Les acheteurs verront le badge « Négociable ».",
+  "@publishNegotiableHelper": {
+    "description": "Aide sous l'interrupteur négociable."
+  },
+
+  "publishSubmit": "Publier",
+  "@publishSubmit": {
+    "description": "Bouton qui publie l'annonce."
+  },
+
+  "publishStepCreating": "Création de l'annonce…",
+  "@publishStepCreating": {
+    "description": "Étape de publication en cours."
+  },
+
+  "publishStepPhotos": "Envoi des photos…",
+  "@publishStepPhotos": {
+    "description": "Étape de publication en cours."
+  },
+
+  "publishStepPublishing": "Mise en ligne…",
+  "@publishStepPublishing": {
+    "description": "Étape de publication en cours."
+  },
+
+  "publishSuccess": "Votre annonce est en ligne.",
+  "@publishSuccess": {
+    "description": "Message après publication."
+  },
+
+  "publishFixProblems": "Complétez les champs signalés pour publier.",
+  "@publishFixProblems": {
+    "description": "Message : annonce incomplète."
+  },
+
+  "publishDiscardTitle": "Abandonner cette annonce ?",
+  "@publishDiscardTitle": {
+    "description": "Titre de la confirmation avant de quitter."
+  },
+
+  "publishDiscardMessage": "Ce que vous avez saisi ne sera pas enregistré.",
+  "@publishDiscardMessage": {
+    "description": "Texte de la confirmation avant de quitter."
+  },
+
+  "publishDiscardConfirm": "Abandonner",
+  "@publishDiscardConfirm": {
+    "description": "Bouton : quitter sans publier."
+  },
+
+  "publishDiscardCancel": "Continuer la saisie",
+  "@publishDiscardCancel": {
+    "description": "Bouton : rester sur l'écran."
+  },
+
+  "publishErrorPhoto": "Ajoutez au moins une photo.",
+  "@publishErrorPhoto": {
+    "description": "Erreur : aucune photo."
+  },
+
+  "publishErrorTitle": "Le titre doit faire au moins 3 caractères.",
+  "@publishErrorTitle": {
+    "description": "Erreur : titre trop court."
+  },
+
+  "publishErrorPrice": "Indiquez un prix (0 si c'est gratuit).",
+  "@publishErrorPrice": {
+    "description": "Erreur : prix manquant."
+  },
+
+  "publishErrorPriceTooHigh": "Ce prix est trop élevé.",
+  "@publishErrorPriceTooHigh": {
+    "description": "Erreur : prix trop élevé."
+  },
+
+  "publishErrorCategory": "Choisissez une catégorie.",
+  "@publishErrorCategory": {
+    "description": "Erreur : pas de catégorie."
+  },
+
+  "publishErrorDistrict": "Indiquez le quartier où se trouve l'article.",
+  "@publishErrorDistrict": {
+    "description": "Erreur : pas de quartier."
+  },
+
+  "publishErrorCondition": "Indiquez l'état de l'article.",
+  "@publishErrorCondition": {
+    "description": "Erreur : pas d'état."
+  },
+
+  "publishErrorDescription": "Décrivez l'article en quelques mots (10 caractères au moins).",
+  "@publishErrorDescription": {
+    "description": "Erreur : description trop courte."
   }
 }

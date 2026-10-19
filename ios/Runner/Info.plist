@@ -66,5 +66,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>AfriMarket utilise l'appareil photo pour photographier les articles que vous mettez en vente.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>AfriMarket accède à vos photos pour ajouter celles que vous choisissez à votre annonce.</string>
 </dict>
 </plist>

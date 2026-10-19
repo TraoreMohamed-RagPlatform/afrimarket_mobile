@@ -166,6 +166,15 @@ abstract final class AppIcons {
 
   /// Filtres du fil.
   static const fadersHorizontal = IconData(0xe22a, fontFamily: _family);
+
+  /// Fermer, retirer.
+  static const x = IconData(0xe4f6, fontFamily: _family);
+
+  /// Galerie de photos du téléphone.
+  static const images = IconData(0xe836, fontFamily: _family);
+
+  /// Supprimer.
+  static const trash = IconData(0xe4a6, fontFamily: _family);
 }
 
 /// Versions pleines des icônes de [AppIcons] (état actif).

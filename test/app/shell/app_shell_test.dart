@@ -95,7 +95,7 @@ void main() {
       await tester.tap(find.text(fr.navPublish));
       await tester.pumpAndSettle();
 
-      expect(find.text(fr.publishComingSoon), findsOneWidget);
+      expect(find.text(fr.publishTitle), findsOneWidget);
       expect(find.byType(AppBottomNavBar), findsNothing);
     });
 

@@ -32,6 +32,11 @@ class AppTextField extends StatefulWidget {
     this.sensitive,
     this.enabled = true,
     this.prefixIcon,
+    this.errorText,
+    this.suffixText,
+    this.minLines,
+    this.inputFormatters,
+    this.showCounter = true,
     super.key,
   });
 
@@ -53,6 +58,18 @@ class AppTextField extends StatefulWidget {
   final bool? sensitive;
   final bool enabled;
   final Widget? prefixIcon;
+
+  /// Erreur fournie par l'écran (par exemple après « Publier ») ; une
+  /// erreur du [validator] reste prioritaire.
+  final String? errorText;
+
+  /// Unité affichée après la saisie (« DH »).
+  final String? suffixText;
+  final int? minLines;
+  final List<TextInputFormatter>? inputFormatters;
+
+  /// Affiche le compteur « 12/100 » quand [maxLength] est fixé (par défaut).
+  final bool showCounter;
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
@@ -103,6 +120,8 @@ class _AppTextFieldState extends State<AppTextField> {
         maxLength: widget.maxLength,
         maxLengthEnforcement: MaxLengthEnforcement.enforced,
         maxLines: isPassword ? 1 : widget.maxLines,
+        minLines: isPassword ? null : widget.minLines,
+        inputFormatters: widget.inputFormatters,
         keyboardType: isPassword
             ? TextInputType.visiblePassword
             : widget.keyboardType,
@@ -123,6 +142,9 @@ class _AppTextFieldState extends State<AppTextField> {
           helperText: widget.helper,
           helperMaxLines: 2,
           errorMaxLines: 3,
+          errorText: widget.errorText,
+          suffixText: widget.suffixText,
+          counterText: widget.showCounter ? null : '',
           prefixIcon: widget.prefixIcon,
           suffixIcon: isPassword
               ? IconButton(
