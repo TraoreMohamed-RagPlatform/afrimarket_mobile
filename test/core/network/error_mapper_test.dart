@@ -79,6 +79,29 @@ void main() {
       expect((failure as ValidationFailure).fieldErrors, isEmpty);
     });
 
+    test('409 donne une ConflictFailure avec le code applicatif', () {
+      final failure = mapDioException(
+        _response(409, data: {'error': 'x', 'code': 'LISTING_UNAVAILABLE'}),
+      );
+
+      expect(failure, isA<ConflictFailure>());
+      expect((failure as ConflictFailure).code, 'LISTING_UNAVAILABLE');
+    });
+
+    test('409 : code absent ou de forme inattendue ignoré', () {
+      for (final data in <Object?>[
+        null,
+        'texte brut',
+        {'code': 42},
+        {'code': 'listing<script>'},
+        {'code': 'A' * 41},
+      ]) {
+        final failure = mapDioException(_response(409, data: data));
+
+        expect((failure as ConflictFailure).code, isNull, reason: '$data');
+      }
+    });
+
     test('401, 403 et 404 sont correctement traduits', () {
       expect(mapDioException(_response(401)), isA<UnauthorizedFailure>());
       expect(mapDioException(_response(403)), isA<ForbiddenFailure>());

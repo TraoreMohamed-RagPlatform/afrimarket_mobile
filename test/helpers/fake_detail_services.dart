@@ -27,16 +27,16 @@ class FakeFavoritesRepository implements FavoritesRepository {
 
 /// Faux dépôt de messagerie : mémorise les messages envoyés.
 class FakeMessagingRepository implements MessagingRepository {
-  /// Messages envoyés : (vendeur, texte).
+  /// Messages envoyés : (annonce, texte).
   final sent = <(String, String)>[];
   Result<void> answer = const Ok(null);
 
   @override
   Future<Result<void>> messageSeller({
-    required String sellerId,
+    required String listingId,
     required String message,
   }) async {
-    sent.add((sellerId, message));
+    sent.add((listingId, message));
     return answer;
   }
 }

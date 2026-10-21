@@ -50,6 +50,18 @@ final class ValidationFailure extends Failure {
   final Map<String, List<String>> fieldErrors;
 }
 
+/// 409 : action impossible dans l'état actuel (annonce vendue, compte
+/// suspendu...).
+///
+/// [code] : code applicatif renvoyé par le serveur (ex.
+/// `LISTING_UNAVAILABLE`), seulement s'il a la forme attendue. Jamais
+/// affiché tel quel : la présentation choisit un texte traduit.
+final class ConflictFailure extends Failure {
+  const new({this.code});
+
+  final String? code;
+}
+
 /// 429 : trop de requêtes (limitation côté serveur).
 final class RateLimitFailure extends Failure {
   const new({this.retryAfter});

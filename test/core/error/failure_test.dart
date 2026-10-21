@@ -12,6 +12,7 @@ String describe(Failure failure) {
     ForbiddenFailure() => 'forbidden',
     NotFoundFailure() => 'not_found',
     ValidationFailure() => 'validation',
+    ConflictFailure() => 'conflict',
     RateLimitFailure() => 'rate_limit',
     AccountLockedFailure() => 'account_locked',
     ServerFailure() => 'server',
@@ -50,6 +51,13 @@ void main() {
 
       expect(rateLimit.retryAfter, const Duration(minutes: 15));
       expect(locked.retryAfter, const Duration(minutes: 15));
+    });
+
+    test('ConflictFailure conserve le code applicatif', () {
+      const failure = ConflictFailure(code: 'LISTING_UNAVAILABLE');
+
+      expect(failure.code, 'LISTING_UNAVAILABLE');
+      expect(const ConflictFailure().code, isNull);
     });
 
     test('ServerFailure conserve le code HTTP', () {

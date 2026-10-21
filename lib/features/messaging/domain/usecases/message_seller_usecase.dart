@@ -13,14 +13,18 @@ class MessageSellerUseCase {
 
   /// Le message est nettoyé des espaces autour. Vide ou trop long :
   /// [ValidationFailure], sans appel au serveur.
+  ///
+  /// Refus du serveur : [ValidationFailure] (sa propre annonce),
+  /// [ConflictFailure] (voir `MessagingConflicts`), [NotFoundFailure]
+  /// (annonce retirée).
   Future<Result<void>> call({
-    required String sellerId,
+    required String listingId,
     required String message,
   }) {
     final text = message.trim();
     if (text.isEmpty || text.runes.length > maxLength) {
       return Future.value(const Err(ValidationFailure()));
     }
-    return _repository.messageSeller(sellerId: sellerId, message: text);
+    return _repository.messageSeller(listingId: listingId, message: text);
   }
 }

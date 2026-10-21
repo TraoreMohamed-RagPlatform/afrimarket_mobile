@@ -5,23 +5,27 @@ import 'package:dio/dio.dart';
 class MessagingRemoteDataSource {
   const new(this._dio);
 
-  /// Identifiant de conversation accepté (cuid du serveur).
+  /// Identifiant de discussion accepté (cuid du serveur).
   static final RegExp _safeId = RegExp(r'^[A-Za-z0-9_-]{1,64}$');
 
   final Dio _dio;
 
-  /// `POST /api/messages/conversations` puis `POST /api/messages`.
+  /// `POST /api/messages/conversations` (discussion de l'annonce, ouverte
+  /// si besoin) puis `POST /api/messages`.
+  ///
+  /// L'acheteur et le vendeur sont déduits par le serveur : seule
+  /// l'annonce est envoyée.
   Future<void> messageSeller({
-    required String sellerId,
+    required String listingId,
     required String message,
   }) async {
     final conversation = await _dio.post<Map<String, dynamic>>(
       ApiEndpoints.conversations,
-      data: {'recipientId': sellerId},
+      data: {'listingId': listingId},
     );
     final id = conversation.data?['id'];
     if (id is! String || !_safeId.hasMatch(id)) {
-      throw const FormatException('Conversation invalide');
+      throw const FormatException('Discussion invalide');
     }
 
     await _dio.post<void>(

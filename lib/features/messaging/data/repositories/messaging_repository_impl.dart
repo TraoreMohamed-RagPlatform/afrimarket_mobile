@@ -11,11 +11,11 @@ class MessagingRepositoryImpl implements MessagingRepository {
 
   @override
   Future<Result<void>> messageSeller({
-    required String sellerId,
+    required String listingId,
     required String message,
   }) {
     return guardApiCall(
-      () => _remote.messageSeller(sellerId: sellerId, message: message),
+      () => _remote.messageSeller(listingId: listingId, message: message),
     );
   }
 }

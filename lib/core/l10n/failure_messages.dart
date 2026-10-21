@@ -21,6 +21,7 @@ extension FailureMessage on Failure {
       ForbiddenFailure() => l10n.errorForbidden,
       NotFoundFailure() => l10n.errorNotFound,
       ValidationFailure() => l10n.errorValidation,
+      ConflictFailure() => l10n.errorConflict,
       RateLimitFailure(:final retryAfter) =>
         retryAfter == null
             ? l10n.errorRateLimit

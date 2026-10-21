@@ -30,9 +30,8 @@ Failure _mapResponse(Response<dynamic>? response) {
   final retryAfter = _parseRetryAfter(response);
 
   return switch (status) {
-    400 ||
-    409 ||
-    422 => ValidationFailure(fieldErrors: _parseFieldErrors(data)),
+    400 || 422 => ValidationFailure(fieldErrors: _parseFieldErrors(data)),
+    409 => ConflictFailure(code: _parseCode(data)),
     401 => const UnauthorizedFailure(),
     403 => const ForbiddenFailure(),
     404 => const NotFoundFailure(),
@@ -52,6 +51,17 @@ Duration? _parseRetryAfter(Response<dynamic> response) {
   final seconds = int.tryParse(raw ?? '');
   if (seconds == null || seconds < 0) return null;
   return Duration(seconds: seconds);
+}
+
+/// Codes applicatifs acceptés : majuscules et `_` seulement, courts.
+final RegExp _safeCode = RegExp(r'^[A-Z][A-Z_]{0,39}$');
+
+/// Code applicatif de la réponse (`{"code": "LISTING_UNAVAILABLE"}`), ou
+/// `null` s'il est absent ou de forme inattendue.
+String? _parseCode(Object? data) {
+  if (data is! Map) return null;
+  final code = data['code'];
+  return code is String && _safeCode.hasMatch(code) ? code : null;
 }
 
 /// Code d'erreur applicatif prévu pour le verrouillage de compte.
