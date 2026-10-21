@@ -28,6 +28,7 @@ dependencies:
 
   meta: any
   share_plus: ^13.3.1
+  socket_io_client: ^3.1.6
   url_launcher: ^6.3.3
 dev_dependencies:
   build_runner: ^2.16.1

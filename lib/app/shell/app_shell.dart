@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:afrimarket_mobile/core/navigation/app_routes.dart';
 import 'package:afrimarket_mobile/core/theme/app_icons.dart';
+import 'package:afrimarket_mobile/features/inbox/presentation/realtime_controller.dart';
 import 'package:afrimarket_mobile/features/inbox/presentation/unread_counts_controller.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_bottom_nav_bar.dart';
@@ -15,7 +16,8 @@ import 'package:go_router/go_router.dart';
 /// défilement. Toucher l'onglet actif ramène à sa première page.
 ///
 /// Pastilles : messages et notifications non lus (connecté seulement),
-/// relues toutes les [unreadRefreshInterval], au retour dans l'app et à
+/// mises à jour en temps réel (Socket.io, `RealtimeController`), et relues
+/// en secours toutes les [unreadRefreshInterval], au retour dans l'app et à
 /// chaque changement d'onglet. Le minuteur vit avec la barre du bas : il
 /// s'arrête dès qu'elle disparaît.
 ///
@@ -42,13 +44,23 @@ class _AppShellState extends ConsumerState<AppShell> {
   void initState() {
     super.initState();
     _timer = Timer.periodic(AppShell.unreadRefreshInterval, (_) => _refresh());
-    _lifecycle = AppLifecycleListener(onResume: _refresh);
+    _realtime = ref.read(realtimeProvider.notifier)..start();
+    _lifecycle = AppLifecycleListener(
+      onResume: () {
+        _refresh();
+        _realtime.resume();
+      },
+      onPause: _realtime.pause,
+    );
   }
+
+  late final RealtimeController _realtime;
 
   @override
   void dispose() {
     _timer.cancel();
     _lifecycle.dispose();
+    _realtime.stop();
     super.dispose();
   }
 

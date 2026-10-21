@@ -390,3 +390,15 @@ Parcours (une seule page, comme Facebook Marketplace) :
   choisies.
 - **Quartiers** : tri et recherche sans accents ni majuscules
   (`core/text/text_fold.dart`).
+
+## Temps réel (Socket.io)
+
+| Emplacement | Contenu |
+|---|---|
+| `lib/core/realtime/realtime_connection.dart` | `RealtimeConnection` (interface) et `SocketIoRealtimeConnection` : jeton dans `auth` (jamais dans l'adresse), WebSocket seul, pas de reconnexion automatique avec un vieux jeton, événements connus seulement (`notification:new`, `message:new`) |
+| `lib/features/inbox/presentation/realtime_controller.dart` | Connexion ouverte tant que la personne est connectée et l'app au premier plan ; événement reçu → compteurs relus ; fermée par le serveur → nouvel essai (2 s, 10 s, 30 s, 1 min) après relecture des compteurs (jeton renouvelé) |
+| `lib/app/shell/app_shell.dart` | Démarre / met en pause / reprend / arrête la connexion avec la barre du bas et le cycle de vie de l'app ; relecture toutes les minutes gardée en secours |
+| `test/helpers/fake_realtime_connection.dart` | Fausse connexion (événements et fermetures envoyés par le test) |
+
+Le serveur n'envoie un événement qu'à son destinataire et refuse toute
+connexion sans jeton valide (backend : `security/socket-auth`).
