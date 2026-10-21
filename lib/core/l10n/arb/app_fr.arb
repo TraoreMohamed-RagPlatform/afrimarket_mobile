@@ -113,6 +113,11 @@
     "description": "Erreur de validation des données saisies."
   },
 
+  "errorConflict": "Cette action n’est plus possible. Actualisez puis réessayez.",
+  "@errorConflict": {
+    "description": "Erreur 409 : action impossible dans l'état actuel."
+  },
+
   "errorRateLimit": "Trop de tentatives. Réessayez plus tard.",
   "@errorRateLimit": {
     "description": "Erreur 429 sans délai connu."
@@ -727,6 +732,16 @@
   "listingOwnListingError": "Cette action n’est pas possible sur votre propre annonce.",
   "@listingOwnListingError": {
     "description": "Refus du serveur : message ou signalement sur sa propre annonce."
+  },
+
+  "listingMessageListingUnavailable": "Cette annonce n’est plus disponible : impossible d’écrire au vendeur.",
+  "@listingMessageListingUnavailable": {
+    "description": "Refus du serveur : annonce vendue ou retirée, nouvelle discussion impossible."
+  },
+
+  "listingMessageSellerUnavailable": "Ce vendeur ne peut plus recevoir de messages.",
+  "@listingMessageSellerUnavailable": {
+    "description": "Refus du serveur : compte du vendeur suspendu ou supprimé."
   },
 
   "listingActionWhatsapp": "WhatsApp",

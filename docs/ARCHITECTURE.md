@@ -100,6 +100,9 @@ Fichiers et dossiers en `snake_case`, classes en `PascalCase`, variables en
   (`mapDioException`).
 - `Failure` est une classe scellée : un `switch` doit traiter tous les cas,
   sinon le code ne compile pas.
+- 409 donne une `ConflictFailure` (action impossible dans l'état actuel) avec
+  le `code` applicatif du serveur s'il a la forme attendue (`MAJUSCULES_`) ;
+  la présentation choisit un texte traduit d'après ce code.
 - Le texte des erreurs du serveur n'est **jamais** repris (sauf les messages de
   validation par champ). Les messages affichés sont traduits et ne révèlent
   aucun détail technique.
@@ -296,7 +299,7 @@ Règles de travail : voir [Definition of Done](DEFINITION_OF_DONE.md).
 | `lib/features/listings/domain/` | `ListingDetail`, `ListingSeller` (jamais de numéro), `SellerContact`, `ListingLocations`, `ReportReason` ; cas d'usage détail, similaires, lieux, contact, signalement (détail nettoyé et limité à 500 caractères) |
 | `lib/features/listings/data/` | `GET /api/listings/:id`, `/similar`, `/contact`, `POST /report` (409 = déjà signalé, réussi), lieux de `GET /api/filters` ; `ListingJson` (lecture prudente commune au fil et au détail) ; numéro réduit à des chiffres avant toute adresse `tel:` ou `wa.me` |
 | `lib/features/favorites/` | Contrat `FavoritesRepository` et `/api/favorites` (déjà enregistrée ou déjà retirée = réussi) |
-| `lib/features/messaging/` | `MessageSellerUseCase` : conversation créée si besoin, puis message (vide ou > 1 000 caractères refusé sans appel) |
+| `lib/features/messaging/` | `MessageSellerUseCase` : discussion de l'annonce ouverte si besoin (seule l'annonce est envoyée, le serveur déduit acheteur et vendeur), puis message (vide ou > 1 000 caractères refusé sans appel) ; refus 409 lus avec `MessagingConflicts` (annonce plus disponible, vendeur indisponible) |
 | `lib/core/platform/external_actions.dart` | Composeur, WhatsApp et partage derrière une interface (`ExternalActions`) : les tests n'ouvrent jamais d'application |
 | `lib/features/listings/presentation/` | `ListingDetailPage` et ses widgets (photos, message, vendeur, détails, signalement), `FavoriteController` (affichage optimiste, rétabli en cas d'échec) |
 | `lib/shared/` | Badges « Négociable » et « Vendu », `formatListingAge` (« il y a 2 h », « hier », date au-delà d'un mois) |

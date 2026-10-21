@@ -11,6 +11,7 @@ const _allFailures = <Failure>[
   ForbiddenFailure(),
   NotFoundFailure(),
   ValidationFailure(),
+  ConflictFailure(code: 'LISTING_UNAVAILABLE'),
   RateLimitFailure(),
   AccountLockedFailure(),
   ServerFailure(statusCode: 503),

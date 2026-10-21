@@ -23,6 +23,7 @@ import 'package:afrimarket_mobile/features/listings/presentation/widgets/listing
 import 'package:afrimarket_mobile/features/listings/presentation/widgets/listing_photo_gallery.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/widgets/listing_seller_tile.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/widgets/report_listing_sheet.dart';
+import 'package:afrimarket_mobile/features/messaging/domain/messaging_conflicts.dart';
 import 'package:afrimarket_mobile/features/messaging/messaging_providers.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:afrimarket_mobile/shared/extensions/snackbar_extension.dart';
@@ -119,9 +120,14 @@ class _ListingDetailViewState extends ConsumerState<_ListingDetailView> {
   /// une erreur de validation les actions sur sa propre annonce.
   String _actionFailure(Failure failure) {
     final l10n = context.l10n;
-    return failure is ValidationFailure
-        ? l10n.listingOwnListingError
-        : failure.message(l10n);
+    return switch (failure) {
+      ValidationFailure() => l10n.listingOwnListingError,
+      ConflictFailure(code: MessagingConflicts.listingUnavailable) =>
+        l10n.listingMessageListingUnavailable,
+      ConflictFailure(code: MessagingConflicts.recipientUnavailable) =>
+        l10n.listingMessageSellerUnavailable,
+      _ => failure.message(l10n),
+    };
   }
 
   Future<bool> _sendMessage(String message) async {
@@ -133,7 +139,7 @@ class _ListingDetailViewState extends ConsumerState<_ListingDetailView> {
     if (!_ensureSignedIn()) return false;
 
     final result = await ref.read(messageSellerUseCaseProvider)(
-      sellerId: _listing.seller.id,
+      listingId: _listing.id,
       message: message,
     );
     if (!mounted) return false;

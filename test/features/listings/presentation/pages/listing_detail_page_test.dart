@@ -14,6 +14,7 @@ import 'package:afrimarket_mobile/features/listings/domain/entities/listing_summ
 import 'package:afrimarket_mobile/features/listings/domain/entities/report_reason.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/seller_contact.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/pages/listing_detail_page.dart';
+import 'package:afrimarket_mobile/features/messaging/domain/messaging_conflicts.dart';
 import 'package:afrimarket_mobile/features/messaging/messaging_providers.dart';
 import 'package:afrimarket_mobile/shared/formatters/price_formatter.dart';
 import 'package:afrimarket_mobile/shared/widgets/listing_card.dart';
@@ -326,7 +327,7 @@ void main() {
 
       await tapText(tester, fr.listingMessageSend);
 
-      expect(messaging.sent, [('seller-1', fr.listingMessageDefault)]);
+      expect(messaging.sent, [('listing-1', fr.listingMessageDefault)]);
       expect(find.text(fr.listingMessageSent), findsOneWidget);
     });
 
@@ -347,6 +348,37 @@ void main() {
       await tapText(tester, fr.listingMessageSend);
 
       expect(find.text(fr.listingOwnListingError), findsOneWidget);
+    });
+
+    for (final (code, message) in [
+      (
+        MessagingConflicts.listingUnavailable,
+        fr.listingMessageListingUnavailable,
+      ),
+      (
+        MessagingConflicts.recipientUnavailable,
+        fr.listingMessageSellerUnavailable,
+      ),
+    ]) {
+      testWidgets('refus $code : message clair', (tester) async {
+        messaging.answer = Err(ConflictFailure(code: code));
+        await pump(tester);
+
+        await tapText(tester, fr.listingMessageSend);
+
+        expect(find.text(message), findsOneWidget);
+      });
+    }
+
+    testWidgets('autre refus (409 sans code) : message général', (
+      tester,
+    ) async {
+      messaging.answer = const Err(ConflictFailure());
+      await pump(tester);
+
+      await tapText(tester, fr.listingMessageSend);
+
+      expect(find.text(fr.errorConflict), findsOneWidget);
     });
 
     testWidgets('appeler : composeur avec le numéro', (tester) async {
