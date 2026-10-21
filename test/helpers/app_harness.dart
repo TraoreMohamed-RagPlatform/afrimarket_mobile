@@ -10,6 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'fake_listings_repository.dart';
+import 'fake_realtime_connection.dart';
 import 'fake_unread_counts_repository.dart';
 import 'l10n.dart';
 
@@ -26,12 +27,16 @@ Future<ProviderContainer> pumpAfriMarketApp(
   Flavor flavor = Flavor.dev,
   FakeListingsRepository? listings,
   FakeUnreadCountsRepository? unread,
+  FakeRealtimeConnection? realtime,
 }) async {
   useFrenchDevice(tester);
 
   final tokens = _MockTokenStorage();
   when(tokens.hasTokens).thenAnswer((_) async => Ok<bool>(hasSession));
   when(tokens.clear).thenAnswer((_) async => const Ok<void>(null));
+  // Jeton lu pour la connexion temps réel (fausse connexion).
+  when(tokens.readAccessToken)
+      .thenAnswer((_) async => const Ok<String?>('test-access-token'));
   // Aucun jeton à révoquer : la déconnexion ne fait aucun appel réseau.
   when(tokens.readRefreshToken)
       .thenAnswer((_) async => const Ok<String?>(null));
@@ -52,6 +57,7 @@ Future<ProviderContainer> pumpAfriMarketApp(
       tokenStorageProvider.overrideWithValue(tokens),
       ...listingsOverrides(listings),
       ...unreadOverrides(unread),
+      ...realtimeOverrides(realtime),
     ],
   );
   addTearDown(container.dispose);

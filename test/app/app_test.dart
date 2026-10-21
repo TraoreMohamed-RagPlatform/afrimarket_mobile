@@ -14,6 +14,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../helpers/fake_listings_repository.dart';
+import '../helpers/fake_realtime_connection.dart';
 import '../helpers/fake_unread_counts_repository.dart';
 import '../helpers/l10n.dart';
 
@@ -37,6 +38,8 @@ void main() {
   setUp(() {
     tokens = _MockTokenStorage();
     when(() => tokens.clear()).thenAnswer((_) async => const Ok<void>(null));
+    when(() => tokens.readAccessToken())
+        .thenAnswer((_) async => const Ok<String?>('test-access-token'));
   });
 
   Future<ProviderContainer> startApp(
@@ -54,6 +57,7 @@ void main() {
         tokenStorageProvider.overrideWithValue(tokens),
         ...listingsOverrides(),
         ...unreadOverrides(),
+        ...realtimeOverrides(),
       ],
     );
     addTearDown(container.dispose);
