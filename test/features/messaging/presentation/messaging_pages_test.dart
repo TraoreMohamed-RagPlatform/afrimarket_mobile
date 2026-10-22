@@ -13,6 +13,7 @@ import 'package:afrimarket_mobile/features/messaging/presentation/pages/conversa
 import 'package:afrimarket_mobile/features/messaging/presentation/pages/messages_page.dart';
 import 'package:afrimarket_mobile/features/messaging/presentation/widgets/conversation_tile.dart';
 import 'package:afrimarket_mobile/shared/formatters/price_formatter.dart';
+import 'package:afrimarket_mobile/shared/formatters/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -292,6 +293,20 @@ void main() {
       expect(find.text(fr.messagesYesterday), findsOneWidget);
       expect(find.textContaining('Samedi au Maârif'), findsOneWidget);
       expect(find.textContaining(fr.chatSeen), findsOneWidget);
+    });
+
+    testWidgets('titre : nom et vérification lus une seule fois', (
+      tester,
+    ) async {
+      final semantics = tester.ensureSemantics();
+      await open(tester);
+
+      expect(
+        find.bySemanticsLabel(fr.avatarVerified(userText('Aminata K.'))),
+        findsOneWidget,
+      );
+      expect(find.bySemanticsLabel(RegExp('Aminata K')), findsOneWidget);
+      semantics.dispose();
     });
 
     testWidgets('annonce : ouvre son détail', (tester) async {
