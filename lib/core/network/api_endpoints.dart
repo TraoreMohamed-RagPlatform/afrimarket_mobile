@@ -52,6 +52,14 @@ abstract final class ApiEndpoints {
   static const conversations = '/api/messages/conversations';
   static const unreadMessages = '/api/messages/unread-count';
 
+  /// En-tête d'une discussion.
+  static String conversation(String id) =>
+      '$conversations/${Uri.encodeComponent(id)}';
+
+  /// Messages d'une discussion.
+  static String conversationMessages(String id) =>
+      '$messages/${Uri.encodeComponent(id)}';
+
   // Notifications (connexion requise)
   static const unreadNotifications = '/api/notifications/unread-count';
 

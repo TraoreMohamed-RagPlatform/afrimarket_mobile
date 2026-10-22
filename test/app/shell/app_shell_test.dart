@@ -86,7 +86,7 @@ void main() {
 
       await tester.tap(find.text(fr.navMessages));
       await tester.pumpAndSettle();
-      expect(find.text(fr.messagesComingSoon), findsOneWidget);
+      expect(find.text(fr.messagesEmptyBuyingTitle), findsOneWidget);
 
       await tester.tap(find.text(fr.navNotifications));
       await tester.pumpAndSettle();

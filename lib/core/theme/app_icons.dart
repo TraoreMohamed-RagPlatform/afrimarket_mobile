@@ -175,6 +175,16 @@ abstract final class AppIcons {
 
   /// Supprimer.
   static const trash = IconData(0xe4a6, fontFamily: _family);
+
+  /// Envoyer un message (miroir automatique en arabe).
+  static const paperPlaneRight = IconData(
+    0xe396,
+    fontFamily: _family,
+    matchTextDirection: true,
+  );
+
+  /// Message en cours d'envoi.
+  static const clock = IconData(0xe19a, fontFamily: _family);
 }
 
 /// Versions pleines des icônes de [AppIcons] (état actif).

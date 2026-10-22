@@ -33,6 +33,11 @@ abstract final class AppRoutes {
   static const messages = '/messages';
   static const notifications = '/notifications';
 
+  /// Une discussion (plein écran, hors onglets).
+  static const conversationPattern = '/messages/:id';
+  static String conversation(String id) =>
+      '/messages/${Uri.encodeComponent(id)}';
+
   /// Publication d'une annonce (plein écran, hors onglets).
   static const publish = '/publish';
 
