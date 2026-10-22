@@ -4,6 +4,7 @@ import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meta/meta.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
+import 'package:web_socket/web_socket.dart' show WebSocketConnectionClosed;
 
 /// Événements temps réel envoyés par le serveur (liste fermée, identique
 /// à `services/realtime.js` côté backend).
@@ -72,11 +73,39 @@ typedef RealtimeSocketFactory = RealtimeSocket Function(
 );
 
 /// Socket réel (socket_io_client), créé sans se connecter.
+///
+/// Toute l'activité de socket_io_client se déroule dans une zone à part :
+/// ses erreurs non gérées y sont rattrapées. Quand le serveur ferme la
+/// connexion (jeton expiré, déconnexion de tous les appareils...), la
+/// bibliothèque referme une WebSocket déjà fermée et lève
+/// `WebSocketConnectionClosed` sans la gérer : cette fermeture attendue est
+/// ignorée (elle est déjà signalée par `onDisconnect`) ; toute autre erreur
+/// est transmise telle quelle (rapports d'erreurs).
 final class SocketIoSocket implements RealtimeSocket {
-  new(Uri baseUrl, String token)
-    : _socket = io.io(baseUrl.toString(), options(token));
+  new(Uri baseUrl, String token) : _zone = _guardedZone() {
+    _socket = _zone.run(() => io.io(baseUrl.toString(), options(token)));
+  }
 
-  final io.Socket _socket;
+  final Zone _zone;
+  late final io.Socket _socket;
+
+  static Zone _guardedZone() => Zone.current.fork(
+    specification: ZoneSpecification(
+      handleUncaughtError: (self, parent, zone, error, stackTrace) {
+        if (isExpectedClosure(error)) return;
+        parent.handleUncaughtError(zone, error, stackTrace);
+      },
+    ),
+  );
+
+  /// Erreur attendue quand le serveur ferme la connexion.
+  @visibleForTesting
+  static bool isExpectedClosure(Object error) =>
+      error is WebSocketConnectionClosed;
+
+  /// Exécute [body] dans la zone du socket (tests).
+  @visibleForTesting
+  void runInZone(void Function() body) => _zone.run(body);
 
   /// Options de la poignée de main.
   ///
@@ -98,21 +127,21 @@ final class SocketIoSocket implements RealtimeSocket {
 
   @override
   void on(String event, void Function(dynamic data) handler) =>
-      _socket.on(event, handler);
+      _zone.run(() => _socket.on(event, handler));
 
   @override
   void onConnectError(void Function(dynamic error) handler) =>
-      _socket.onConnectError(handler);
+      _zone.run(() => _socket.onConnectError(handler));
 
   @override
   void onDisconnect(void Function(dynamic reason) handler) =>
-      _socket.onDisconnect(handler);
+      _zone.run(() => _socket.onDisconnect(handler));
 
   @override
-  void connect() => _socket.connect();
+  void connect() => _zone.run(_socket.connect);
 
   @override
-  void dispose() => _socket.dispose();
+  void dispose() => _zone.run(_socket.dispose);
 }
 
 /// Implémentation réelle de [RealtimeConnection].

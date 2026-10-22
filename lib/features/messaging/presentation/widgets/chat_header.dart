@@ -25,26 +25,33 @@ class ChatTitle extends StatelessWidget {
     final name = other.name == null
         ? l10n.messagesDeletedAccount
         : userText(other.name!);
-    return Row(
-      children: [
-        UserAvatar(
-          name: other.name ?? '',
-          imageUrl: other.avatarUrl,
-          size: AvatarSize.small,
-          verified: other.isIdentityVerified,
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        Flexible(
-          child: Text(
-            name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: context.textStyles.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w700,
+    // Une seule annonce pour les lecteurs d'écran : le nom (et « identité
+    // vérifiée »), pas le nom de l'avatar puis celui du texte.
+    return Semantics(
+      header: true,
+      label: other.isIdentityVerified ? l10n.avatarVerified(name) : name,
+      excludeSemantics: true,
+      child: Row(
+        children: [
+          UserAvatar(
+            name: other.name ?? '',
+            imageUrl: other.avatarUrl,
+            size: AvatarSize.small,
+            verified: other.isIdentityVerified,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Flexible(
+            child: Text(
+              name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: context.textStyles.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

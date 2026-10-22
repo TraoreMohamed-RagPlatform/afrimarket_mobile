@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:afrimarket_mobile/core/config/app_config.dart';
 import 'package:afrimarket_mobile/core/config/app_config_provider.dart';
 import 'package:afrimarket_mobile/core/config/flavor.dart';
 import 'package:afrimarket_mobile/core/realtime/realtime_connection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:web_socket/web_socket.dart' show WebSocketConnectionClosed;
 
 /// Faux socket : les tests déclenchent eux-mêmes les événements.
 class _FakeSocket implements RealtimeSocket {
@@ -185,6 +188,45 @@ void main() {
         ..onConnectError((_) {})
         ..onDisconnect((_) {})
         ..dispose();
+    });
+  });
+
+  group('SocketIoSocket : erreurs de socket_io_client', () {
+    SocketIoSocket socket() =>
+        SocketIoSocket(Uri.parse('http://127.0.0.1:9'), 'jeton');
+
+    test('fermeture par le serveur : attendue ; autre erreur : non', () {
+      expect(
+        SocketIoSocket.isExpectedClosure(WebSocketConnectionClosed()),
+        isTrue,
+      );
+      expect(SocketIoSocket.isExpectedClosure(StateError('bug')), isFalse);
+    });
+
+    test('fermeture levée par la bibliothèque : ignorée', () async {
+      final errors = <Object>[];
+      await runZonedGuarded(() async {
+        final s = socket()
+          ..runInZone(
+            () => scheduleMicrotask(() => throw WebSocketConnectionClosed()),
+          );
+        await _flush();
+        s.dispose();
+      }, (error, _) => errors.add(error));
+
+      expect(errors, isEmpty);
+    });
+
+    test('autre erreur de la bibliothèque : toujours signalée', () async {
+      final errors = <Object>[];
+      await runZonedGuarded(() async {
+        final s = socket()
+          ..runInZone(() => scheduleMicrotask(() => throw StateError('bug')));
+        await _flush();
+        s.dispose();
+      }, (error, _) => errors.add(error));
+
+      expect(errors.single, isA<StateError>());
     });
   });
 
