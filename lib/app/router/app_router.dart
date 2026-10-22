@@ -16,6 +16,7 @@ import 'package:afrimarket_mobile/features/health/presentation/pages/health_chec
 import 'package:afrimarket_mobile/features/listings/presentation/pages/home_page.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/pages/listing_detail_page.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/pages/publish_listing_page.dart';
+import 'package:afrimarket_mobile/features/messaging/presentation/pages/conversation_page.dart';
 import 'package:afrimarket_mobile/features/messaging/presentation/pages/messages_page.dart';
 import 'package:afrimarket_mobile/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:afrimarket_mobile/features/profile/presentation/pages/my_profile_page.dart';
@@ -141,6 +142,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.listingPattern,
         builder: (context, state) =>
             ListingDetailPage(listingId: state.pathParameters['id'] ?? ''),
+      ),
+      // Une discussion (connexion requise : fermé par défaut).
+      GoRoute(
+        path: AppRoutes.conversationPattern,
+        builder: (context, state) =>
+            ConversationPage(conversationId: state.pathParameters['id'] ?? ''),
       ),
       GoRoute(
         path: AppRoutes.profile,

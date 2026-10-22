@@ -304,6 +304,156 @@
   "@signInMessagesMessage": {
     "description": "Message de l'invitation à se connecter (onglet Messages)."
   },
+
+  "messagesTabBuying": "Achat",
+  "@messagesTabBuying": {
+    "description": "Onglet Messages : discussions où je suis l'acheteur."
+  },
+
+  "messagesTabSelling": "Vente",
+  "@messagesTabSelling": {
+    "description": "Onglet Messages : discussions sur mes annonces."
+  },
+
+  "messagesTabsLabel": "Mes discussions",
+  "@messagesTabsLabel": {
+    "description": "Nom des onglets Achat / Vente, pour les lecteurs d'écran."
+  },
+
+  "messagesEmptyBuyingTitle": "Aucune discussion pour l’instant",
+  "@messagesEmptyBuyingTitle": {
+    "description": "Onglet Achat vide : titre."
+  },
+
+  "messagesEmptyBuyingMessage": "Écrivez à un vendeur depuis une annonce : la discussion apparaîtra ici.",
+  "@messagesEmptyBuyingMessage": {
+    "description": "Onglet Achat vide : explication."
+  },
+
+  "messagesEmptyBuyingAction": "Voir les annonces",
+  "@messagesEmptyBuyingAction": {
+    "description": "Onglet Achat vide : bouton vers le fil."
+  },
+
+  "messagesEmptySellingTitle": "Aucun message sur vos annonces",
+  "@messagesEmptySellingTitle": {
+    "description": "Onglet Vente vide : titre."
+  },
+
+  "messagesEmptySellingMessage": "Quand un acheteur vous écrit, sa discussion apparaît ici.",
+  "@messagesEmptySellingMessage": {
+    "description": "Onglet Vente vide : explication."
+  },
+
+  "messagesEmptySellingAction": "Publier une annonce",
+  "@messagesEmptySellingAction": {
+    "description": "Onglet Vente vide : bouton Publier."
+  },
+
+  "messagesDeletedAccount": "Compte supprimé",
+  "@messagesDeletedAccount": {
+    "description": "Nom affiché pour un compte supprimé."
+  },
+
+  "messagesListingDeleted": "Annonce supprimée",
+  "@messagesListingDeleted": {
+    "description": "Discussion dont l'annonce a été supprimée."
+  },
+
+  "messagesYesterday": "Hier",
+  "@messagesYesterday": {
+    "description": "Date d'un message de la veille."
+  },
+
+  "chatToday": "Aujourd’hui",
+  "@chatToday": {
+    "description": "Séparateur de date dans une discussion."
+  },
+
+  "chatTitleFallback": "Discussion",
+  "@chatTitleFallback": {
+    "description": "Titre d'une discussion dont l'en-tête n'a pas pu être lu."
+  },
+
+  "chatListingAvailable": "Disponible",
+  "@chatListingAvailable": {
+    "description": "Bandeau de l'annonce : annonce en ligne."
+  },
+
+  "chatListingUnavailable": "Plus disponible",
+  "@chatListingUnavailable": {
+    "description": "Bandeau de l'annonce : annonce masquée."
+  },
+
+  "chatOpenListing": "Voir l’annonce",
+  "@chatOpenListing": {
+    "description": "Lien vers l'annonce de la discussion (lecteurs d'écran)."
+  },
+
+  "chatSafetyTitle": "Restez prudent.",
+  "@chatSafetyTitle": {
+    "description": "Conseil de sécurité dans une discussion : début en gras."
+  },
+
+  "chatSafetyMessage": "Rencontrez-vous dans un lieu public et ne payez jamais d’avance.",
+  "@chatSafetyMessage": {
+    "description": "Conseil de sécurité dans une discussion."
+  },
+
+  "chatSafetyDismiss": "Masquer le conseil",
+  "@chatSafetyDismiss": {
+    "description": "Bouton qui masque le conseil de sécurité."
+  },
+
+  "chatEmpty": "Écrivez votre premier message.",
+  "@chatEmpty": {
+    "description": "Discussion sans message."
+  },
+
+  "chatInputHint": "Écrire un message…",
+  "@chatInputHint": {
+    "description": "Champ de saisie d'un message."
+  },
+
+  "chatSend": "Envoyer",
+  "@chatSend": {
+    "description": "Bouton d'envoi d'un message."
+  },
+
+  "chatSending": "Envoi…",
+  "@chatSending": {
+    "description": "Message en cours d'envoi."
+  },
+
+  "chatSeen": "Vu",
+  "@chatSeen": {
+    "description": "Message lu par le destinataire."
+  },
+
+  "chatNotSent": "Non envoyé. Touchez pour réessayer.",
+  "@chatNotSent": {
+    "description": "Message dont l'envoi a échoué."
+  },
+
+  "chatDiscard": "Supprimer ce message",
+  "@chatDiscard": {
+    "description": "Retire un message non envoyé."
+  },
+
+  "chatRecipientUnavailable": "Cette personne ne peut plus recevoir de messages.",
+  "@chatRecipientUnavailable": {
+    "description": "Discussion avec un compte suspendu ou supprimé : à la place du champ."
+  },
+
+  "messagesFromMe": "Vous : {text}",
+  "@messagesFromMe": {
+    "description": "Aperçu d'un message envoyé par moi (liste des discussions).",
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
   "signInNotificationsTitle": "Restez informé",
   "@signInNotificationsTitle": {
     "description": "Titre de l'invitation à se connecter (onglet Notifications)."
@@ -315,10 +465,6 @@
   "favoritesComingSoon": "Vos favoris arrivent bientôt.",
   "@favoritesComingSoon": {
     "description": "Texte provisoire de l'onglet Favoris."
-  },
-  "messagesComingSoon": "Vos messages arrivent bientôt.",
-  "@messagesComingSoon": {
-    "description": "Texte provisoire de l'onglet Messages."
   },
   "notificationsComingSoon": "Vos notifications arrivent bientôt.",
   "@notificationsComingSoon": {

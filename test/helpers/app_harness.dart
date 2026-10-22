@@ -10,6 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'fake_listings_repository.dart';
+import 'fake_messaging_repository.dart';
 import 'fake_realtime_connection.dart';
 import 'fake_unread_counts_repository.dart';
 import 'l10n.dart';
@@ -28,6 +29,7 @@ Future<ProviderContainer> pumpAfriMarketApp(
   FakeListingsRepository? listings,
   FakeUnreadCountsRepository? unread,
   FakeRealtimeConnection? realtime,
+  FakeMessagingRepository? messaging,
 }) async {
   useFrenchDevice(tester);
 
@@ -58,6 +60,7 @@ Future<ProviderContainer> pumpAfriMarketApp(
       ...listingsOverrides(listings),
       ...unreadOverrides(unread),
       ...realtimeOverrides(realtime),
+      ...messagingOverrides(messaging),
     ],
   );
   addTearDown(container.dispose);

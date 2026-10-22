@@ -405,3 +405,15 @@ Parcours (une seule page, comme Facebook Marketplace) :
 
 Le serveur n'envoie un événement qu'à son destinataire et refuse toute
 connexion sans jeton valide (backend : `security/socket-auth`).
+
+## Messagerie (écrans Messages et Discussion)
+
+| Emplacement | Contenu |
+|---|---|
+| `lib/features/messaging/domain/` | `ConversationSummary` (rôle Achat / Vente, annonce, autre personne, aperçu, non-lus), `ChatMessage`, `CursorPage`, `MessageRules` (1 à 1 000 caractères), cas d'usage liste, en-tête, messages, envoi |
+| `lib/features/messaging/data/` | `/api/messages/conversations?role=&cursor=`, `/conversations/:id`, `/:id?before=`, `POST /api/messages` ; `MessagingJson` (lecture prudente : identifiants sûrs, adresses http(s), éléments mal formés ignorés) |
+| `lib/features/messaging/presentation/` | `ConversationsController` (par onglet : pagination, actualisation, temps réel), `ChatController` (en-tête + messages en parallèle, précédents en remontant, envoi affiché tout de suite puis confirmé, nouvel essai / retrait, temps réel), `MessagesPage`, `ConversationPage` (`/messages/:id`, connexion requise), `MessageTime` |
+
+Temps réel : les deux contrôleurs écoutent `message:new` sur la connexion
+(`realtimeConnectionProvider`) et relisent l'API ; le contenu de l'événement
+n'est pas utilisé.
