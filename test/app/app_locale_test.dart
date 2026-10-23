@@ -13,6 +13,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../helpers/fake_listings_repository.dart';
+import '../helpers/fake_messaging_repository.dart';
+import '../helpers/fake_notifications_repository.dart';
 import '../helpers/fake_realtime_connection.dart';
 import '../helpers/fake_unread_counts_repository.dart';
 import '../helpers/l10n.dart';
@@ -44,6 +46,8 @@ void main() {
         ...listingsOverrides(),
         ...unreadOverrides(),
         ...realtimeOverrides(),
+        ...messagingOverrides(),
+        ...notificationsOverrides(),
       ],
     );
     addTearDown(container.dispose);

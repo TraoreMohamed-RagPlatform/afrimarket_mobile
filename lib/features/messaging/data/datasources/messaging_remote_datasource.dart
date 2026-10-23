@@ -1,8 +1,8 @@
 import 'package:afrimarket_mobile/core/network/api_endpoints.dart';
+import 'package:afrimarket_mobile/core/pagination/cursor_page.dart';
 import 'package:afrimarket_mobile/features/messaging/data/models/messaging_json.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/entities/chat_message.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/entities/conversation.dart';
-import 'package:afrimarket_mobile/features/messaging/domain/entities/cursor_page.dart';
 import 'package:dio/dio.dart';
 
 /// Source distante : `/api/messages` (connexion requise).

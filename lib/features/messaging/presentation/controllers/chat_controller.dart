@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:afrimarket_mobile/core/error/failure.dart';
 import 'package:afrimarket_mobile/core/error/result.dart';
+import 'package:afrimarket_mobile/core/pagination/cursor_page.dart';
 import 'package:afrimarket_mobile/core/realtime/realtime_connection.dart';
 import 'package:afrimarket_mobile/features/inbox/presentation/unread_counts_controller.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/entities/chat_message.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/entities/conversation.dart';
-import 'package:afrimarket_mobile/features/messaging/domain/entities/cursor_page.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/message_rules.dart';
 import 'package:afrimarket_mobile/features/messaging/messaging_providers.dart';
 import 'package:afrimarket_mobile/features/messaging/presentation/controllers/conversations_controller.dart';

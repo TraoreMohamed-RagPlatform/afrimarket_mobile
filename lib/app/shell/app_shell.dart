@@ -4,6 +4,7 @@ import 'package:afrimarket_mobile/core/navigation/app_routes.dart';
 import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/features/inbox/presentation/realtime_controller.dart';
 import 'package:afrimarket_mobile/features/inbox/presentation/unread_counts_controller.dart';
+import 'package:afrimarket_mobile/features/notifications/presentation/controllers/notifications_controller.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,9 @@ class AppShell extends ConsumerStatefulWidget {
   /// serveur.
   static const unreadRefreshInterval = Duration(minutes: 1);
 
+  /// Position de l'onglet Notifications parmi les branches du routeur.
+  static const notificationsBranch = 1;
+
   @override
   ConsumerState<AppShell> createState() => _AppShellState();
 }
@@ -49,8 +53,33 @@ class _AppShellState extends ConsumerState<AppShell> {
       onResume: () {
         _refresh();
         _realtime.resume();
+        _syncNotificationsTab();
       },
       onPause: _realtime.pause,
+    );
+    // Jamais pendant la construction des écrans.
+    unawaited(Future.microtask(_syncNotificationsTab));
+  }
+
+  @override
+  void didUpdateWidget(AppShell oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Onglet changé par un lien (ex. « Voir les notifications »).
+    if (oldWidget.navigationShell.currentIndex !=
+        widget.navigationShell.currentIndex) {
+      unawaited(Future.microtask(_syncNotificationsTab));
+    }
+  }
+
+  /// Onglet Notifications affiché : sa pastille s'efface (comme Facebook).
+  void _syncNotificationsTab() {
+    if (!mounted) return;
+    final visible =
+        widget.navigationShell.currentIndex == AppShell.notificationsBranch;
+    unawaited(
+      ref
+          .read(notificationsControllerProvider.notifier)
+          .setVisible(visible: visible),
     );
   }
 

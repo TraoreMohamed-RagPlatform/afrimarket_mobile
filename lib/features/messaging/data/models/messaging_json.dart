@@ -1,6 +1,6 @@
+import 'package:afrimarket_mobile/core/pagination/cursor_page.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/entities/chat_message.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/entities/conversation.dart';
-import 'package:afrimarket_mobile/features/messaging/domain/entities/cursor_page.dart';
 
 /// Lecture prudente des réponses de `/api/messages`.
 ///

@@ -61,7 +61,17 @@ abstract final class ApiEndpoints {
       '$messages/${Uri.encodeComponent(id)}';
 
   // Notifications (connexion requise)
+  static const notifications = '/api/notifications';
   static const unreadNotifications = '/api/notifications/unread-count';
+
+  /// Onglet ouvert : notifications « vues » (pastille effacée).
+  static const notificationsSeen = '$notifications/seen';
+  static const notificationsReadAll = '$notifications/read-all';
+
+  /// Une notification (suppression) et « lue ».
+  static String notification(String id) =>
+      '$notifications/${Uri.encodeComponent(id)}';
+  static String notificationRead(String id) => '${notification(id)}/read';
 
   /// Options de filtre, dont les catégories.
   static const filters = '/api/filters';

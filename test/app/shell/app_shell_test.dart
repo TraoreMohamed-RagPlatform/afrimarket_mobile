@@ -90,7 +90,7 @@ void main() {
 
       await tester.tap(find.text(fr.navNotifications));
       await tester.pumpAndSettle();
-      expect(find.text(fr.notificationsComingSoon), findsOneWidget);
+      expect(find.text(fr.notificationsEmptyTitle), findsOneWidget);
     });
 
     testWidgets('Publier : plein écran, sans barre du bas', (tester) async {
