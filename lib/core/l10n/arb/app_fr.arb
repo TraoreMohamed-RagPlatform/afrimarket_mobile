@@ -462,13 +462,128 @@
   "@signInNotificationsMessage": {
     "description": "Message de l'invitation à se connecter (onglet Notifications)."
   },
+
+  "notificationsMarkAllRead": "Tout marquer comme lu",
+  "@notificationsMarkAllRead": {
+    "description": "Bouton de l'onglet Notifications."
+  },
+
+  "notificationsEmptyTitle": "Aucune notification pour l’instant",
+  "@notificationsEmptyTitle": {
+    "description": "Onglet Notifications vide : titre."
+  },
+
+  "notificationsEmptyMessage": "Vous serez prévenu quand quelqu’un enregistre votre annonce ou vous laisse un avis.",
+  "@notificationsEmptyMessage": {
+    "description": "Onglet Notifications vide : explication."
+  },
+
+  "notificationDeleted": "Notification supprimée",
+  "@notificationDeleted": {
+    "description": "Confirmation après avoir retiré une notification (avec « Annuler »)."
+  },
+
+  "notificationDelete": "Supprimer",
+  "@notificationDelete": {
+    "description": "Fond affiché en glissant une notification pour la retirer."
+  },
+
+  "notificationUnread": "Non lue",
+  "@notificationUnread": {
+    "description": "Notification non lue, pour les lecteurs d'écran."
+  },
+
+  "notificationRatingNoListing": "Vous avez reçu un nouvel avis.",
+  "@notificationRatingNoListing": {
+    "description": "Notification d'avis sans annonce."
+  },
+
+  "notificationMessage": "Vous avez reçu un nouveau message.",
+  "@notificationMessage": {
+    "description": "Notification de nouveau message."
+  },
+
+  "notificationTimeJustNow": "À l’instant",
+  "@notificationTimeJustNow": {
+    "description": "Date d'une notification de moins d'une minute."
+  },
+
+  "notificationListingInterest": "Quelqu’un a enregistré votre annonce « {title} ».",
+  "@notificationListingInterest": {
+    "description": "Notification : annonce enregistrée par quelqu'un.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+
+  "notificationRatingReceived": "Vous avez reçu un nouvel avis sur « {title} ».",
+  "@notificationRatingReceived": {
+    "description": "Notification : avis reçu sur une annonce.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+
+  "notificationListingSold": "Votre annonce « {title} » est marquée comme vendue.",
+  "@notificationListingSold": {
+    "description": "Notification : annonce vendue.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+
+  "notificationListingUpdated": "Votre annonce « {title} » a été mise à jour.",
+  "@notificationListingUpdated": {
+    "description": "Notification : annonce mise à jour.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+
+  "notificationTimeMinutes": "il y a {count} min",
+  "@notificationTimeMinutes": {
+    "description": "Date d'une notification : minutes.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "notificationTimeHours": "il y a {count} h",
+  "@notificationTimeHours": {
+    "description": "Date d'une notification : heures.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "notificationTimeYesterday": "Hier",
+  "@notificationTimeYesterday": {
+    "description": "Date d'une notification reçue la veille."
+  },
+  "notificationTimeDays": "{count, plural, one{il y a {count} jour} other{il y a {count} jours}}",
+  "@notificationTimeDays": {
+    "description": "Date d'une notification : jours.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "favoritesComingSoon": "Vos favoris arrivent bientôt.",
   "@favoritesComingSoon": {
     "description": "Texte provisoire de l'onglet Favoris."
-  },
-  "notificationsComingSoon": "Vos notifications arrivent bientôt.",
-  "@notificationsComingSoon": {
-    "description": "Texte provisoire de l'onglet Notifications."
   },
   "publishTitle": "Publier une annonce",
   "@publishTitle": {

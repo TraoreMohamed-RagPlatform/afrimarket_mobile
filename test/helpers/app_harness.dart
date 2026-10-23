@@ -11,6 +11,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'fake_listings_repository.dart';
 import 'fake_messaging_repository.dart';
+import 'fake_notifications_repository.dart';
 import 'fake_realtime_connection.dart';
 import 'fake_unread_counts_repository.dart';
 import 'l10n.dart';
@@ -30,6 +31,7 @@ Future<ProviderContainer> pumpAfriMarketApp(
   FakeUnreadCountsRepository? unread,
   FakeRealtimeConnection? realtime,
   FakeMessagingRepository? messaging,
+  FakeNotificationsRepository? notifications,
 }) async {
   useFrenchDevice(tester);
 
@@ -61,6 +63,7 @@ Future<ProviderContainer> pumpAfriMarketApp(
       ...unreadOverrides(unread),
       ...realtimeOverrides(realtime),
       ...messagingOverrides(messaging),
+      ...notificationsOverrides(notifications),
     ],
   );
   addTearDown(container.dispose);

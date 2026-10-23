@@ -185,6 +185,9 @@ abstract final class AppIcons {
 
   /// Message en cours d'envoi.
   static const clock = IconData(0xe19a, fontFamily: _family);
+
+  /// Tout marquer comme lu.
+  static const checks = IconData(0xe53a, fontFamily: _family);
 }
 
 /// Versions pleines des icônes de [AppIcons] (état actif).

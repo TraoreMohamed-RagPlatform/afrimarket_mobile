@@ -1,8 +1,8 @@
 import 'package:afrimarket_mobile/core/error/failure.dart';
 import 'package:afrimarket_mobile/core/error/result.dart';
+import 'package:afrimarket_mobile/core/pagination/cursor_page.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/entities/chat_message.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/entities/conversation.dart';
-import 'package:afrimarket_mobile/features/messaging/domain/entities/cursor_page.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/message_rules.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/repositories/messaging_repository.dart';
 
