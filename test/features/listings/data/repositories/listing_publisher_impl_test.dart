@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:afrimarket_mobile/core/error/failure.dart';
 import 'package:afrimarket_mobile/core/error/result.dart';
 import 'package:afrimarket_mobile/features/listings/data/repositories/listing_publisher_impl.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/listing_changes.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_detail.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_draft.dart';
 import 'package:dio/dio.dart';
@@ -108,14 +109,33 @@ void main() {
       final jpg = File('${dir.path}/IMG_2026_maison.jpg')
         ..writeAsBytesSync([1, 2, 3]);
       final png = File('${dir.path}/capture.PNG')..writeAsBytesSync([4, 5]);
-      server.respond([(201, <String, dynamic>{})]);
+      server.respond([
+        (
+          201,
+          {
+            'images': [
+              {'id': 'i1', 'url': '/uploads/listings/i1.jpg', 'position': 0},
+              {'id': 'i2', 'url': '/uploads/listings/i2.jpg', 'position': 1},
+            ],
+          },
+        ),
+      ]);
 
       final result = await publisher.uploadPhotos('abc123', [
         LocalPhoto(jpg.path),
         LocalPhoto(png.path),
       ]);
 
-      expect(result, isA<Ok<void>>());
+      expect((result as Ok<List<RemotePhoto>>).value, const [
+        RemotePhoto(
+          id: 'i1',
+          url: 'https://api.example.com/uploads/listings/i1.jpg',
+        ),
+        RemotePhoto(
+          id: 'i2',
+          url: 'https://api.example.com/uploads/listings/i2.jpg',
+        ),
+      ]);
       final request = server.requests.single;
       expect(request.path, '/api/listings/abc123/images');
       expect(request.sendTimeout, ListingPublisherImpl.uploadTimeout);
@@ -157,5 +177,85 @@ void main() {
     expect(result, isA<Ok<void>>());
     expect(server.requests.single.method, 'DELETE');
     expect(server.requests.single.path, '/api/listings/abc123');
+  });
+
+  group('Modification', () {
+    test('PUT : seulement les champs modifiés, valeurs du serveur', () async {
+      final result = await publisher.update(
+        'abc123',
+        const ListingChanges(
+          title: 'Vélo rouge',
+          price: 800,
+          condition: ListingCondition.fair,
+          isNegotiable: false,
+          deliveryMode: DeliveryMode.delivery,
+        ),
+      );
+
+      expect(result, isA<Ok<void>>());
+      final request = server.requests.single;
+      expect(request.method, 'PUT');
+      expect(request.path, '/api/listings/abc123');
+      expect(request.data, {
+        'title': 'Vélo rouge',
+        'price': 800,
+        'condition': 'FAIR',
+        'isNegotiable': false,
+        'deliveryMode': 'DELIVERY',
+      });
+    });
+
+    test('catégorie, quartier, description', () {
+      expect(
+        ListingPublisherImpl.updateBody(
+          const ListingChanges(
+            categoryId: 'c2',
+            district: 'ain-diab',
+            description: 'Nouvelle description.',
+          ),
+        ),
+        {
+          'description': 'Nouvelle description.',
+          'categoryId': 'c2',
+          'district': 'ain-diab',
+        },
+      );
+    });
+
+    test('retrait d’une photo : DELETE, identifiant encodé', () async {
+      final result = await publisher.deletePhoto('abc123', 'img_1');
+
+      expect(result, isA<Ok<void>>());
+      expect(server.requests.single.method, 'DELETE');
+      expect(server.requests.single.path, '/api/listings/abc123/images/img_1');
+    });
+
+    test('nouvel ordre : PUT imageIds', () async {
+      final result = await publisher.reorderPhotos('abc123', ['b', 'a']);
+
+      expect(result, isA<Ok<void>>());
+      final request = server.requests.single;
+      expect(request.method, 'PUT');
+      expect(request.path, '/api/listings/abc123/images/order');
+      expect(request.data, {
+        'imageIds': ['b', 'a'],
+      });
+    });
+
+    test('annonce vendue : ConflictFailure avec son code', () async {
+      server.respond([
+        (409, {'error': 'Annonce vendue', 'code': 'LISTING_SOLD'}),
+      ]);
+
+      final result = await publisher.update(
+        'abc123',
+        const ListingChanges(price: 1),
+      );
+
+      expect(
+        (result as Err).failure,
+        isA<ConflictFailure>().having((f) => f.code, 'code', 'LISTING_SOLD'),
+      );
+    });
   });
 }

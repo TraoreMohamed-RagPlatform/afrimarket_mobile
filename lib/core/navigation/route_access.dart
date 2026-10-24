@@ -41,8 +41,8 @@ abstract final class RouteAccessPolicy {
     (RegExp(r'^/favorites$'), RouteAccess.signInPrompt),
     (RegExp(r'^/messages$'), RouteAccess.signInPrompt),
     (RegExp(r'^/notifications$'), RouteAccess.signInPrompt),
-    // Toute autre page (dont /publish et /profile) : authenticated, par
-    // défaut.
+    // Toute autre page (dont /publish, /listings/:id/edit et /profile) :
+    // authenticated, par défaut.
   ];
 
   /// Niveau d'accès de [path] (chemin seul, sans paramètres).

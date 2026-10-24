@@ -15,4 +15,7 @@ class ManageOwnListingUseCase {
 
   /// Vendue : action définitive pour l'annonce.
   Future<Result<void>> markSold(String id) => _publisher.markSold(id);
+
+  /// Supprimée : retirée du fil et des favoris, définitivement.
+  Future<Result<void>> delete(String id) => _publisher.delete(id);
 }

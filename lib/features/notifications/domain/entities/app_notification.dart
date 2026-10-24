@@ -14,6 +14,9 @@ enum NotificationKind {
   /// Mon annonce a été mise à jour.
   listingUpdated,
 
+  /// Le prix d'une annonce que j'ai enregistrée a baissé.
+  priceDrop,
+
   /// Nouveau message.
   message,
 

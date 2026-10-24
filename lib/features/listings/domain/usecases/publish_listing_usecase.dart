@@ -38,7 +38,7 @@ class PublishListingUseCase {
     }
 
     onStep?.call(PublishStep.uploadingPhotos);
-    final uploaded = await _publisher.uploadPhotos(id, draft.photos);
+    final uploaded = await _publisher.uploadPhotos(id, draft.localPhotos);
     if (uploaded case Err(:final failure)) {
       return await _abandon(id, failure);
     }

@@ -292,6 +292,51 @@ class _ListingDetailViewState extends ConsumerState<_ListingDetailView> {
     }
   }
 
+  /// Écran « Modifier » ; au retour, la page est relue par cet écran.
+  void _edit() => unawaited(context.push(AppRoutes.editListing(_listing.id)));
+
+  /// Supprimée, après confirmation (vendeur) : retour au fil.
+  Future<void> _delete() async {
+    final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.ownerDeleteConfirmTitle),
+        content: Text(l10n.ownerDeleteConfirmMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.ownerCancel),
+          ),
+          TextButton(
+            key: const Key('owner-delete-confirm'),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.ownerDeleteConfirm),
+          ),
+        ],
+      ),
+    );
+    if (!(confirmed ?? false) || !mounted || _ownerBusy) return;
+
+    setState(() => _ownerBusy = true);
+    final result = await ref
+        .read(manageOwnListingUseCaseProvider)
+        .delete(_listing.id);
+    if (!mounted) return;
+    setState(() => _ownerBusy = false);
+    switch (result) {
+      case Ok():
+      // Déjà supprimée (autre appareil) : même issue.
+      case Err(failure: NotFoundFailure()):
+        unawaited(HapticFeedback.lightImpact());
+        unawaited(ref.read(feedControllerProvider.notifier).refresh());
+        _show(l10n.ownerDeleted);
+        context.go(AppRoutes.home);
+      case Err(:final failure):
+        _show(failure.message(l10n));
+    }
+  }
+
   Future<void> _openMoreMenu() async {
     final l10n = context.l10n;
     final choice = await showModalBottomSheet<VoidCallback>(
@@ -308,6 +353,23 @@ class _ListingDetailViewState extends ConsumerState<_ListingDetailView> {
               title: Text(l10n.listingActionShare),
               onTap: () => Navigator.of(sheetContext).pop(_share),
             ),
+            if (_listing.isOwner && !_listing.isSold)
+              ListTile(
+                leading: const Icon(AppIcons.pencilSimple),
+                title: Text(l10n.ownerEdit),
+                onTap: () => Navigator.of(sheetContext).pop(_edit),
+              ),
+            if (_listing.isOwner)
+              ListTile(
+                key: const Key('owner-delete'),
+                leading: Icon(AppIcons.trash, color: context.colors.error),
+                title: Text(
+                  l10n.ownerDelete,
+                  style: TextStyle(color: context.colors.error),
+                ),
+                onTap: () =>
+                    Navigator.of(sheetContext).pop(() => unawaited(_delete())),
+              ),
             if (!_listing.isOwner)
               ListTile(
                 leading: const Icon(AppIcons.flag),
@@ -375,6 +437,7 @@ class _ListingDetailViewState extends ConsumerState<_ListingDetailView> {
                       busy: _ownerBusy,
                       onToggleReserved: () => unawaited(_toggleReserved()),
                       onMarkSold: () => unawaited(_markSold()),
+                      onEdit: _edit,
                     ),
                   ],
                   if (canContact) ...[

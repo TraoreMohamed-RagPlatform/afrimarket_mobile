@@ -7,6 +7,7 @@ import 'package:afrimarket_mobile/features/listings/domain/entities/listing_cate
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_detail.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_locations.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_page.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/listing_photo.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_seller.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_summary.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/report_reason.dart';
@@ -167,6 +168,8 @@ ListingDetail sampleDetail({
       'Structure en bois massif, housse lavable.',
   ListingSeller? seller,
   List<String> imageUrls = const [],
+  List<RemotePhoto> photos = const [],
+  ListingCategory? category,
 }) {
   return ListingDetail(
     id: id,
@@ -184,6 +187,8 @@ ListingDetail sampleDetail({
     district: 'maarif',
     createdAt: DateTime.now().subtract(const Duration(hours: 2)),
     imageUrls: imageUrls,
+    photos: photos,
+    category: category,
     seller: seller ?? sampleSeller(),
   );
 }

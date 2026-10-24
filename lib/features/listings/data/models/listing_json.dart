@@ -1,3 +1,4 @@
+import 'package:afrimarket_mobile/features/listings/domain/entities/listing_photo.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_summary.dart';
 
 /// Lecture prudente des champs d'annonce communs aux réponses du serveur
@@ -63,6 +64,20 @@ abstract final class ListingJson {
       for (final image in images)
         if (image is Map<String, dynamic>) ?webUrl(image['url'], baseUrl),
     ];
+  }
+
+  /// Photos avec identifiant (`[{ "id", "url" }]`), dans l'ordre reçu ;
+  /// une photo sans identifiant sûr ou sans adresse web est ignorée.
+  static List<RemotePhoto> remotePhotos(Object? images, Uri baseUrl) {
+    if (images is! List) return const [];
+    final photos = <RemotePhoto>[];
+    for (final image in images) {
+      if (image is! Map<String, dynamic>) continue;
+      final id = safeId(image['id']);
+      final url = webUrl(image['url'], baseUrl);
+      if (id != null && url != null) photos.add(RemotePhoto(id: id, url: url));
+    }
+    return photos;
   }
 
   /// Annonce résumée (carte de grille) ; null si elle est mal formée.

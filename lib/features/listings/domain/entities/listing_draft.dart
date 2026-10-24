@@ -1,20 +1,8 @@
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_detail.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/listing_photo.dart';
 import 'package:meta/meta.dart';
 
-/// Photo choisie sur le téléphone, pas encore envoyée.
-@immutable
-final class LocalPhoto {
-  const new(this.path);
-
-  /// Chemin du fichier sur le téléphone.
-  final String path;
-
-  @override
-  bool operator ==(Object other) => other is LocalPhoto && other.path == path;
-
-  @override
-  int get hashCode => path.hashCode;
-}
+export 'package:afrimarket_mobile/features/listings/domain/entities/listing_photo.dart';
 
 /// Ce qui manque ou ne va pas dans une annonce avant publication.
 enum DraftProblem {
@@ -28,7 +16,7 @@ enum DraftProblem {
   descriptionTooShort,
 }
 
-/// Annonce en cours de saisie (écran « Publier »).
+/// Annonce en cours de saisie (écrans « Publier » et « Modifier »).
 ///
 /// Entité métier : Dart pur. Les limites sont celles du serveur.
 @immutable
@@ -45,6 +33,21 @@ final class ListingDraft {
     this.isNegotiable = false,
     this.deliveryMode = DeliveryMode.pickup,
   });
+
+  /// Annonce existante, telle qu'affichée : point de départ de l'écran
+  /// « Modifier ».
+  factory fromDetail(ListingDetail listing) => ListingDraft(
+    photos: listing.photos,
+    title: listing.title,
+    price: listing.price.round(),
+    categoryId: listing.category?.id,
+    city: listing.city ?? defaultCity,
+    district: listing.district,
+    condition: listing.condition,
+    description: listing.description,
+    isNegotiable: listing.isNegotiable,
+    deliveryMode: listing.deliveryMode,
+  );
 
   static const empty = ListingDraft();
 
@@ -63,7 +66,7 @@ final class ListingDraft {
   static const maxPrice = 100000000;
 
   /// La première photo est la photo principale (carte du fil).
-  final List<LocalPhoto> photos;
+  final List<DraftPhoto> photos;
   final String title;
 
   /// En dirhams ; 0 = gratuit ; null = pas encore saisi.
@@ -78,6 +81,9 @@ final class ListingDraft {
 
   /// Vrai si rien n'a encore été saisi (quitter sans confirmation).
   bool get isEmpty => this == empty;
+
+  /// Photos à envoyer (choisies sur le téléphone), dans l'ordre.
+  List<LocalPhoto> get localPhotos => photos.whereType<LocalPhoto>().toList();
 
   /// Ce qui empêche la publication ; vide = prête.
   Set<DraftProblem> get problems {
@@ -98,7 +104,7 @@ final class ListingDraft {
   bool get isReady => problems.isEmpty;
 
   ListingDraft copyWith({
-    List<LocalPhoto>? photos,
+    List<DraftPhoto>? photos,
     String? title,
     int? Function()? price,
     String? categoryId,
@@ -151,7 +157,7 @@ final class ListingDraft {
   );
 }
 
-bool _samePhotos(List<LocalPhoto> a, List<LocalPhoto> b) {
+bool _samePhotos(List<DraftPhoto> a, List<DraftPhoto> b) {
   if (a.length != b.length) return false;
   for (var i = 0; i < a.length; i++) {
     if (a[i] != b[i]) return false;

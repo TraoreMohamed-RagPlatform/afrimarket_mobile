@@ -8,13 +8,15 @@ import 'package:flutter/material.dart';
 /// Encadré « C'est votre annonce » : remplace « Écrire au vendeur » quand
 /// la personne connectée est le vendeur (comme Facebook Marketplace).
 ///
-/// Actions : réserver / remettre en vente, marquer comme vendue. Une
-/// annonce vendue n'a plus d'action.
+/// Actions : modifier, réserver / remettre en vente, marquer comme
+/// vendue. Une annonce vendue n'a plus d'action (sa suppression reste dans
+/// le menu « ··· »).
 class ListingOwnerPanel extends StatelessWidget {
   const new({
     required this.listing,
     required this.onToggleReserved,
     required this.onMarkSold,
+    required this.onEdit,
     this.busy = false,
     super.key,
   });
@@ -22,6 +24,7 @@ class ListingOwnerPanel extends StatelessWidget {
   final ListingDetail listing;
   final VoidCallback onToggleReserved;
   final VoidCallback onMarkSold;
+  final VoidCallback onEdit;
 
   /// Action en cours : boutons désactivés.
   final bool busy;
@@ -64,6 +67,13 @@ class ListingOwnerPanel extends StatelessWidget {
             Text(status, style: styles.bodySmall),
             if (!listing.isSold) ...[
               const SizedBox(height: AppSpacing.md),
+              OutlinedButton.icon(
+                key: const Key('owner-edit'),
+                onPressed: busy ? null : onEdit,
+                icon: const Icon(AppIcons.pencilSimple),
+                label: Text(l10n.ownerEdit, textAlign: TextAlign.center),
+              ),
+              const SizedBox(height: AppSpacing.sm),
               Row(
                 children: [
                   Expanded(
