@@ -1,4 +1,5 @@
 import 'package:afrimarket_mobile/features/listings/data/models/listing_json.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/listing_category.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_detail.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_seller.dart';
 
@@ -7,8 +8,9 @@ import 'package:afrimarket_mobile/features/listings/domain/entities/listing_sell
 /// ```json
 /// { "listing": { "id", "title", "description", "price", "previousPrice",
 ///   "isNegotiable", "isSold", "status", "condition", "city", "district",
-///   "deliveryMode", "createdAt", "category": { "name" },
-///   "images": [ { "url" } ],
+///   "deliveryMode", "createdAt",
+///   "category": { "id", "name", "slug", "icon" },
+///   "images": [ { "id", "url" } ],
 ///   "user": { "id", "username", "fullName", "avatar", "avgRating",
 ///             "totalRatings", "isIdentityVerified", "createdAt",
 ///             "responseTimeMinutes", "canCall", "canWhatsapp" } } }
@@ -84,7 +86,27 @@ abstract final class ListingDetailModel {
           _deliveryModes[listing['deliveryMode']] ?? DeliveryMode.pickup,
       createdAt: createdAt,
       imageUrls: ListingJson.imageUrls(listing['images'], baseUrl),
+      photos: ListingJson.remotePhotos(listing['images'], baseUrl),
+      category: _category(category),
       seller: seller,
+    );
+  }
+
+  static final RegExp _iconName = RegExp(r'^[a-z0-9-]{1,40}$');
+
+  /// Catégorie complète (écran « Modifier ») ; null si mal formée.
+  static ListingCategory? _category(Object? json) {
+    if (json is! Map<String, dynamic>) return null;
+    final id = ListingJson.safeId(json['id']);
+    final name = ListingJson.nonEmptyText(json['name']);
+    if (id == null || name == null) return null;
+    final slug = json['slug'];
+    final icon = json['icon'];
+    return ListingCategory(
+      id: id,
+      name: name,
+      slug: slug is String && _locationSlug.hasMatch(slug) ? slug : null,
+      icon: icon is String && _iconName.hasMatch(icon) ? icon : null,
     );
   }
 

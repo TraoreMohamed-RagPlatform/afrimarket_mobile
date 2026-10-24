@@ -433,6 +433,16 @@ void main() {
       );
     });
 
+    test('baisse de prix : titre de l’annonce', () {
+      expect(
+        NotificationText.message(
+          sampleNotification('p', kind: NotificationKind.priceDrop),
+          fr,
+        ),
+        fr.notificationPriceDrop(userText('Canapé 3 places')),
+      );
+    });
+
     test('une icône par type', () {
       final icons = {
         for (final kind in NotificationKind.values) NotificationText.icon(kind),

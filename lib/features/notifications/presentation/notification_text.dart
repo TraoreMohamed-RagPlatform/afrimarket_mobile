@@ -23,6 +23,8 @@ abstract final class NotificationText {
         l10n.notificationListingSold(title),
       NotificationKind.listingUpdated when title != null =>
         l10n.notificationListingUpdated(title),
+      NotificationKind.priceDrop when title != null =>
+        l10n.notificationPriceDrop(title),
       NotificationKind.message => l10n.notificationMessage,
       _ => _serverText(item),
     };
@@ -39,6 +41,7 @@ abstract final class NotificationText {
     NotificationKind.ratingReceived => AppIconsFill.star,
     NotificationKind.listingSold => AppIconsFill.checkCircle,
     NotificationKind.listingUpdated => AppIcons.arrowClockwise,
+    NotificationKind.priceDrop => AppIconsFill.tag,
     NotificationKind.message => AppIconsFill.chatCircle,
     NotificationKind.system => AppIcons.megaphone,
   };

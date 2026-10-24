@@ -1,5 +1,7 @@
 import 'package:afrimarket_mobile/features/listings/data/models/listing_detail_model.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/listing_category.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_detail.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/listing_photo.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 final Uri _base = Uri.parse('https://api.example.com');
@@ -35,8 +37,8 @@ Map<String, dynamic> _listing([Map<String, dynamic> extra = const {}]) => {
   'createdAt': '2026-10-18T08:00:00.000Z',
   'category': {'id': 'c1', 'name': 'Mobilier'},
   'images': [
-    {'url': '/uploads/listings/a.jpg'},
-    {'url': 'javascript:alert(1)'},
+    {'id': 'img-a', 'url': '/uploads/listings/a.jpg'},
+    {'id': 'img-x', 'url': 'javascript:alert(1)'},
     {'url': 'https://cdn.example.com/b.jpg'},
   ],
   'user': _seller(),
@@ -67,6 +69,50 @@ void main() {
       'https://api.example.com/uploads/listings/a.jpg',
       'https://cdn.example.com/b.jpg',
     ]);
+  });
+
+  test('photos avec identifiant et catégorie complète (vendeur)', () {
+    final listing = _parse({
+      'category': {
+        'id': 'c1',
+        'name': 'Mobilier',
+        'slug': 'mobilier',
+        'icon': 'armchair',
+      },
+    });
+
+    // Sans identifiant ou adresse dangereuse : ignorée.
+    expect(listing.photos, const [
+      RemotePhoto(
+        id: 'img-a',
+        url: 'https://api.example.com/uploads/listings/a.jpg',
+      ),
+    ]);
+    expect(
+      listing.category,
+      const ListingCategory(
+        id: 'c1',
+        name: 'Mobilier',
+        slug: 'mobilier',
+        icon: 'armchair',
+      ),
+    );
+  });
+
+  test('catégorie mal formée : ignorée ; icône inconnue : sans icône', () {
+    expect(
+      _parse({
+        'category': {'name': 'Sans id'},
+      }).category,
+      isNull,
+    );
+    expect(
+      _parse({
+        'category': {'id': 'c1', 'name': 'Mobilier', 'icon': '<svg>'},
+      }).category?.icon,
+      isNull,
+    );
+    expect(_parse({'category': 'texte'}).category, isNull);
   });
 
   test('vendeur : nom complet, note, ancienneté, temps de réponse', () {

@@ -310,5 +310,22 @@
   "ownerAvailableDone": "Listing is available again.",
   "ownerSoldDone": "Congratulations! Listing marked as sold.",
   "publishSearchDistrict": "Search a neighbourhood",
-  "publishNoDistrictMatch": "No neighbourhood matches."
+  "publishNoDistrictMatch": "No neighbourhood matches.",
+  "ownerEdit": "Edit listing",
+  "ownerDelete": "Delete listing",
+  "ownerDeleteConfirmTitle": "Delete this listing?",
+  "ownerDeleteConfirmMessage": "It will disappear from the feed, favourites and search. This can't be undone.",
+  "ownerDeleteConfirm": "Delete",
+  "ownerDeleted": "Listing deleted.",
+  "editListingTitle": "Edit listing",
+  "editListingSave": "Save",
+  "editListingSaving": "Saving…",
+  "editListingSaved": "Listing updated.",
+  "editListingPartial": "Some changes weren't saved. Check the listing and try again.",
+  "editListingSold": "This listing is sold and can no longer be edited.",
+  "editListingUnavailable": "This listing can't be edited.",
+  "editDiscardTitle": "Discard changes?",
+  "editDiscardMessage": "Your changes won't be saved.",
+  "editDiscardCancel": "Keep editing",
+  "notificationPriceDrop": "The price of “{title}” has dropped."
 }

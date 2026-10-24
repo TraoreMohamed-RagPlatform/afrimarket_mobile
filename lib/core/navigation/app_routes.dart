@@ -50,6 +50,10 @@ abstract final class AppRoutes {
   static const listingPattern = '/listings/:id';
   static String listing(String id) => '/listings/${Uri.encodeComponent(id)}';
 
+  /// Modification d'une annonce par son vendeur (plein écran).
+  static const editListingPattern = '/listings/:id/edit';
+  static String editListing(String id) => '${listing(id)}/edit';
+
   /// Profil public d'un vendeur.
   static const sellerPattern = '/sellers/:id';
   static String seller(String id) => '/sellers/${Uri.encodeComponent(id)}';

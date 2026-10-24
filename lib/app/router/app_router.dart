@@ -13,6 +13,7 @@ import 'package:afrimarket_mobile/features/auth/presentation/pages/login_page.da
 import 'package:afrimarket_mobile/features/auth/presentation/pages/register_page.dart';
 import 'package:afrimarket_mobile/features/favorites/presentation/pages/favorites_page.dart';
 import 'package:afrimarket_mobile/features/health/presentation/pages/health_check_page.dart';
+import 'package:afrimarket_mobile/features/listings/presentation/pages/edit_listing_page.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/pages/home_page.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/pages/listing_detail_page.dart';
 import 'package:afrimarket_mobile/features/listings/presentation/pages/publish_listing_page.dart';
@@ -142,6 +143,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.listingPattern,
         builder: (context, state) =>
             ListingDetailPage(listingId: state.pathParameters['id'] ?? ''),
+      ),
+      // Modifier son annonce (connexion requise : fermé par défaut ; le
+      // serveur vérifie que c'est bien le vendeur).
+      GoRoute(
+        path: AppRoutes.editListingPattern,
+        builder: (context, state) =>
+            EditListingPage(listingId: state.pathParameters['id'] ?? ''),
       ),
       // Une discussion (connexion requise : fermé par défaut).
       GoRoute(

@@ -28,6 +28,7 @@ abstract final class NotificationsJson {
     'RATING_RECEIVED' => NotificationKind.ratingReceived,
     'LISTING_SOLD' => NotificationKind.listingSold,
     'LISTING_UPDATED' => NotificationKind.listingUpdated,
+    'PRICE_DROP' => NotificationKind.priceDrop,
     'MESSAGE' => NotificationKind.message,
     _ => NotificationKind.system,
   };

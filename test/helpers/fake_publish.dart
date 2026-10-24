@@ -1,5 +1,6 @@
 import 'package:afrimarket_mobile/core/error/result.dart';
 import 'package:afrimarket_mobile/core/platform/photo_picker.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/listing_changes.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_draft.dart';
 import 'package:afrimarket_mobile/features/listings/domain/repositories/listing_publisher.dart';
 import 'package:afrimarket_mobile/features/listings/listings_providers.dart';
@@ -7,10 +8,16 @@ import 'package:flutter_riverpod/misc.dart';
 
 /// Faux service de publication : réponses configurables, appels mémorisés.
 ///
-/// Par défaut : tout réussit, l'annonce créée s'appelle « new-1 ».
+/// Par défaut : tout réussit, l'annonce créée s'appelle « new-1 », les
+/// photos envoyées « up-1 », « up-2 »...
 class FakeListingPublisher implements ListingPublisher {
   Result<String> created = const Ok('new-1');
-  Result<void> uploaded = const Ok(null);
+
+  /// Réponse de l'envoi des photos ; null = photos créées (« up-N »).
+  Result<List<RemotePhoto>>? uploaded;
+  Result<void> updated = const Ok(null);
+  Result<void> photoDeleted = const Ok(null);
+  Result<void> reordered = const Ok(null);
   Result<void> published = const Ok(null);
   Result<void> deleted = const Ok(null);
   Result<void> reserved = const Ok(null);
@@ -20,6 +27,9 @@ class FakeListingPublisher implements ListingPublisher {
   final calls = <String>[];
   final drafts = <ListingDraft>[];
   final uploadedPhotos = <List<LocalPhoto>>[];
+  final changes = <ListingChanges>[];
+  final orders = <List<String>>[];
+  int _uploads = 0;
 
   @override
   Future<Result<String>> createHidden(ListingDraft draft) async {
@@ -29,13 +39,43 @@ class FakeListingPublisher implements ListingPublisher {
   }
 
   @override
-  Future<Result<void>> uploadPhotos(
+  Future<Result<List<RemotePhoto>>> uploadPhotos(
     String listingId,
     List<LocalPhoto> photos,
   ) async {
     calls.add('upload:$listingId:${photos.length}');
     uploadedPhotos.add(photos);
-    return uploaded;
+    return uploaded ??
+        Ok([
+          for (final _ in photos)
+            RemotePhoto(
+              id: 'up-${++_uploads}',
+              url: 'https://api.example.com/up-$_uploads.jpg',
+            ),
+        ]);
+  }
+
+  @override
+  Future<Result<void>> update(String listingId, ListingChanges changes) async {
+    calls.add('update:$listingId');
+    this.changes.add(changes);
+    return updated;
+  }
+
+  @override
+  Future<Result<void>> deletePhoto(String listingId, String photoId) async {
+    calls.add('deletePhoto:$photoId');
+    return photoDeleted;
+  }
+
+  @override
+  Future<Result<void>> reorderPhotos(
+    String listingId,
+    List<String> photoIds,
+  ) async {
+    calls.add('reorder:${photoIds.join(',')}');
+    orders.add(photoIds);
+    return reordered;
   }
 
   @override

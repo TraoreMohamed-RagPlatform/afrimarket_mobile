@@ -310,5 +310,22 @@
   "ownerAvailableDone": "الإعلان معروض للبيع من جديد.",
   "ownerSoldDone": "تهانينا! تم وضع علامة مُباع على الإعلان.",
   "publishSearchDistrict": "ابحث عن حي",
-  "publishNoDistrictMatch": "لا يوجد حي مطابق."
+  "publishNoDistrictMatch": "لا يوجد حي مطابق.",
+  "ownerEdit": "تعديل الإعلان",
+  "ownerDelete": "حذف الإعلان",
+  "ownerDeleteConfirmTitle": "حذف هذا الإعلان؟",
+  "ownerDeleteConfirmMessage": "سيختفي من الصفحة الرئيسية والمفضلة ونتائج البحث. لا يمكن التراجع عن هذا الإجراء.",
+  "ownerDeleteConfirm": "حذف",
+  "ownerDeleted": "تم حذف الإعلان.",
+  "editListingTitle": "تعديل الإعلان",
+  "editListingSave": "حفظ",
+  "editListingSaving": "جارٍ الحفظ…",
+  "editListingSaved": "تم تحديث الإعلان.",
+  "editListingPartial": "لم يتم حفظ بعض التعديلات. تحقّق من الإعلان ثم حاول مرة أخرى.",
+  "editListingSold": "هذا الإعلان مُباع ولا يمكن تعديله بعد الآن.",
+  "editListingUnavailable": "لا يمكن تعديل هذا الإعلان.",
+  "editDiscardTitle": "تجاهل التعديلات؟",
+  "editDiscardMessage": "لن يتم حفظ تعديلاتك.",
+  "editDiscardCancel": "متابعة التعديل",
+  "notificationPriceDrop": "انخفض سعر «{title}»."
 }

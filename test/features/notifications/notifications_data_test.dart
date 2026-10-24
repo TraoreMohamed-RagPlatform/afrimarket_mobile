@@ -119,6 +119,23 @@ void main() {
     expect(page.nextCursor, isNull);
   });
 
+  test('baisse de prix : type reconnu', () async {
+    server.respond([
+      (
+        200,
+        {
+          'notifications': [_notification('p', type: 'PRICE_DROP')],
+          'nextCursor': null,
+        },
+      ),
+    ]);
+
+    final result = await repository.notifications();
+
+    final page = (result as Ok<CursorPage<AppNotification>>).value;
+    expect(page.items.single.kind, NotificationKind.priceDrop);
+  });
+
   test('réponse sans liste : UnexpectedFailure', () async {
     server.respond([
       (200, {'items': <Object>[]}),

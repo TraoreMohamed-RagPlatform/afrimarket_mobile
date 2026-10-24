@@ -4,6 +4,7 @@ import 'package:afrimarket_mobile/features/listings/data/repositories/listing_pu
 import 'package:afrimarket_mobile/features/listings/data/repositories/listings_repository_impl.dart';
 import 'package:afrimarket_mobile/features/listings/domain/repositories/listing_publisher.dart';
 import 'package:afrimarket_mobile/features/listings/domain/repositories/listings_repository.dart';
+import 'package:afrimarket_mobile/features/listings/domain/usecases/edit_listing_usecase.dart';
 import 'package:afrimarket_mobile/features/listings/domain/usecases/get_categories_usecase.dart';
 import 'package:afrimarket_mobile/features/listings/domain/usecases/get_feed_usecase.dart';
 import 'package:afrimarket_mobile/features/listings/domain/usecases/get_listing_detail_usecase.dart';
@@ -66,4 +67,8 @@ final publishListingUseCaseProvider = Provider<PublishListingUseCase>(
 
 final manageOwnListingUseCaseProvider = Provider<ManageOwnListingUseCase>(
   (ref) => ManageOwnListingUseCase(ref.watch(listingPublisherProvider)),
+);
+
+final editListingUseCaseProvider = Provider<EditListingUseCase>(
+  (ref) => EditListingUseCase(ref.watch(listingPublisherProvider)),
 );

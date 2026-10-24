@@ -1713,5 +1713,95 @@
   "publishNoDistrictMatch": "Aucun quartier ne correspond.",
   "@publishNoDistrictMatch": {
     "description": "Recherche de quartier sans résultat."
+  },
+
+  "ownerEdit": "Modifier l'annonce",
+  "@ownerEdit": {
+    "description": "Bouton du vendeur : ouvrir l'écran de modification."
+  },
+
+  "ownerDelete": "Supprimer l'annonce",
+  "@ownerDelete": {
+    "description": "Menu du vendeur : supprimer l'annonce."
+  },
+
+  "ownerDeleteConfirmTitle": "Supprimer cette annonce ?",
+  "@ownerDeleteConfirmTitle": {
+    "description": "Titre de la confirmation de suppression."
+  },
+
+  "ownerDeleteConfirmMessage": "Elle disparaîtra du fil, des favoris et de la recherche. Cette action est définitive.",
+  "@ownerDeleteConfirmMessage": {
+    "description": "Texte de la confirmation de suppression."
+  },
+
+  "ownerDeleteConfirm": "Supprimer",
+  "@ownerDeleteConfirm": {
+    "description": "Bouton : confirmer la suppression."
+  },
+
+  "ownerDeleted": "Annonce supprimée.",
+  "@ownerDeleted": {
+    "description": "Message après la suppression."
+  },
+
+  "editListingTitle": "Modifier l'annonce",
+  "@editListingTitle": {
+    "description": "Titre de l'écran de modification."
+  },
+
+  "editListingSave": "Enregistrer",
+  "@editListingSave": {
+    "description": "Bouton : enregistrer les modifications."
+  },
+
+  "editListingSaving": "Enregistrement…",
+  "@editListingSaving": {
+    "description": "Étape d'enregistrement en cours."
+  },
+
+  "editListingSaved": "Annonce mise à jour.",
+  "@editListingSaved": {
+    "description": "Message après l'enregistrement."
+  },
+
+  "editListingPartial": "Certaines modifications n'ont pas été enregistrées. Vérifiez l'annonce puis réessayez.",
+  "@editListingPartial": {
+    "description": "Message : enregistrement interrompu, annonce relue."
+  },
+
+  "editListingSold": "Cette annonce est vendue : elle ne peut plus être modifiée.",
+  "@editListingSold": {
+    "description": "Écran de modification : annonce vendue."
+  },
+
+  "editListingUnavailable": "Cette annonce ne peut pas être modifiée.",
+  "@editListingUnavailable": {
+    "description": "Écran de modification : annonce introuvable ou d'un autre vendeur."
+  },
+
+  "editDiscardTitle": "Abandonner les modifications ?",
+  "@editDiscardTitle": {
+    "description": "Titre de la confirmation avant de quitter la modification."
+  },
+
+  "editDiscardMessage": "Vos modifications ne seront pas enregistrées.",
+  "@editDiscardMessage": {
+    "description": "Texte de la confirmation avant de quitter la modification."
+  },
+
+  "editDiscardCancel": "Continuer à modifier",
+  "@editDiscardCancel": {
+    "description": "Bouton : rester sur l'écran de modification."
+  },
+
+  "notificationPriceDrop": "Le prix de « {title} » a baissé.",
+  "@notificationPriceDrop": {
+    "description": "Notification : baisse de prix d'une annonce enregistrée.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
   }
 }

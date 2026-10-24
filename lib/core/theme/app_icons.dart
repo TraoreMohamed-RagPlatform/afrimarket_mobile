@@ -188,6 +188,12 @@ abstract final class AppIcons {
 
   /// Tout marquer comme lu.
   static const checks = IconData(0xe53a, fontFamily: _family);
+
+  /// Modifier (une annonce).
+  static const pencilSimple = IconData(0xe3b4, fontFamily: _family);
+
+  /// Prix (baisse de prix).
+  static const tag = IconData(0xe478, fontFamily: _family);
 }
 
 /// Versions pleines des icônes de [AppIcons] (état actif).
@@ -220,4 +226,7 @@ abstract final class AppIconsFill {
 
   /// Version pleine de [AppIcons.sealCheck].
   static const sealCheck = IconData(0xe606, fontFamily: _family);
+
+  /// Version pleine de [AppIcons.tag].
+  static const tag = IconData(0xe478, fontFamily: _family);
 }

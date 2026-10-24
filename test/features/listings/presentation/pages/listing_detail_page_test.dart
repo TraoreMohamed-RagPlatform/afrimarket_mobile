@@ -79,7 +79,7 @@ void main() {
       routes: [
         GoRoute(
           path: AppRoutes.home,
-          builder: (context, state) => const Text('FIL'),
+          builder: (context, state) => const Scaffold(body: Text('FIL')),
         ),
         GoRoute(
           path: AppRoutes.login,
@@ -89,6 +89,11 @@ void main() {
           path: AppRoutes.listingPattern,
           builder: (context, state) =>
               ListingDetailPage(listingId: state.pathParameters['id']!),
+        ),
+        GoRoute(
+          path: AppRoutes.editListingPattern,
+          builder: (context, state) =>
+              Text('MODIFIER ${state.pathParameters['id']}'),
         ),
       ],
     );
@@ -588,6 +593,90 @@ void main() {
 
       expect(find.text(fr.ownerStatusSold), findsOneWidget);
       expect(find.byKey(const Key('owner-mark-sold')), findsNothing);
+    });
+
+    testWidgets('« Modifier l’annonce » ouvre l’écran de modification', (
+      tester,
+    ) async {
+      await pump(tester);
+
+      await tapVisible(tester, find.byKey(const Key('owner-edit')));
+
+      expect(find.text('MODIFIER listing-1'), findsOneWidget);
+    });
+
+    testWidgets('menu ⋯ : modifier et supprimer', (tester) async {
+      await pump(tester);
+
+      await tester.tap(find.byTooltip(fr.listingMoreTooltip));
+      await tester.pumpAndSettle();
+      expect(find.text(fr.ownerDelete), findsOneWidget);
+      await tester.tap(find.text(fr.ownerEdit).last);
+      await tester.pumpAndSettle();
+
+      expect(find.text('MODIFIER listing-1'), findsOneWidget);
+    });
+
+    Future<void> openDelete(WidgetTester tester) async {
+      await tester.tap(find.byTooltip(fr.listingMoreTooltip));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('owner-delete')));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('supprimer : confirmation, puis retour au fil', (tester) async {
+      await pump(tester);
+
+      await openDelete(tester);
+      expect(find.text(fr.ownerDeleteConfirmTitle), findsOneWidget);
+      await tester.tap(find.text(fr.ownerCancel));
+      await tester.pumpAndSettle();
+      expect(publisher.calls, isEmpty);
+
+      await openDelete(tester);
+      await tester.tap(find.byKey(const Key('owner-delete-confirm')));
+      await tester.pumpAndSettle();
+
+      expect(publisher.calls, ['delete:listing-1']);
+      expect(find.text('FIL'), findsOneWidget);
+      expect(find.text(fr.ownerDeleted), findsOneWidget);
+    });
+
+    testWidgets('déjà supprimée ailleurs : même issue', (tester) async {
+      publisher.deleted = const Err(NotFoundFailure());
+      await pump(tester);
+
+      await openDelete(tester);
+      await tester.tap(find.byKey(const Key('owner-delete-confirm')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('FIL'), findsOneWidget);
+    });
+
+    testWidgets('suppression impossible : message, on reste', (tester) async {
+      publisher.deleted = const Err(NetworkFailure());
+      await pump(tester);
+
+      await openDelete(tester);
+      await tester.tap(find.byKey(const Key('owner-delete-confirm')));
+      await tester.pumpAndSettle();
+
+      expect(find.text(fr.errorNetwork), findsOneWidget);
+      expect(find.text(fr.ownerTitle), findsOneWidget);
+    });
+
+    testWidgets('vendue : suppression seulement, pas de modification', (
+      tester,
+    ) async {
+      listings.detail = Ok(sampleDetail(isOwner: true, isSold: true));
+      await pump(tester);
+
+      expect(find.byKey(const Key('owner-edit')), findsNothing);
+      await tester.tap(find.byTooltip(fr.listingMoreTooltip));
+      await tester.pumpAndSettle();
+
+      expect(find.text(fr.ownerEdit), findsNothing);
+      expect(find.text(fr.ownerDelete), findsOneWidget);
     });
 
     testWidgets('échec : message, rien d’autre ne change', (tester) async {

@@ -1,3 +1,5 @@
+import 'package:afrimarket_mobile/features/listings/domain/entities/listing_category.dart';
+import 'package:afrimarket_mobile/features/listings/domain/entities/listing_photo.dart';
 import 'package:afrimarket_mobile/features/listings/domain/entities/listing_seller.dart';
 import 'package:meta/meta.dart';
 
@@ -30,6 +32,8 @@ final class ListingDetail {
     this.district,
     this.deliveryMode = DeliveryMode.pickup,
     this.imageUrls = const [],
+    this.photos = const [],
+    this.category,
   });
 
   final String id;
@@ -74,6 +78,13 @@ final class ListingDetail {
   /// Adresses web (http ou https) des photos, dans l'ordre du vendeur.
   final List<String> imageUrls;
 
+  /// Photos avec leur identifiant (modification par le vendeur), dans
+  /// l'ordre d'affichage.
+  final List<RemotePhoto> photos;
+
+  /// Catégorie complète (modification par le vendeur), si connue.
+  final ListingCategory? category;
+
   final ListingSeller seller;
 
   @override
@@ -95,6 +106,8 @@ final class ListingDetail {
       other.deliveryMode == deliveryMode &&
       other.createdAt == createdAt &&
       _sameList(other.imageUrls, imageUrls) &&
+      _sameList(other.photos, photos) &&
+      other.category == category &&
       other.seller == seller;
 
   @override
@@ -115,11 +128,13 @@ final class ListingDetail {
     deliveryMode,
     createdAt,
     Object.hashAll(imageUrls),
+    Object.hashAll(photos),
+    category,
     seller,
   );
 }
 
-bool _sameList(List<String> a, List<String> b) {
+bool _sameList<T>(List<T> a, List<T> b) {
   if (a.length != b.length) return false;
   for (var i = 0; i < a.length; i++) {
     if (a[i] != b[i]) return false;
