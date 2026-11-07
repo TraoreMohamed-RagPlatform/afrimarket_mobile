@@ -54,6 +54,13 @@ abstract final class ApiEndpoints {
   static String favoriteCheck(String listingId) =>
       '$favorites/check/${Uri.encodeComponent(listingId)}';
 
+  // Sécurité : bloquer, signaler une personne (connexion requise)
+  static const blocks = '/api/users/me/blocks';
+  static String block(String userId) =>
+      '$blocks/${Uri.encodeComponent(userId)}';
+  static String reportUser(String userId) =>
+      '/api/users/${Uri.encodeComponent(userId)}/report';
+
   // Messagerie (connexion requise)
   static const messages = '/api/messages';
   static const conversations = '/api/messages/conversations';

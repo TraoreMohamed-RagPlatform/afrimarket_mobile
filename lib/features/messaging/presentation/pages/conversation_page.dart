@@ -4,8 +4,11 @@ import 'package:afrimarket_mobile/core/error/failure.dart';
 import 'package:afrimarket_mobile/core/l10n/failure_messages.dart';
 import 'package:afrimarket_mobile/core/l10n/generated/app_localizations.dart';
 import 'package:afrimarket_mobile/core/navigation/app_routes.dart';
+import 'package:afrimarket_mobile/core/theme/app_icons.dart';
 import 'package:afrimarket_mobile/core/theme/app_spacing.dart';
+import 'package:afrimarket_mobile/features/listings/presentation/controllers/feed_controller.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/entities/chat_message.dart';
+import 'package:afrimarket_mobile/features/messaging/domain/entities/conversation.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/messaging_conflicts.dart';
 import 'package:afrimarket_mobile/features/messaging/presentation/controllers/chat_controller.dart';
 import 'package:afrimarket_mobile/features/messaging/presentation/controllers/conversations_controller.dart';
@@ -13,12 +16,16 @@ import 'package:afrimarket_mobile/features/messaging/presentation/message_time.d
 import 'package:afrimarket_mobile/features/messaging/presentation/widgets/chat_bubble.dart';
 import 'package:afrimarket_mobile/features/messaging/presentation/widgets/chat_composer.dart';
 import 'package:afrimarket_mobile/features/messaging/presentation/widgets/chat_header.dart';
+import 'package:afrimarket_mobile/features/safety/domain/safety_conflicts.dart';
+import 'package:afrimarket_mobile/features/safety/presentation/widgets/safety_dialogs.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
 import 'package:afrimarket_mobile/shared/extensions/snackbar_extension.dart';
 import 'package:afrimarket_mobile/shared/extensions/theme_extension.dart';
+import 'package:afrimarket_mobile/shared/formatters/user_text.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_error_state.dart';
 import 'package:afrimarket_mobile/shared/widgets/app_load_more_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -30,7 +37,9 @@ import 'package:go_router/go_router.dart';
 ///   jour ; « Vu » sous mon dernier message lu ; les précédents se
 ///   chargent en remontant ;
 /// - envoi affiché tout de suite ; non envoyé : nouvel essai ou retrait ;
-/// - compte de l'autre personne suspendu ou supprimé : plus de champ.
+/// - compte de l'autre personne suspendu ou supprimé, ou blocage : plus de
+///   champ ;
+/// - menu « ··· » : bloquer / débloquer, signaler (comme Messenger).
 class ConversationPage extends ConsumerStatefulWidget {
   const new({required this.conversationId, super.key});
 
@@ -49,6 +58,119 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
 
   ChatController get _chat =>
       ref.read(chatControllerProvider(widget.conversationId).notifier);
+
+  /// Nom affiché de l'autre personne (isolé comme un texte saisi).
+  String _name(ConversationPerson person, AppLocalizations l10n) {
+    final name = person.name;
+    return name == null ? l10n.messagesDeletedAccount : userText(name);
+  }
+
+  /// Résultat d'une action de sécurité : message, puis fil actualisé
+  /// (les annonces de la personne bloquée disparaissent, ou reviennent).
+  void _afterSafetyAction(Failure? failure, String success) {
+    if (!mounted) return;
+    if (failure != null) {
+      context.showAppSnackBar(_safetyFailureMessage(failure));
+      return;
+    }
+    unawaited(HapticFeedback.lightImpact());
+    unawaited(ref.read(feedControllerProvider.notifier).refresh());
+    context.showAppSnackBar(success);
+  }
+
+  String _safetyFailureMessage(Failure failure) {
+    final l10n = context.l10n;
+    return switch (failure) {
+      ConflictFailure(code: SafetyConflicts.alreadyReported) =>
+        l10n.safetyAlreadyReported,
+      _ => failure.message(l10n),
+    };
+  }
+
+  Future<void> _block(ConversationPerson person) async {
+    final name = _name(person, context.l10n);
+    if (!await confirmBlock(context, name) || !mounted) return;
+    final failure = await _chat.block();
+    if (!mounted) return;
+    _afterSafetyAction(failure, context.l10n.safetyBlocked(name));
+  }
+
+  Future<void> _unblock(ConversationPerson person) async {
+    final name = _name(person, context.l10n);
+    final failure = await _chat.unblock();
+    if (!mounted) return;
+    _afterSafetyAction(failure, context.l10n.safetyUnblocked(name));
+  }
+
+  Future<void> _report(ConversationSummary header) async {
+    final name = _name(header.otherUser, context.l10n);
+    final report = await showReportPersonSheet(
+      context,
+      name: name,
+      alreadyBlocked: header.blockedByMe,
+    );
+    if (report == null || !mounted) return;
+    final failure = await _chat.report(
+      reason: report.reason,
+      details: report.details,
+      alsoBlock: report.alsoBlock,
+    );
+    if (!mounted) return;
+    _afterSafetyAction(
+      failure,
+      report.alsoBlock
+          ? context.l10n.safetyReportSentBlocked(name)
+          : context.l10n.safetyReportSent,
+    );
+  }
+
+  Future<void> _openMenu(ConversationSummary header) async {
+    final l10n = context.l10n;
+    final colors = context.colors;
+    final choice = await showModalBottomSheet<VoidCallback>(
+      context: context,
+      useRootNavigator: true,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (header.blockedByMe)
+              ListTile(
+                key: const Key('chat-menu-unblock'),
+                leading: const Icon(AppIcons.prohibit),
+                title: Text(l10n.safetyUnblock),
+                onTap: () =>
+                    Navigator.of(sheetContext)
+                        .pop(() => unawaited(_unblock(header.otherUser))),
+              )
+            else
+              ListTile(
+                key: const Key('chat-menu-block'),
+                leading: Icon(AppIcons.prohibit, color: colors.error),
+                title: Text(
+                  l10n.safetyBlock,
+                  style: TextStyle(color: colors.error),
+                ),
+                onTap: () =>
+                    Navigator.of(sheetContext)
+                        .pop(() => unawaited(_block(header.otherUser))),
+              ),
+            ListTile(
+              key: const Key('chat-menu-report'),
+              leading: const Icon(AppIcons.flag),
+              title: Text(l10n.safetyReport),
+              onTap: () =>
+                  Navigator.of(sheetContext)
+                      .pop(() => unawaited(_report(header))),
+            ),
+          ],
+        ),
+      ),
+    );
+    choice?.call();
+  }
 
   String _sendFailureMessage(Failure failure, AppLocalizations l10n) {
     return switch (failure) {
@@ -79,6 +201,14 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
       appBar: AppBar(
         titleSpacing: 0,
         title: ChatTitle(person: header?.otherUser),
+        actions: [
+          if (header != null)
+            IconButton(
+              tooltip: l10n.listingMoreTooltip,
+              icon: const Icon(AppIcons.dotsThree),
+              onPressed: () => unawaited(_openMenu(header)),
+            ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -90,8 +220,14 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
                   unawaited(context.push(AppRoutes.listing(listing.id))),
             ),
           Expanded(child: _body(state)),
-          if (state.phase == ListPhase.ready)
-            if (state.canSend)
+          if (state.phase == ListPhase.ready && header != null)
+            if (header.blockedByMe)
+              _Notice(
+                text: l10n.safetyBlockedBanner(_name(header.otherUser, l10n)),
+                actionLabel: l10n.safetyUnblock,
+                onAction: () => unawaited(_unblock(header.otherUser)),
+              )
+            else if (state.canSend)
               ChatComposer(onSend: (text) => unawaited(_chat.send(text)))
             else
               _Notice(text: l10n.chatRecipientUnavailable),
@@ -284,11 +420,14 @@ class _EmptyHint extends StatelessWidget {
   }
 }
 
-/// À la place du champ : on ne peut plus écrire.
+/// À la place du champ : on ne peut plus écrire (et, si on a bloqué la
+/// personne, « Débloquer »).
 class _Notice extends StatelessWidget {
-  const new({required this.text});
+  const new({required this.text, this.actionLabel, this.onAction});
 
   final String text;
+  final String? actionLabel;
+  final VoidCallback? onAction;
 
   @override
   Widget build(BuildContext context) {
@@ -302,15 +441,28 @@ class _Notice extends StatelessWidget {
         top: false,
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Semantics(
-            liveRegion: true,
-            child: Text(
-              text,
-              textAlign: TextAlign.center,
-              style: context.textStyles.bodyMedium?.copyWith(
-                color: colors.textSecondary,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Semantics(
+                liveRegion: true,
+                child: Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: context.textStyles.bodyMedium?.copyWith(
+                    color: colors.textSecondary,
+                  ),
+                ),
               ),
-            ),
+              if (actionLabel != null && onAction != null) ...[
+                const SizedBox(height: AppSpacing.sm),
+                OutlinedButton(
+                  key: const Key('chat-unblock'),
+                  onPressed: onAction,
+                  child: Text(actionLabel!),
+                ),
+              ],
+            ],
           ),
         ),
       ),

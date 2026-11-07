@@ -21,6 +21,7 @@ import 'package:afrimarket_mobile/features/messaging/presentation/pages/conversa
 import 'package:afrimarket_mobile/features/messaging/presentation/pages/messages_page.dart';
 import 'package:afrimarket_mobile/features/notifications/presentation/pages/notifications_page.dart';
 import 'package:afrimarket_mobile/features/profile/presentation/pages/my_profile_page.dart';
+import 'package:afrimarket_mobile/features/safety/presentation/pages/blocked_people_page.dart';
 import 'package:afrimarket_mobile/features/search/presentation/pages/search_page.dart';
 import 'package:afrimarket_mobile/features/settings/presentation/pages/settings_page.dart';
 import 'package:afrimarket_mobile/features/support/presentation/pages/help_page.dart';
@@ -164,6 +165,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.settings,
         builder: (context, state) => const SettingsPage(),
+      ),
+      // Connexion requise : fermé par défaut.
+      GoRoute(
+        path: AppRoutes.blockedPeople,
+        builder: (context, state) => const BlockedPeoplePage(),
       ),
       GoRoute(
         path: AppRoutes.help,

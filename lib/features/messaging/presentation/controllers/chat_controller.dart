@@ -10,6 +10,9 @@ import 'package:afrimarket_mobile/features/messaging/domain/entities/conversatio
 import 'package:afrimarket_mobile/features/messaging/domain/message_rules.dart';
 import 'package:afrimarket_mobile/features/messaging/messaging_providers.dart';
 import 'package:afrimarket_mobile/features/messaging/presentation/controllers/conversations_controller.dart';
+import 'package:afrimarket_mobile/features/safety/domain/entities/person_report_reason.dart';
+import 'package:afrimarket_mobile/features/safety/domain/usecases/safety_usecases.dart';
+import 'package:afrimarket_mobile/features/safety/safety_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:meta/meta.dart';
@@ -204,6 +207,61 @@ class ChatController extends Notifier<ChatState> {
           if (item.localId != localId) item,
       ],
     );
+  }
+
+  /// Bloque l'autre personne ; renvoie l'échec éventuel (null : fait).
+  Future<Failure?> block() =>
+      _safetyAction((safety, userId) => safety.block(userId));
+
+  /// Débloque l'autre personne ; renvoie l'échec éventuel (null : fait).
+  Future<Failure?> unblock() =>
+      _safetyAction((safety, userId) => safety.unblock(userId));
+
+  /// Signale l'autre personne depuis cette discussion ; [alsoBlock] : la
+  /// bloque ensuite. Renvoie l'échec éventuel (null : fait).
+  Future<Failure?> report({
+    required PersonReportReason reason,
+    String details = '',
+    bool alsoBlock = false,
+  }) async {
+    final header = state.header;
+    if (header == null) return null;
+    final result = await ref
+        .read(safetyUseCasesProvider)
+        .report(
+          userId: header.otherUser.id,
+          reason: reason,
+          details: details,
+          conversationId: conversationId,
+        );
+    if (!ref.mounted) return null;
+    if (result case Err(:final failure)) return failure;
+    if (alsoBlock && !header.blockedByMe) return await block();
+    return null;
+  }
+
+  Future<Failure?> _safetyAction(
+    Future<Result<void>> Function(SafetyUseCases safety, String userId) action,
+  ) async {
+    final header = state.header;
+    if (header == null) return null;
+    final result = await action(
+      ref.read(safetyUseCasesProvider),
+      header.otherUser.id,
+    );
+    if (!ref.mounted) return null;
+    if (result case Err(:final failure)) return failure;
+    await _reloadHeader();
+    return null;
+  }
+
+  /// Relit l'en-tête (blocage, possibilité d'écrire).
+  Future<void> _reloadHeader() async {
+    final result = await ref.read(getConversationUseCaseProvider)(
+      conversationId,
+    );
+    if (!ref.mounted) return;
+    if (result case Ok(:final value)) state = state.copyWith(header: value);
   }
 
   /// Le message d'échec d'envoi a été affiché.

@@ -1803,5 +1803,215 @@
         "type": "String"
       }
     }
+  },
+
+  "safetyBlock": "Bloquer",
+  "@safetyBlock": {
+    "description": "Menu d'une discussion : bloquer la personne."
+  },
+
+  "safetyUnblock": "Débloquer",
+  "@safetyUnblock": {
+    "description": "Débloquer une personne."
+  },
+
+  "safetyReport": "Signaler",
+  "@safetyReport": {
+    "description": "Menu d'une discussion : signaler la personne."
+  },
+
+  "safetyCancel": "Annuler",
+  "@safetyCancel": {
+    "description": "Bouton : fermer sans rien faire."
+  },
+
+  "safetyBlockTitle": "Bloquer {name} ?",
+  "@safetyBlockTitle": {
+    "description": "Titre de la confirmation de blocage.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
+  "safetyBlockMessage": "Vous ne pourrez plus vous écrire, et vos annonces ne se verront plus. {name} ne sera pas prévenu(e). Vous pourrez débloquer à tout moment.",
+  "@safetyBlockMessage": {
+    "description": "Texte de la confirmation de blocage.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
+  "safetyBlockConfirm": "Bloquer",
+  "@safetyBlockConfirm": {
+    "description": "Bouton : confirmer le blocage."
+  },
+
+  "safetyBlocked": "{name} est bloqué(e).",
+  "@safetyBlocked": {
+    "description": "Message après le blocage.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
+  "safetyUnblocked": "{name} est débloqué(e).",
+  "@safetyUnblocked": {
+    "description": "Message après le déblocage.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
+  "safetyBlockedBanner": "Vous avez bloqué {name}.",
+  "@safetyBlockedBanner": {
+    "description": "Bandeau à la place du champ de message.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
+  "safetyUnblockTitle": "Débloquer {name} ?",
+  "@safetyUnblockTitle": {
+    "description": "Titre de la confirmation de déblocage.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
+  "safetyUnblockMessage": "Vous pourrez de nouveau vous écrire et voir vos annonces. {name} ne sera pas prévenu(e).",
+  "@safetyUnblockMessage": {
+    "description": "Texte de la confirmation de déblocage.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
+  "safetyReportTitle": "Signaler {name}",
+  "@safetyReportTitle": {
+    "description": "Titre de la feuille de signalement d'une personne.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
+  "safetyReportQuestion": "Pourquoi signalez-vous cette personne ?",
+  "@safetyReportQuestion": {
+    "description": "Question de la feuille de signalement."
+  },
+
+  "safetyReasonScam": "Arnaque ou tentative de fraude",
+  "@safetyReasonScam": {
+    "description": "Motif de signalement d'une personne."
+  },
+
+  "safetyReasonHarassment": "Harcèlement ou menaces",
+  "@safetyReasonHarassment": {
+    "description": "Motif de signalement d'une personne."
+  },
+
+  "safetyReasonSpam": "Spam ou publicité",
+  "@safetyReasonSpam": {
+    "description": "Motif de signalement d'une personne."
+  },
+
+  "safetyReasonOffensive": "Contenu choquant ou inapproprié",
+  "@safetyReasonOffensive": {
+    "description": "Motif de signalement d'une personne."
+  },
+
+  "safetyReasonFakeProfile": "Faux profil ou usurpation d'identité",
+  "@safetyReasonFakeProfile": {
+    "description": "Motif de signalement d'une personne."
+  },
+
+  "safetyReasonOther": "Autre",
+  "@safetyReasonOther": {
+    "description": "Motif de signalement d'une personne."
+  },
+
+  "safetyReportMessagesNotice": "Les {count} derniers messages de cette discussion seront joints au signalement pour la modération. Cette personne ne sera pas prévenue.",
+  "@safetyReportMessagesNotice": {
+    "description": "Mention sous la feuille de signalement.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "safetyReportAlsoBlock": "Bloquer aussi {name}",
+  "@safetyReportAlsoBlock": {
+    "description": "Case à cocher dans la feuille de signalement.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
+  "safetyReportSent": "Merci, votre signalement a été envoyé.",
+  "@safetyReportSent": {
+    "description": "Message après un signalement."
+  },
+
+  "safetyReportSentBlocked": "Merci, votre signalement a été envoyé et {name} est bloqué(e).",
+  "@safetyReportSentBlocked": {
+    "description": "Message après un signalement avec blocage.",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+
+  "safetyAlreadyReported": "Vous avez déjà signalé cette personne pour cette discussion.",
+  "@safetyAlreadyReported": {
+    "description": "Signalement en double."
+  },
+
+  "safetyBlockedPeopleTitle": "Personnes bloquées",
+  "@safetyBlockedPeopleTitle": {
+    "description": "Titre de l'écran (Réglages)."
+  },
+
+  "safetyBlockedPeopleEmptyTitle": "Personne n'est bloqué",
+  "@safetyBlockedPeopleEmptyTitle": {
+    "description": "Écran vide : aucune personne bloquée."
+  },
+
+  "safetyBlockedPeopleEmptyMessage": "Les personnes que vous bloquez depuis une discussion apparaissent ici.",
+  "@safetyBlockedPeopleEmptyMessage": {
+    "description": "Écran vide : explication."
+  },
+
+  "safetyBlockedSince": "Bloqué(e) le {date}",
+  "@safetyBlockedSince": {
+    "description": "Date du blocage, sous le nom.",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+
+  "settingsPrivacySection": "Confidentialité et sécurité",
+  "@settingsPrivacySection": {
+    "description": "Section des Réglages."
   }
 }

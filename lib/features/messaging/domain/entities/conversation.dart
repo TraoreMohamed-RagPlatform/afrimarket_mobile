@@ -66,7 +66,8 @@ final class ConversationPerson {
   final String? avatarUrl;
   final bool isIdentityVerified;
 
-  /// Faux si son compte est suspendu ou supprimé : plus d'envoi possible.
+  /// Faux si son compte est suspendu ou supprimé, ou en cas de blocage :
+  /// plus d'envoi possible.
   final bool canReceiveMessages;
 
   bool get isDeleted => name == null;
@@ -93,6 +94,7 @@ final class ConversationSummary {
     this.listing,
     this.lastMessage,
     this.unreadCount = 0,
+    this.blockedByMe = false,
   });
 
   final String id;
@@ -108,6 +110,10 @@ final class ConversationSummary {
   /// Messages reçus non lus.
   final int unreadCount;
 
+  /// J'ai bloqué l'autre personne (bandeau « Débloquer »). Jamais
+  /// l'inverse : être bloqué ne se devine pas.
+  final bool blockedByMe;
+
   /// Copie marquée comme lue.
   ConversationSummary markedRead() => unreadCount == 0
       ? this
@@ -117,5 +123,6 @@ final class ConversationSummary {
           otherUser: otherUser,
           listing: listing,
           lastMessage: lastMessage,
+          blockedByMe: blockedByMe,
         );
 }
