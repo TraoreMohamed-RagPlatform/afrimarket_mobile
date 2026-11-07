@@ -103,6 +103,7 @@ abstract final class MessagingJson {
       listing: _listing(json['listing'], baseUrl),
       lastMessage: _preview(json['lastMessage']),
       unreadCount: _count(json['unreadCount']),
+      blockedByMe: json['blockedByMe'] == true,
     );
   }
 

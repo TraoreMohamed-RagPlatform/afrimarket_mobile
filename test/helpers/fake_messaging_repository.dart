@@ -108,6 +108,7 @@ ConversationSummary sampleConversation({
   String preview = 'Oui, toujours disponible.',
   bool lastIsMine = false,
   DateTime? sentAt,
+  bool blockedByMe = false,
 }) {
   return ConversationSummary(
     id: id,
@@ -132,6 +133,7 @@ ConversationSummary sampleConversation({
       sentAt: sentAt ?? DateTime.now(),
     ),
     unreadCount: unread,
+    blockedByMe: blockedByMe,
   );
 }
 

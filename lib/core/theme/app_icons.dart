@@ -194,6 +194,12 @@ abstract final class AppIcons {
 
   /// Prix (baisse de prix).
   static const tag = IconData(0xe478, fontFamily: _family);
+
+  /// Bloquer une personne.
+  static const prohibit = IconData(0xe3de, fontFamily: _family);
+
+  /// Information (mention sous un formulaire).
+  static const info = IconData(0xe2ce, fontFamily: _family);
 }
 
 /// Versions pleines des icônes de [AppIcons] (état actif).

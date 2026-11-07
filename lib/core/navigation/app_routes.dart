@@ -44,6 +44,9 @@ abstract final class AppRoutes {
   // Menu ☰ du fil (plein écran, hors onglets).
   static const profile = '/profile';
   static const settings = '/settings';
+
+  /// Réglages → Personnes bloquées (connexion requise).
+  static const blockedPeople = '/settings/blocked';
   static const help = '/help';
 
   /// Détail d'une annonce : modèle de route et constructeur d'adresse.
