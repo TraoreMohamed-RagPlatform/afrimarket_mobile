@@ -99,6 +99,11 @@ class _ListingFormState extends State<ListingForm> {
   }
 }
 
+/// Ferme le clavier avant d'ouvrir une feuille (photos, catégorie,
+/// quartier) : sinon il se rouvre sur le dernier champ à sa fermeture et
+/// cache le bouton du bas.
+void _dismissKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
+
 /// Message sous un champ pour un problème, s'il est signalé.
 String? _problemText(
   Set<DraftProblem> problems,
@@ -137,6 +142,7 @@ class _PhotosSection extends StatelessWidget {
   Future<void> _add(BuildContext context) async {
     final l10n = context.l10n;
     final controller = actions;
+    _dismissKeyboard();
     final source = await showModalBottomSheet<_PhotoSource>(
       context: context,
       useRootNavigator: true,
@@ -178,6 +184,7 @@ class _PhotosSection extends StatelessWidget {
   Future<void> _photoActions(BuildContext context, int index) async {
     final l10n = context.l10n;
     final controller = actions;
+    _dismissKeyboard();
     final action = await showModalBottomSheet<_PhotoAction>(
       context: context,
       useRootNavigator: true,
@@ -565,6 +572,7 @@ class _Fields extends ConsumerWidget {
   }
 
   Future<void> _pickCategory(BuildContext context, WidgetRef ref) async {
+    _dismissKeyboard();
     final choice = await showModalBottomSheet<ListingCategory>(
       context: context,
       useRootNavigator: true,
@@ -576,6 +584,7 @@ class _Fields extends ConsumerWidget {
   }
 
   Future<void> _pickDistrict(BuildContext context, WidgetRef ref) async {
+    _dismissKeyboard();
     final choice = await showModalBottomSheet<String>(
       context: context,
       useRootNavigator: true,

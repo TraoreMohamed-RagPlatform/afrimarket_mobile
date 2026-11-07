@@ -163,6 +163,22 @@ void main() {
     expect(publisher.calls, ['deletePhoto:p2']);
   });
 
+  testWidgets('menu d’une photo : le clavier ne revient pas sur le titre', (
+    tester,
+  ) async {
+    await pump(tester);
+    await tester.showKeyboard(find.byKey(const Key('publish-title')));
+    expect(tester.testTextInput.hasAnyClients, isTrue);
+
+    await tester.tap(find.bySemanticsLabel(fr.publishPhotoLabel(2, 2)));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(fr.publishMakeMain));
+    await tester.pumpAndSettle();
+
+    expect(tester.testTextInput.hasAnyClients, isFalse);
+    expect(saveEnabled(tester), isTrue);
+  });
+
   testWidgets('quitter sans changement : directement', (tester) async {
     await pump(tester);
 
