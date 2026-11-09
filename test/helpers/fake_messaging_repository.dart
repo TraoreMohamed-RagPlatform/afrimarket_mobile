@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:afrimarket_mobile/core/error/failure.dart';
 import 'package:afrimarket_mobile/core/error/result.dart';
 import 'package:afrimarket_mobile/core/pagination/cursor_page.dart';
@@ -36,6 +38,14 @@ class FakeMessagingRepository implements MessagingRepository {
   /// Messages envoyés dans une discussion : (discussion, texte).
   final sentInConversation = <(String, String)>[];
   Result<ChatMessage>? sendAnswer;
+
+  /// Photos envoyées : (discussion, fichier).
+  final sentPhotos = <(String, String)>[];
+  Result<ChatMessage>? sendPhotoAnswer;
+
+  /// Images des photos ; par défaut un petit JPEG factice.
+  Result<Uint8List> photoAnswer = Ok(Uint8List.fromList(fakeJpegBytes));
+  final photoCalls = <String>[];
 
   @override
   Future<Result<void>> messageSeller({
@@ -87,7 +97,34 @@ class FakeMessagingRepository implements MessagingRepository {
           ),
         );
   }
+
+  @override
+  Future<Result<ChatMessage>> sendPhoto({
+    required String conversationId,
+    required String path,
+  }) async {
+    sentPhotos.add((conversationId, path));
+    return sendPhotoAnswer ??
+        Ok(
+          ChatMessage(
+            id: 'photo-${sentPhotos.length}',
+            text: '',
+            photo: const MessagePhoto(width: 1600, height: 1200),
+            isMine: true,
+            sentAt: DateTime.now(),
+          ),
+        );
+  }
+
+  @override
+  Future<Result<Uint8List>> photo(String messageId) async {
+    photoCalls.add(messageId);
+    return photoAnswer;
+  }
 }
+
+/// Début d'un JPEG (non décodable : l'image affiche son état d'erreur).
+const fakeJpegBytes = [0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10];
 
 /// Remplace la messagerie de l'app : aucun test n'appelle le vrai serveur.
 List<Override> messagingOverrides([FakeMessagingRepository? repository]) => [
@@ -109,6 +146,7 @@ ConversationSummary sampleConversation({
   bool lastIsMine = false,
   DateTime? sentAt,
   bool blockedByMe = false,
+  bool lastIsPhoto = false,
 }) {
   return ConversationSummary(
     id: id,
@@ -128,7 +166,8 @@ ConversationSummary sampleConversation({
           )
         : null,
     lastMessage: MessagePreview(
-      text: preview,
+      text: lastIsPhoto ? '' : preview,
+      hasPhoto: lastIsPhoto,
       isMine: lastIsMine,
       sentAt: sentAt ?? DateTime.now(),
     ),
@@ -144,9 +183,11 @@ ChatMessage sampleMessage(
   String? text,
   DateTime? sentAt,
   DateTime? readAt,
+  MessagePhoto? photo,
 }) => ChatMessage(
   id: id,
-  text: text ?? 'Message $id',
+  text: photo == null ? text ?? 'Message $id' : '',
+  photo: photo,
   isMine: mine,
   sentAt: sentAt ?? DateTime.now(),
   readAt: readAt,

@@ -73,6 +73,9 @@ abstract final class ApiEndpoints {
   /// Messages d'une discussion.
   static String conversationMessages(String id) =>
       '$messages/${Uri.encodeComponent(id)}';
+  static const messagePhotos = '/api/messages/photos';
+  static String messagePhoto(String messageId) =>
+      '$messagePhotos/${Uri.encodeComponent(messageId)}';
 
   // Notifications (connexion requise)
   static const notifications = '/api/notifications';

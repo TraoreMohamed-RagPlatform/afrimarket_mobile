@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:afrimarket_mobile/core/error/result.dart';
 import 'package:afrimarket_mobile/core/pagination/cursor_page.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/entities/chat_message.dart';
@@ -39,4 +41,15 @@ abstract interface class MessagingRepository {
     required String conversationId,
     required String text,
   });
+
+  /// Envoie la photo [path] (fichier du téléphone, déjà réduite) dans la
+  /// discussion [conversationId] : un message.
+  Future<Result<ChatMessage>> sendPhoto({
+    required String conversationId,
+    required String path,
+  });
+
+  /// Image (JPEG) de la photo du message [messageId]. Privée : seules les
+  /// deux personnes de la discussion la reçoivent.
+  Future<Result<Uint8List>> photo(String messageId);
 }

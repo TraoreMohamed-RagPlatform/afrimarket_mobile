@@ -1,6 +1,7 @@
 import 'package:afrimarket_mobile/core/error/failure.dart';
 import 'package:afrimarket_mobile/core/error/result.dart';
 import 'package:afrimarket_mobile/core/pagination/cursor_page.dart';
+import 'package:afrimarket_mobile/core/platform/photo_picker.dart';
 import 'package:afrimarket_mobile/core/realtime/realtime_connection.dart';
 import 'package:afrimarket_mobile/core/session/session_provider.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/entities/chat_message.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/fake_messaging_repository.dart';
+import '../../../helpers/fake_publish.dart';
 import '../../../helpers/fake_realtime_connection.dart';
 import '../../../helpers/fake_unread_counts_repository.dart';
 
@@ -35,8 +37,10 @@ void main() {
   late FakeMessagingRepository messaging;
   late FakeRealtimeConnection realtime;
   late FakeUnreadCountsRepository unread;
+  late FakePhotoPicker picker;
 
   setUp(() {
+    picker = FakePhotoPicker();
     messaging = FakeMessagingRepository();
     realtime = FakeRealtimeConnection();
     unread = FakeUnreadCountsRepository();
@@ -51,6 +55,7 @@ void main() {
         ...messagingOverrides(messaging),
         ...realtimeOverrides(realtime),
         ...unreadOverrides(unread),
+        photoPickerProvider.overrideWithValue(picker),
       ],
     );
     addTearDown(container.dispose);
@@ -305,6 +310,104 @@ void main() {
       expect(messaging.sentInConversation, hasLength(3));
     });
 
+    test('photos de la galerie : affichées tout de suite, envoyées dans '
+        'l’ordre, une par message', () async {
+      final c = await open();
+
+      final outcome = await c
+          .read(chat.notifier)
+          .sendPhotos(ChatPhotoSource.gallery);
+
+      expect(outcome, ChatPhotoOutcome.sending);
+      expect(picker.limits.single, 10);
+      expect(c.read(chat).pending.map((p) => p.photoPath), [
+        '/photos/a.jpg',
+        '/photos/b.jpg',
+      ]);
+
+      await c.read(chat.notifier).photoDeliveries;
+      final state = c.read(chat);
+      expect(state.pending, isEmpty);
+      expect(messaging.sentPhotos, [
+        ('conv-1', '/photos/a.jpg'),
+        ('conv-1', '/photos/b.jpg'),
+      ]);
+      expect(state.messages.take(2).map((m) => m.id), ['photo-2', 'photo-1']);
+      expect(state.messages.first.photo?.aspectRatio, closeTo(1.33, 0.01));
+      // Mes photos restent affichées depuis le téléphone.
+      expect(state.sentPhotoFiles, {
+        'photo-1': '/photos/a.jpg',
+        'photo-2': '/photos/b.jpg',
+      });
+    });
+
+    test('appareil photo : une photo envoyée', () async {
+      final c = await open();
+
+      final outcome = await c
+          .read(chat.notifier)
+          .sendPhotos(ChatPhotoSource.camera);
+      await c.read(chat.notifier).photoDeliveries;
+
+      expect(outcome, ChatPhotoOutcome.sending);
+      expect(messaging.sentPhotos.single, ('conv-1', '/photos/camera.jpg'));
+    });
+
+    test('rien de choisi, ou accès refusé : rien n’est envoyé', () async {
+      final c = await open();
+
+      picker.gallery = const [];
+      expect(
+        await c.read(chat.notifier).sendPhotos(ChatPhotoSource.gallery),
+        ChatPhotoOutcome.cancelled,
+      );
+      picker.camera = (null, PhotoPickError.none);
+      expect(
+        await c.read(chat.notifier).sendPhotos(ChatPhotoSource.camera),
+        ChatPhotoOutcome.cancelled,
+      );
+      picker.gallery = null;
+      expect(
+        await c.read(chat.notifier).sendPhotos(ChatPhotoSource.gallery),
+        ChatPhotoOutcome.unavailable,
+      );
+      picker.camera = (null, PhotoPickError.unavailable);
+      expect(
+        await c.read(chat.notifier).sendPhotos(ChatPhotoSource.camera),
+        ChatPhotoOutcome.unavailable,
+      );
+      expect(c.read(chat).pending, isEmpty);
+      expect(messaging.sentPhotos, isEmpty);
+    });
+
+    test('photo en échec : « non envoyée », nouvel essai', () async {
+      messaging.sendPhotoAnswer = const Err(NetworkFailure());
+      final c = await open();
+
+      await c.read(chat.notifier).sendPhotos(ChatPhotoSource.camera);
+      await c.read(chat.notifier).photoDeliveries;
+      final failed = c.read(chat).pending.single;
+      expect(failed.failed, isTrue);
+      expect(failed.photoPath, '/photos/camera.jpg');
+      expect(c.read(chat).sendFailure, isA<NetworkFailure>());
+
+      messaging.sendPhotoAnswer = null;
+      await c.read(chat.notifier).resend(failed.localId);
+      expect(c.read(chat).pending, isEmpty);
+      expect(c.read(chat).messages.first.photo, isNotNull);
+      expect(messaging.sentPhotos, hasLength(2));
+    });
+
+    test('photo retirée avant son tour : pas envoyée', () async {
+      final c = await open();
+
+      await c.read(chat.notifier).sendPhotos(ChatPhotoSource.gallery);
+      c.read(chat.notifier).discard(c.read(chat).pending.last.localId);
+      await c.read(chat.notifier).photoDeliveries;
+
+      expect(messaging.sentPhotos.single, ('conv-1', '/photos/a.jpg'));
+    });
+
     test('compte suspendu : envoi impossible', () async {
       messaging.conversationAnswer = Ok(sampleConversation(canReceive: false));
       final c = await open();
@@ -312,6 +415,11 @@ void main() {
       expect(c.read(chat).canSend, isFalse);
       await c.read(chat.notifier).send('Bonjour');
       expect(messaging.sentInConversation, isEmpty);
+      expect(
+        await c.read(chat.notifier).sendPhotos(ChatPhotoSource.gallery),
+        ChatPhotoOutcome.cancelled,
+      );
+      expect(picker.limits, isEmpty);
     });
 
     test('nouveau message (temps réel) : ajouté, « Vu » mis à jour', () async {

@@ -445,6 +445,51 @@
     "description": "Discussion avec un compte suspendu ou supprimé : à la place du champ."
   },
 
+  "chatAddPhoto": "Envoyer une photo",
+  "@chatAddPhoto": {
+    "description": "Bouton appareil photo du champ de message."
+  },
+
+  "chatTakePhoto": "Prendre une photo",
+  "@chatTakePhoto": {
+    "description": "Menu d'ajout de photo : appareil photo."
+  },
+
+  "chatPickGallery": "Choisir dans la galerie",
+  "@chatPickGallery": {
+    "description": "Menu d'ajout de photo : galerie (10 photos au plus)."
+  },
+
+  "chatPhotoMine": "Photo envoyée",
+  "@chatPhotoMine": {
+    "description": "Lecteur d'écran : photo envoyée par moi."
+  },
+
+  "chatPhotoTheirs": "Photo reçue",
+  "@chatPhotoTheirs": {
+    "description": "Lecteur d'écran : photo envoyée par l'autre personne."
+  },
+
+  "chatPhotoRetry": "Photo non chargée. Touchez pour réessayer.",
+  "@chatPhotoRetry": {
+    "description": "Photo d'un message qui n'a pas pu être chargée."
+  },
+
+  "chatPhotosUnavailable": "Impossible d'ouvrir vos photos. Autorisez l'accès dans les réglages du téléphone.",
+  "@chatPhotosUnavailable": {
+    "description": "Galerie ou appareil photo inaccessible."
+  },
+
+  "chatPhotoViewerClose": "Fermer la photo",
+  "@chatPhotoViewerClose": {
+    "description": "Bouton de fermeture de la photo en grand."
+  },
+
+  "messagesPhotoPreview": "Photo",
+  "@messagesPhotoPreview": {
+    "description": "Aperçu d'un dernier message photo (liste des discussions) ; photo en grand."
+  },
+
   "messagesFromMe": "Vous : {text}",
   "@messagesFromMe": {
     "description": "Aperçu d'un message envoyé par moi (liste des discussions).",

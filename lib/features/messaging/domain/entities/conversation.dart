@@ -76,10 +76,19 @@ final class ConversationPerson {
 /// Dernier message d'une discussion (aperçu de la liste).
 @immutable
 final class MessagePreview {
-  const new({required this.text, required this.isMine, required this.sentAt});
+  const new({
+    required this.text,
+    required this.isMine,
+    required this.sentAt,
+    this.hasPhoto = false,
+  });
 
-  /// Début du message (coupé par le serveur).
+  /// Début du message (coupé par le serveur) ; vide pour une photo.
   final String text;
+
+  /// Le dernier message est une photo (« Photo »).
+  final bool hasPhoto;
+
   final bool isMine;
   final DateTime sentAt;
 }

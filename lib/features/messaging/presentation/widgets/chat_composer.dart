@@ -11,11 +11,15 @@ import 'package:flutter/services.dart';
 /// Champ « Écrire un message… » et bouton d'envoi (bas de la discussion).
 ///
 /// Le bouton n'est actif que si le texte n'est pas vide ; le champ est
-/// limité à [MessageRules.maxLength] caractères.
+/// limité à [MessageRules.maxLength] caractères. Au début de la ligne,
+/// l'appareil photo ([onAddPhoto]) envoie une photo, comme Messenger.
 class ChatComposer extends StatefulWidget {
-  const new({required this.onSend, super.key});
+  const new({required this.onSend, this.onAddPhoto, super.key});
 
   final ValueChanged<String> onSend;
+
+  /// Envoyer une photo (appareil photo ou galerie).
+  final VoidCallback? onAddPhoto;
 
   @override
   State<ChatComposer> createState() => _ChatComposerState();
@@ -72,6 +76,19 @@ class _ChatComposerState extends State<ChatComposer> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              if (widget.onAddPhoto != null) ...[
+                IconButton(
+                  key: const Key('chat-add-photo'),
+                  tooltip: l10n.chatAddPhoto,
+                  onPressed: widget.onAddPhoto,
+                  style: IconButton.styleFrom(
+                    foregroundColor: colors.brand,
+                    minimumSize: const Size.square(48),
+                  ),
+                  icon: const Icon(AppIcons.camera),
+                ),
+                const SizedBox(width: AppSpacing.xs),
+              ],
               Expanded(
                 child: TextField(
                   controller: _controller,

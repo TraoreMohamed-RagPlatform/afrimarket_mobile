@@ -3,12 +3,14 @@ import 'package:afrimarket_mobile/core/error/result.dart';
 import 'package:afrimarket_mobile/core/l10n/generated/app_localizations.dart';
 import 'package:afrimarket_mobile/core/navigation/app_routes.dart';
 import 'package:afrimarket_mobile/core/pagination/cursor_page.dart';
+import 'package:afrimarket_mobile/core/platform/photo_picker.dart';
 import 'package:afrimarket_mobile/core/realtime/realtime_connection.dart';
 import 'package:afrimarket_mobile/core/session/session_provider.dart';
 import 'package:afrimarket_mobile/core/theme/app_theme.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/entities/chat_message.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/entities/conversation.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/messaging_conflicts.dart';
+import 'package:afrimarket_mobile/features/messaging/presentation/controllers/message_photo_provider.dart';
 import 'package:afrimarket_mobile/features/messaging/presentation/pages/conversation_page.dart';
 import 'package:afrimarket_mobile/features/messaging/presentation/pages/messages_page.dart';
 import 'package:afrimarket_mobile/features/messaging/presentation/widgets/conversation_tile.dart';
@@ -20,6 +22,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../helpers/fake_messaging_repository.dart';
+import '../../../helpers/fake_publish.dart';
 import '../../../helpers/fake_realtime_connection.dart';
 import '../../../helpers/fake_unread_counts_repository.dart';
 import '../../../helpers/l10n.dart';
@@ -36,8 +39,10 @@ class _Session extends SessionNotifier {
 void main() {
   late FakeMessagingRepository messaging;
   late FakeRealtimeConnection realtime;
+  late FakePhotoPicker picker;
 
   setUp(() {
+    picker = FakePhotoPicker();
     messaging = FakeMessagingRepository();
     realtime = FakeRealtimeConnection();
   });
@@ -88,6 +93,7 @@ void main() {
         ...messagingOverrides(messaging),
         ...realtimeOverrides(realtime),
         ...unreadOverrides(),
+        photoPickerProvider.overrideWithValue(picker),
       ],
     );
     addTearDown(container.dispose);
@@ -150,6 +156,18 @@ void main() {
       // Pastilles : la discussion, l'onglet Achat (2) et l'onglet Vente (1).
       expect(find.widgetWithText(UnreadPill, '2'), findsNWidgets(2));
       expect(find.widgetWithText(UnreadPill, '1'), findsOneWidget);
+    });
+
+    testWidgets('dernier message photo : « Vous : Photo »', (tester) async {
+      messaging.conversationsByRole[ConversationRole.buying] = CursorPage(
+        items: [sampleConversation(lastIsPhoto: true, lastIsMine: true)],
+      );
+      await pump(tester);
+
+      expect(
+        find.textContaining(fr.messagesFromMe(fr.messagesPhotoPreview)),
+        findsOneWidget,
+      );
     });
 
     testWidgets('compte et annonce supprimés', (tester) async {
@@ -381,6 +399,96 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(fr.chatNotSent), findsNothing);
+    });
+
+    testWidgets('photo reçue : lue par l’API, ouverte en grand puis fermée', (
+      tester,
+    ) async {
+      messaging.messagesAnswers
+        ..clear()
+        ..add(
+          Ok(
+            CursorPage(
+              items: [
+                sampleMessage(
+                  'p1',
+                  photo: const MessagePhoto(width: 1600, height: 1200),
+                ),
+              ],
+            ),
+          ),
+        );
+      final semantics = tester.ensureSemantics();
+      await open(tester);
+
+      expect(messaging.photoCalls, contains('p1'));
+      final photo = find.bySemanticsLabel(fr.chatPhotoTheirs);
+      expect(photo, findsOneWidget);
+
+      await tester.tap(photo);
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('photo-viewer-close')), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('photo-viewer-close')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('photo-viewer-close')), findsNothing);
+      semantics.dispose();
+
+      // Photo gardée en mémoire quelques minutes après avoir quitté
+      // l'écran, puis libérée.
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump(messagePhotoKeepAlive);
+    });
+
+    testWidgets('photo non chargée : toucher pour réessayer', (tester) async {
+      messaging
+        ..photoAnswer = const Err(NetworkFailure())
+        ..messagesAnswers.clear()
+        ..messagesAnswers.add(
+          Ok(
+            CursorPage(
+              items: [sampleMessage('p1', photo: const MessagePhoto())],
+            ),
+          ),
+        );
+      await open(tester);
+
+      expect(find.text(fr.chatPhotoRetry), findsOneWidget);
+      await tester.tap(find.text(fr.chatPhotoRetry));
+      await tester.pumpAndSettle();
+
+      expect(messaging.photoCalls, ['p1', 'p1']);
+    });
+
+    testWidgets('appareil photo → galerie : photos envoyées une par une', (
+      tester,
+    ) async {
+      await open(tester);
+
+      await tester.tap(find.byKey(const Key('chat-add-photo')));
+      await tester.pumpAndSettle();
+      expect(find.text(fr.chatTakePhoto), findsOneWidget);
+      await tester.tap(find.byKey(const Key('chat-photo-gallery')));
+      await tester.pumpAndSettle();
+
+      expect(messaging.sentPhotos, [
+        ('conv-1', '/photos/a.jpg'),
+        ('conv-1', '/photos/b.jpg'),
+      ]);
+      expect(find.text(fr.chatTakePhoto), findsNothing);
+    });
+
+    testWidgets('appareil photo inaccessible : explication', (tester) async {
+      picker.camera = (null, PhotoPickError.unavailable);
+      await open(tester);
+
+      await tester.tap(find.byKey(const Key('chat-add-photo')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('chat-photo-camera')));
+      await tester.pumpAndSettle();
+
+      expect(find.text(fr.chatPhotosUnavailable), findsOneWidget);
+      expect(messaging.sentPhotos, isEmpty);
     });
 
     testWidgets('compte suspendu : plus de champ, une explication', (

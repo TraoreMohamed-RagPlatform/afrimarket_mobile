@@ -20,10 +20,17 @@ enum BubbleDelivery {
 /// Une bulle de message (maquette page 9) : les miens à droite en terre
 /// cuite, ceux de l'autre à gauche en gris. Arrondi de 8, coin pointu du
 /// côté de l'expéditeur.
+///
+/// Photo ([media]) : l'image remplit la bulle, à ses proportions
+/// ([mediaAspectRatio]), sans fond ; toucher l'ouvre ([onOpen]).
 class ChatBubble extends StatelessWidget {
   const new({
     required this.text,
     required this.isMine,
+    this.media,
+    this.mediaAspectRatio = 1,
+    this.mediaLabel,
+    this.onOpen,
     this.meta,
     this.delivery = BubbleDelivery.sent,
     this.onRetry,
@@ -34,8 +41,22 @@ class ChatBubble extends StatelessWidget {
   /// Largeur maximale, en part de la largeur disponible.
   static const double maxWidthFactor = 0.78;
 
+  /// Largeur d'une photo : part de la largeur disponible, plafonnée.
+  static const double mediaWidthFactor = 0.65;
+  static const double mediaMaxWidth = 260;
+
   final String text;
   final bool isMine;
+
+  /// Photo à la place du texte.
+  final Widget? media;
+  final double mediaAspectRatio;
+
+  /// Description de la photo pour les lecteurs d'écran.
+  final String? mediaLabel;
+
+  /// Ouvre la photo en grand.
+  final VoidCallback? onOpen;
 
   /// Ligne sous la bulle (« 10:42 · Vu », « Envoi… »...), si elle existe.
   final String? meta;
@@ -61,34 +82,37 @@ class ChatBubble extends StatelessWidget {
     final failed = delivery == BubbleDelivery.failed;
     final caption = meta;
 
-    final bubble = LayoutBuilder(
-      builder: (context, constraints) => ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: constraints.maxWidth * maxWidthFactor,
-        ),
-        child: Opacity(
-          opacity: delivery == BubbleDelivery.sending ? 0.6 : 1,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: isMine ? colors.brand : colors.surfaceMuted,
-              borderRadius: radius,
-            ),
-            child: Padding(
-              padding: const EdgeInsetsDirectional.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.sm,
+    final photo = media;
+    final bubble = photo != null
+        ? _mediaBubble(photo, radius)
+        : LayoutBuilder(
+            builder: (context, constraints) => ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: constraints.maxWidth * maxWidthFactor,
               ),
-              child: Text(
-                userText(text),
-                style: styles.bodyLarge?.copyWith(
-                  color: isMine ? colors.onBrand : colors.textPrimary,
+              child: Opacity(
+                opacity: delivery == BubbleDelivery.sending ? 0.6 : 1,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: isMine ? colors.brand : colors.surfaceMuted,
+                    borderRadius: radius,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.sm,
+                    ),
+                    child: Text(
+                      userText(text),
+                      style: styles.bodyLarge?.copyWith(
+                        color: isMine ? colors.onBrand : colors.textPrimary,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-      ),
-    );
+          );
 
     return Column(
       crossAxisAlignment: isMine
@@ -112,6 +136,42 @@ class ChatBubble extends StatelessWidget {
             ),
           ),
       ],
+    );
+  }
+
+  Widget _mediaBubble(Widget photo, BorderRadiusDirectional radius) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final available = constraints.maxWidth * mediaWidthFactor;
+        final width = available < mediaMaxWidth ? available : mediaMaxWidth;
+        final open = onOpen;
+        // Nœud à part : la photo est un élément pour les lecteurs d'écran,
+        // distinct de l'heure affichée dessous.
+        return Semantics(
+          container: true,
+          image: true,
+          button: open != null,
+          label: mediaLabel,
+          excludeSemantics: true,
+          onTap: open,
+          child: GestureDetector(
+            onTap: open,
+            child: Opacity(
+              opacity: delivery == BubbleDelivery.sending ? 0.6 : 1,
+              child: ClipRRect(
+                borderRadius: radius,
+                child: SizedBox(
+                  width: width,
+                  child: AspectRatio(
+                    aspectRatio: mediaAspectRatio,
+                    child: photo,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

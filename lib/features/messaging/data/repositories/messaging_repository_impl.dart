@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:afrimarket_mobile/core/error/result.dart';
 import 'package:afrimarket_mobile/core/network/api_guard.dart';
 import 'package:afrimarket_mobile/core/pagination/cursor_page.dart';
@@ -45,4 +47,16 @@ class MessagingRepositoryImpl implements MessagingRepository {
   }) => guardApiCall(
     () => _remote.send(conversationId: conversationId, text: text),
   );
+
+  @override
+  Future<Result<ChatMessage>> sendPhoto({
+    required String conversationId,
+    required String path,
+  }) => guardApiCall(
+    () => _remote.sendPhoto(conversationId: conversationId, path: path),
+  );
+
+  @override
+  Future<Result<Uint8List>> photo(String messageId) =>
+      guardApiCall(() => _remote.photo(messageId));
 }

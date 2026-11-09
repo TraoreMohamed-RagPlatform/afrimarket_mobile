@@ -39,11 +39,16 @@ class ConversationTile extends StatelessWidget {
     final listingLine = listing == null
         ? l10n.messagesListingDeleted
         : '${userText(listing.title)} · ${formatPrice(listing.price, l10n)}';
-    final preview = last == null
+    final lastText = last == null
+        ? null
+        : last.hasPhoto
+        ? l10n.messagesPhotoPreview
+        : userText(last.text);
+    final preview = last == null || lastText == null
         ? null
         : last.isMine
-        ? l10n.messagesFromMe(userText(last.text))
-        : userText(last.text);
+        ? l10n.messagesFromMe(lastText)
+        : lastText;
     final badge = switch (listing?.status) {
       ConversationListingStatus.reserved => AppBadgeType.reserved,
       ConversationListingStatus.sold => AppBadgeType.sold,

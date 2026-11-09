@@ -73,13 +73,32 @@ abstract final class MessagingJson {
 
   static MessagePreview? _preview(Object? json) {
     if (json is! Map<String, dynamic>) return null;
+    final hasPhoto = json['hasPhoto'] == true;
     final text = _text(json['preview']);
     final sentAt = _date(json['createdAt']);
-    if (text == null || sentAt == null) return null;
+    if ((text == null && !hasPhoto) || sentAt == null) return null;
     return MessagePreview(
-      text: text,
+      text: hasPhoto ? '' : text!,
+      hasPhoto: hasPhoto,
       isMine: json['isMine'] == true,
       sentAt: sentAt,
+    );
+  }
+
+  /// Dimension en pixels, si elle est plausible.
+  static int? _dimension(Object? value) =>
+      value is int && value > 0 && value <= maxPhotoDimension ? value : null;
+
+  /// Dimension maximale acceptée (le serveur réduit à 1600 px).
+  static const maxPhotoDimension = 10000;
+
+  /// Photo d'un message : `{ url, width, height }`. L'adresse n'est pas
+  /// reprise : l'image se lit par l'identifiant du message.
+  static MessagePhoto? _photo(Object? json) {
+    if (json is! Map<String, dynamic>) return null;
+    return MessagePhoto(
+      width: _dimension(json['width']),
+      height: _dimension(json['height']),
     );
   }
 
@@ -107,18 +126,19 @@ abstract final class MessagingJson {
     );
   }
 
-  /// Un message ; `null` s'il est mal formé.
+  /// Un message (texte non vide, ou photo) ; `null` s'il est mal formé.
   static ChatMessage? message(Object? json) {
     if (json is! Map<String, dynamic>) return null;
     final id = safeId(json['id']);
     final content = json['content'];
+    final photo = _photo(json['photo']);
     final sentAt = _date(json['createdAt']);
-    if (id == null || content is! String || content.isEmpty || sentAt == null) {
-      return null;
-    }
+    if (id == null || content is! String || sentAt == null) return null;
+    if (content.isEmpty && photo == null) return null;
     return ChatMessage(
       id: id,
-      text: content,
+      text: photo == null ? content : '',
+      photo: photo,
       isMine: json['isMine'] == true,
       sentAt: sentAt,
       readAt: _date(json['readAt']),

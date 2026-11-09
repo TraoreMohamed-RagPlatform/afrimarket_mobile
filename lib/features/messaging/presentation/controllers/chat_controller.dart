@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:afrimarket_mobile/core/error/failure.dart';
 import 'package:afrimarket_mobile/core/error/result.dart';
 import 'package:afrimarket_mobile/core/pagination/cursor_page.dart';
+import 'package:afrimarket_mobile/core/platform/photo_picker.dart';
 import 'package:afrimarket_mobile/core/realtime/realtime_connection.dart';
 import 'package:afrimarket_mobile/features/inbox/presentation/unread_counts_controller.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/entities/chat_message.dart';
@@ -17,18 +18,41 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:meta/meta.dart';
 
-/// Message écrit ici, pas encore confirmé par le serveur.
+/// D'où vient une photo à envoyer.
+enum ChatPhotoSource { camera, gallery }
+
+/// Résultat du choix de photos à envoyer.
+enum ChatPhotoOutcome {
+  /// Photos choisies : envoi en cours.
+  sending,
+
+  /// Rien de choisi.
+  cancelled,
+
+  /// Galerie ou appareil photo inaccessible (autorisation refusée...).
+  unavailable,
+}
+
+/// Message écrit ici, pas encore confirmé par le serveur : un texte ou
+/// une photo ([photoPath], fichier du téléphone).
 @immutable
 final class PendingMessage {
   const new({
     required this.localId,
     required this.text,
     required this.createdAt,
+    this.photoPath,
     this.failed = false,
   });
 
   final int localId;
+
+  /// Texte ; vide pour une photo.
   final String text;
+
+  /// Photo à envoyer, si c'en est une.
+  final String? photoPath;
+
   final DateTime createdAt;
 
   /// L'envoi a échoué : « Non envoyé. Touchez pour réessayer. »
@@ -37,6 +61,7 @@ final class PendingMessage {
   PendingMessage withFailed({required bool failed}) => PendingMessage(
     localId: localId,
     text: text,
+    photoPath: photoPath,
     createdAt: createdAt,
     failed: failed,
   );
@@ -50,6 +75,7 @@ final class ChatState {
     this.header,
     this.messages = const [],
     this.pending = const [],
+    this.sentPhotoFiles = const {},
     this.nextCursor,
     this.isLoadingOlder = false,
     this.failure,
@@ -68,6 +94,10 @@ final class ChatState {
   /// Messages en cours d'envoi ou non envoyés, du plus ancien au plus
   /// récent.
   final List<PendingMessage> pending;
+
+  /// Photos que je viens d'envoyer : identifiant du message → fichier du
+  /// téléphone (affiché sans la télécharger à nouveau).
+  final Map<String, String> sentPhotoFiles;
 
   /// Messages plus anciens à charger.
   final String? nextCursor;
@@ -92,6 +122,7 @@ final class ChatState {
     ConversationSummary? header,
     List<ChatMessage>? messages,
     List<PendingMessage>? pending,
+    Map<String, String>? sentPhotoFiles,
     String? Function()? nextCursor,
     bool? isLoadingOlder,
     Failure? Function()? failure,
@@ -103,6 +134,7 @@ final class ChatState {
       header: header ?? this.header,
       messages: messages ?? this.messages,
       pending: pending ?? this.pending,
+      sentPhotoFiles: sentPhotoFiles ?? this.sentPhotoFiles,
       nextCursor: nextCursor == null ? this.nextCursor : nextCursor(),
       isLoadingOlder: isLoadingOlder ?? this.isLoadingOlder,
       failure: failure == null ? this.failure : failure(),
@@ -120,6 +152,13 @@ class ChatController extends Notifier<ChatState> {
   final String conversationId;
 
   int _nextLocalId = 0;
+
+  /// Envois de photos, l'un après l'autre (l'ordre choisi est gardé).
+  Future<void> _photoDeliveries = Future.value();
+
+  /// Fin des envois de photos en cours (pour les tests).
+  @visibleForTesting
+  Future<void> get photoDeliveries => _photoDeliveries;
 
   @override
   ChatState build() {
@@ -189,6 +228,47 @@ class ChatController extends Notifier<ChatState> {
     );
     state = state.copyWith(pending: [...state.pending, pending]);
     await _deliver(pending);
+  }
+
+  /// Choisit des photos ([source]) et les envoie, une par message, dans
+  /// l'ordre choisi (10 au plus depuis la galerie). Chacune est affichée
+  /// tout de suite, puis confirmée par le serveur.
+  Future<ChatPhotoOutcome> sendPhotos(ChatPhotoSource source) async {
+    if (!state.canSend) return ChatPhotoOutcome.cancelled;
+    final picker = ref.read(photoPickerProvider);
+    final List<String>? paths;
+    switch (source) {
+      case ChatPhotoSource.gallery:
+        paths = await picker.pickFromGallery(
+          limit: MessageRules.maxPhotosPerPick,
+        );
+      case ChatPhotoSource.camera:
+        final (path, error) = await picker.takePhoto();
+        paths = error == PhotoPickError.none ? [?path] : null;
+    }
+    if (!ref.mounted) return ChatPhotoOutcome.cancelled;
+    if (paths == null) return ChatPhotoOutcome.unavailable;
+    if (paths.isEmpty) return ChatPhotoOutcome.cancelled;
+
+    final queued = [
+      for (final path in paths.take(MessageRules.maxPhotosPerPick))
+        PendingMessage(
+          localId: _nextLocalId++,
+          text: '',
+          photoPath: path,
+          createdAt: DateTime.now(),
+        ),
+    ];
+    state = state.copyWith(pending: [...state.pending, ...queued]);
+    _photoDeliveries = _photoDeliveries.then((_) async {
+      for (final item in queued) {
+        if (!ref.mounted) return;
+        // Retiré entre-temps : rien à envoyer.
+        if (_pendingById(item.localId) == null) continue;
+        await _deliver(item);
+      }
+    });
+    return ChatPhotoOutcome.sending;
   }
 
   /// Nouvel essai d'un message non envoyé.
@@ -284,10 +364,16 @@ class ChatController extends Notifier<ChatState> {
   }
 
   Future<void> _deliver(PendingMessage pending) async {
-    final result = await ref.read(sendMessageUseCaseProvider)(
-      conversationId: conversationId,
-      text: pending.text,
-    );
+    final photoPath = pending.photoPath;
+    final result = photoPath == null
+        ? await ref.read(sendMessageUseCaseProvider)(
+            conversationId: conversationId,
+            text: pending.text,
+          )
+        : await ref.read(sendPhotoUseCaseProvider)(
+            conversationId: conversationId,
+            path: photoPath,
+          );
     if (!ref.mounted) return;
 
     switch (result) {
@@ -295,6 +381,9 @@ class ChatController extends Notifier<ChatState> {
         final known = state.messages.any((message) => message.id == value.id);
         state = state.copyWith(
           messages: known ? null : [value, ...state.messages],
+          sentPhotoFiles: photoPath == null
+              ? null
+              : {...state.sentPhotoFiles, value.id: photoPath},
           pending: [
             for (final item in state.pending)
               if (item.localId != pending.localId) item,

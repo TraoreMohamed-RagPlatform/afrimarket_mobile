@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:afrimarket_mobile/core/error/failure.dart';
 import 'package:afrimarket_mobile/core/error/result.dart';
 import 'package:afrimarket_mobile/core/pagination/cursor_page.dart';
@@ -59,4 +61,28 @@ class SendMessageUseCase {
     }
     return _repository.send(conversationId: conversationId, text: clean);
   }
+}
+
+/// Cas d'usage : envoyer une photo dans une discussion (un message).
+class SendPhotoUseCase {
+  const new(this._repository);
+
+  final MessagingRepository _repository;
+
+  /// Refus du serveur : [ConflictFailure] comme pour un texte
+  /// (`MessagingConflicts.recipientUnavailable`).
+  Future<Result<ChatMessage>> call({
+    required String conversationId,
+    required String path,
+  }) => _repository.sendPhoto(conversationId: conversationId, path: path);
+}
+
+/// Cas d'usage : image d'une photo reçue ou envoyée.
+class GetMessagePhotoUseCase {
+  const new(this._repository);
+
+  final MessagingRepository _repository;
+
+  Future<Result<Uint8List>> call(String messageId) =>
+      _repository.photo(messageId);
 }

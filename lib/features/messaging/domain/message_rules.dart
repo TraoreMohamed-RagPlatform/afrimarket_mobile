@@ -3,6 +3,9 @@ abstract final class MessageRules {
   /// Longueur maximale, en caractères, une fois les espaces retirés.
   static const maxLength = 1000;
 
+  /// Photos choisies en une fois dans la galerie (une par message).
+  static const maxPhotosPerPick = 10;
+
   /// Texte prêt à envoyer, ou `null` s'il est vide ou trop long.
   static String? clean(String text) {
     final trimmed = text.trim();

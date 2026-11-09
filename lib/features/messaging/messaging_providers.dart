@@ -39,3 +39,11 @@ final getMessagesUseCaseProvider = Provider<GetMessagesUseCase>(
 final sendMessageUseCaseProvider = Provider<SendMessageUseCase>(
   (ref) => SendMessageUseCase(ref.watch(messagingRepositoryProvider)),
 );
+
+final sendPhotoUseCaseProvider = Provider<SendPhotoUseCase>(
+  (ref) => SendPhotoUseCase(ref.watch(messagingRepositoryProvider)),
+);
+
+final getMessagePhotoUseCaseProvider = Provider<GetMessagePhotoUseCase>(
+  (ref) => GetMessagePhotoUseCase(ref.watch(messagingRepositoryProvider)),
+);

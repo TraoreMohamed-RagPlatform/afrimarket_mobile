@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:afrimarket_mobile/core/error/failure.dart';
 import 'package:afrimarket_mobile/core/error/result.dart';
 import 'package:afrimarket_mobile/core/pagination/cursor_page.dart';
@@ -7,6 +10,7 @@ import 'package:afrimarket_mobile/features/messaging/domain/entities/chat_messag
 import 'package:afrimarket_mobile/features/messaging/domain/entities/conversation.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/message_rules.dart';
 import 'package:afrimarket_mobile/features/messaging/domain/usecases/conversation_usecases.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/fake_http_server.dart';
@@ -53,6 +57,44 @@ Map<String, dynamic> _message(String id, {bool mine = false}) => {
   'createdAt': '2026-10-21T10:00:00.000Z',
   'readAt': mine ? '2026-10-21T10:05:00.000Z' : null,
 };
+
+/// Faux serveur qui renvoie des octets (image).
+class _BytesServer implements HttpClientAdapter {
+  new(this.status, this.bytes);
+
+  final int status;
+  final List<int> bytes;
+  final requests = <RequestOptions>[];
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    requests.add(options);
+    return ResponseBody.fromBytes(
+      bytes,
+      status,
+      headers: {
+        Headers.contentTypeHeader: ['image/jpeg'],
+      },
+    );
+  }
+
+  @override
+  void close({bool force = false}) {}
+}
+
+/// Supprime un dossier temporaire ; sous Windows, le fichier joint peut
+/// rester ouvert jusqu'à la fin du test (le faux serveur ne le lit pas).
+void _deleteQuietly(Directory dir) {
+  try {
+    dir.deleteSync(recursive: true);
+  } on FileSystemException {
+    // Laissé au nettoyage du système.
+  }
+}
 
 void main() {
   late FakeHttpServer server;
@@ -306,5 +348,151 @@ void main() {
       otherUser: ConversationPerson(id: 'u1'),
     );
     expect(identical(read.markedRead(), read), isTrue);
+  });
+
+  group('Photos', () {
+    test('message photo : texte vide, dimensions ; dimensions absurdes '
+        'ignorées ; aperçu « photo »', () async {
+      server.respond([
+        (
+          200,
+          {
+            'messages': [
+              {
+                ..._message('p1'),
+                'content': '',
+                'photo': {
+                  'url': '/api/messages/photos/p1',
+                  'width': 1600,
+                  'height': 800,
+                },
+              },
+              {
+                ..._message('p2'),
+                'content': '',
+                'photo': {'width': -1, 'height': 99999},
+              },
+              {..._message('p3'), 'content': '', 'photo': 'pas un objet'},
+            ],
+          },
+        ),
+        (
+          200,
+          _conversation(
+            lastMessage: {
+              'id': 'p1',
+              'preview': '',
+              'hasPhoto': true,
+              'isMine': false,
+              'createdAt': '2026-10-21T10:00:00.000Z',
+            },
+          ),
+        ),
+      ]);
+
+      final page = (await repository.messages(
+        'c1',
+      ) as Ok<CursorPage<ChatMessage>>).value;
+      final header = (await repository.conversation(
+        'c1',
+      ) as Ok<ConversationSummary>).value;
+
+      expect(page.items.map((m) => m.id), ['p1', 'p2']);
+      expect(page.items.first.text, isEmpty);
+      expect(page.items.first.photo?.aspectRatio, 2);
+      expect(page.items.last.photo?.width, isNull);
+      expect(page.items.last.photo?.aspectRatio, 1);
+      expect(header.lastMessage?.hasPhoto, isTrue);
+      expect(header.lastMessage?.text, isEmpty);
+    });
+
+    test('proportions bornées (photo très haute ou très large)', () {
+      expect(const MessagePhoto(width: 100, height: 1000).aspectRatio, 0.5);
+      expect(const MessagePhoto(width: 1000, height: 100).aspectRatio, 2);
+      expect(const MessagePhoto(width: 0, height: 100).aspectRatio, 1);
+    });
+
+    test('envoi : multipart, nom de fichier neutre, type JPEG', () async {
+      final dir = Directory.systemTemp.createTempSync('chat-photo');
+      addTearDown(() => _deleteQuietly(dir));
+      final file = File('${dir.path}/IMG_maison_2026.jpg')
+        ..writeAsBytesSync(const [0xFF, 0xD8, 0xFF, 0xD9]);
+      server.respond([
+        (
+          201,
+          {
+            ..._message('p9', mine: true),
+            'content': '',
+            'photo': {'width': 4, 'height': 3},
+          },
+        ),
+      ]);
+
+      final result = await SendPhotoUseCase(repository)(
+        conversationId: 'c1',
+        path: file.path,
+      );
+
+      final request = server.requests.single;
+      expect(request.method, 'POST');
+      expect(request.path, '/api/messages/photos');
+      final form = request.data as FormData;
+      expect(form.fields.map((f) => (f.key, f.value)), [
+        ('conversationId', 'c1'),
+      ]);
+      final upload = form.files.single;
+      expect(upload.key, 'photo');
+      expect(upload.value.filename, 'photo.jpg');
+      expect(upload.value.contentType?.mimeType, 'image/jpeg');
+      expect((result as Ok<ChatMessage>).value.photo?.width, 4);
+    });
+
+    test(
+      'envoi : PNG gardé ; réponse sans photo → UnexpectedFailure',
+      () async {
+        final dir = Directory.systemTemp.createTempSync('chat-photo');
+        addTearDown(() => _deleteQuietly(dir));
+        final file = File('${dir.path}/capture.PNG')..writeAsBytesSync([1]);
+        server.respond([(201, _message('m1', mine: true))]);
+
+        final result = await repository.sendPhoto(
+          conversationId: 'c1',
+          path: file.path,
+        );
+
+        final upload = (server.requests.single.data as FormData).files.single;
+        expect(upload.value.filename, 'photo.png');
+        expect(upload.value.contentType?.mimeType, 'image/png');
+        expect((result as Err).failure, isA<UnexpectedFailure>());
+      },
+    );
+
+    test('image : JPEG accepté par identifiant de message', () async {
+      final adapter = _BytesServer(200, const [0xFF, 0xD8, 0xFF, 0xE0, 1, 2]);
+      final dio = Dio(BaseOptions(baseUrl: 'https://api.example.com'))
+        ..httpClientAdapter = adapter;
+      final photos = MessagingRepositoryImpl(MessagingRemoteDataSource(dio));
+
+      final result = await GetMessagePhotoUseCase(photos)('m 1');
+
+      expect(adapter.requests.single.path, '/api/messages/photos/m%201');
+      expect((result as Ok<Uint8List>).value, hasLength(6));
+    });
+
+    test('image : contenu qui n’est pas un JPEG refusé ; 404', () async {
+      for (final (status, bytes, failure) in [
+        (200, '<html>'.codeUnits, isA<UnexpectedFailure>()),
+        (404, '{}'.codeUnits, isA<NotFoundFailure>()),
+      ]) {
+        final dio = Dio(BaseOptions(baseUrl: 'https://api.example.com'))
+          ..httpClientAdapter = _BytesServer(status, bytes);
+        final photos = MessagingRepositoryImpl(MessagingRemoteDataSource(dio));
+
+        final result = await photos.photo('m1');
+
+        expect((result as Err).failure, failure);
+      }
+      expect(MessagingRemoteDataSource.isJpeg(const [0xFF, 0xD8]), isFalse);
+    });
   });
 }

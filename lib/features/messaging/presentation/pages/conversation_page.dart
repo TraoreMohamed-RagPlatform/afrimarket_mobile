@@ -16,6 +16,7 @@ import 'package:afrimarket_mobile/features/messaging/presentation/message_time.d
 import 'package:afrimarket_mobile/features/messaging/presentation/widgets/chat_bubble.dart';
 import 'package:afrimarket_mobile/features/messaging/presentation/widgets/chat_composer.dart';
 import 'package:afrimarket_mobile/features/messaging/presentation/widgets/chat_header.dart';
+import 'package:afrimarket_mobile/features/messaging/presentation/widgets/message_photo.dart';
 import 'package:afrimarket_mobile/features/safety/domain/safety_conflicts.dart';
 import 'package:afrimarket_mobile/features/safety/presentation/widgets/safety_dialogs.dart';
 import 'package:afrimarket_mobile/shared/extensions/l10n_extension.dart';
@@ -37,6 +38,8 @@ import 'package:go_router/go_router.dart';
 ///   jour ; « Vu » sous mon dernier message lu ; les précédents se
 ///   chargent en remontant ;
 /// - envoi affiché tout de suite ; non envoyé : nouvel essai ou retrait ;
+/// - photos (appareil photo ou galerie, une par message) : affichées à
+///   leurs proportions, ouvertes en grand au toucher ;
 /// - compte de l'autre personne suspendu ou supprimé, ou blocage : plus de
 ///   champ ;
 /// - menu « ··· » : bloquer / débloquer, signaler (comme Messenger).
@@ -172,6 +175,58 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     choice?.call();
   }
 
+  /// Appareil photo ou galerie, puis envoi des photos choisies.
+  Future<void> _addPhoto() async {
+    final l10n = context.l10n;
+    FocusScope.of(context).unfocus();
+    final source = await showModalBottomSheet<ChatPhotoSource>(
+      context: context,
+      useRootNavigator: true,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              key: const Key('chat-photo-camera'),
+              leading: const Icon(AppIcons.camera),
+              title: Text(l10n.chatTakePhoto),
+              onTap: () =>
+                  Navigator.of(sheetContext).pop(ChatPhotoSource.camera),
+            ),
+            ListTile(
+              key: const Key('chat-photo-gallery'),
+              leading: const Icon(AppIcons.images),
+              title: Text(l10n.chatPickGallery),
+              onTap: () =>
+                  Navigator.of(sheetContext).pop(ChatPhotoSource.gallery),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (source == null || !mounted) return;
+    final outcome = await _chat.sendPhotos(source);
+    if (!mounted) return;
+    switch (outcome) {
+      case ChatPhotoOutcome.sending:
+        unawaited(HapticFeedback.lightImpact());
+      case ChatPhotoOutcome.unavailable:
+        context.showAppSnackBar(context.l10n.chatPhotosUnavailable);
+      case ChatPhotoOutcome.cancelled:
+        break;
+    }
+  }
+
+  void _openPhoto({String? messageId, String? localPath}) => unawaited(
+    MessagePhotoViewerPage.open(
+      context,
+      messageId: messageId,
+      localPath: localPath,
+    ),
+  );
+
   String _sendFailureMessage(Failure failure, AppLocalizations l10n) {
     return switch (failure) {
       ConflictFailure(code: MessagingConflicts.recipientUnavailable) =>
@@ -228,7 +283,10 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
                 onAction: () => unawaited(_unblock(header.otherUser)),
               )
             else if (state.canSend)
-              ChatComposer(onSend: (text) => unawaited(_chat.send(text)))
+              ChatComposer(
+                onSend: (text) => unawaited(_chat.send(text)),
+                onAddPhoto: () => unawaited(_addPhoto()),
+              )
             else
               _Notice(text: l10n.chatRecipientUnavailable),
         ],
@@ -280,11 +338,19 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
     final pending = state.pending;
 
     for (final item in pending.reversed) {
+      final photoPath = item.photoPath;
       rows.add(
         _spaced(
           ChatBubble(
             text: item.text,
             isMine: true,
+            media: photoPath == null
+                ? null
+                : MessagePhotoImage(localPath: photoPath),
+            mediaLabel: l10n.chatPhotoMine,
+            onOpen: photoPath == null
+                ? null
+                : () => _openPhoto(localPath: photoPath),
             delivery: item.failed
                 ? BubbleDelivery.failed
                 : BubbleDelivery.sending,
@@ -308,11 +374,27 @@ class _ConversationPageState extends ConsumerState<ConversationPage> {
           (newer != null && !MessageTime.sameDay(newer.sentAt, message.sentAt));
       final time = MessageTime.time(message.sentAt, l10n);
       final seen = identical(message, lastSeen);
+      final photo = message.photo;
+      final localPath = state.sentPhotoFiles[message.id];
       rows.add(
         _spaced(
           ChatBubble(
             text: message.text,
             isMine: message.isMine,
+            media: photo == null
+                ? null
+                : MessagePhotoImage(
+                    key: ValueKey('photo-${message.id}'),
+                    messageId: message.id,
+                    localPath: localPath,
+                  ),
+            mediaAspectRatio: photo?.aspectRatio ?? 1,
+            mediaLabel: message.isMine
+                ? l10n.chatPhotoMine
+                : l10n.chatPhotoTheirs,
+            onOpen: photo == null
+                ? null
+                : () => _openPhoto(messageId: message.id, localPath: localPath),
             meta: seen
                 ? '$time · ${l10n.chatSeen}'
                 : endsGroup
